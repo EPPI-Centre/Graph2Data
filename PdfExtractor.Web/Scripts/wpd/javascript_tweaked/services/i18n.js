@@ -30,3 +30,14 @@ wpd.gettext = function(stringId) {
     }
     return 'i18n string';
 };
+wpd.getTextParams = function(stringId, params) {
+    var str = wpd.gettext(stringId);
+
+    for (var key in params) {
+        if (params.hasOwnProperty(key)) {
+            str = str.replace("{" + key + "}", params[key]);
+        }
+    }
+
+    return str;
+};
