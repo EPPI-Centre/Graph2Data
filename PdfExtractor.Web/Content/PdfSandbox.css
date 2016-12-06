@@ -1,0 +1,169 @@
+﻿.hovered {
+    /*background-color: green !important;*/
+}
+
+.same-row {
+    /*border: 3px solid red !important; */
+    background-color: red !important;
+}
+
+.same-group {
+    /*border: 3px solid purple !important; */
+    background-color: purple !important;
+}
+
+.nearby {
+    /*border: 3px solid red !important; */
+    background-color: blue !important;
+}
+.pdfSandboxContainer #viewerContainer {
+    width: 100%;
+    height: auto;
+    position: relative;
+    overflow: hidden;
+    /*top: 82px;*/
+}
+
+.pdfSandboxContainer #viewerContainer .pdfViewer .page {
+    margin: 1px auto 9px auto;
+}
+.pdfSandboxContainer .toolbar {
+    position: fixed;
+    top: 51px;
+}
+.pdfSandboxContainer .toolbar {
+    visibility: visible;
+}
+
+.pdfSandboxContainer {
+    width: 100%;
+    height: 100%;
+    position: relative !important;
+}
+
+.pdfSandboxContainer #sidebarContainer {
+    position: fixed;
+    top: 51px;
+}
+
+.pdfSandboxContainer #thumbnailView {
+    width: 183px;
+}
+
+.pdfSandboxContainer .thumbnail {
+    max-width: none;
+}
+
+
+.container.body-content {
+    /*border: 3px solid green;*/
+    width: 100%;
+    height: 100%;
+    position: relative;
+    max-width: 100% !important;
+    padding-right: 0;
+}
+canvas.selected-canvas {
+    border: 3px solid gold;
+    border: 3px solid rgb(255, 215, 0);
+}
+#viewerContainer > .info {
+    top: 86px;
+}
+
+.wpdContainer {
+    display: none;
+}
+
+body.wpd-visible .wpdContainer {
+    display: block;
+    z-index: 10000 !important;
+    position: fixed !important;
+    left: 0;
+    top: 0;
+}
+
+body.wpd-visible {
+    overflow: hidden;
+}
+
+
+.wpdContainer .extended-crosshair {
+    border: none; 
+    width: 20px; 
+    background-image: url('/wpd/images/crosshair.png'); 
+    background-repeat: no-repeat; 
+    background-position: center;
+}
+
+
+#mean-variance-formContainer table td, #mean-variance-formContainer table th {
+    border-collapse: collapse;
+    border: 1px solid #666666;
+    padding: 0.25em;
+}
+
+#mean-variance-formContainer table th {
+    text-align: center;
+}
+
+#mean-variance-formContainer table th[rowspan] {
+    white-space: nowrap;
+}
+
+#mean-variance-formContainer input.mean {
+    background-color: rgb(212, 212, 255);
+    cursor: pointer;
+}
+
+#mean-variance-formContainer input.mean.focused {
+    background-color: blue;
+    color: white;
+}
+
+#mean-variance-formContainer input.variance {
+    background-color: rgb(255, 211, 211);
+    cursor: pointer;
+}
+
+#mean-variance-formContainer input.variance.focused {
+    background-color: red;
+    color: white;
+}
+
+#mean-variance-formContainer input.group-name {
+    
+}
+#mean-variance-formContainer input.group-name.focused {
+    background-color: #ddd;
+}
+
+.wpdContainer .popup td label {
+    cursor: pointer;
+}
+
+#mean-variance-formContainer table tbody tr.current-series td, #mean-variance-formContainer table tbody tr.current-series th {
+    background-color: #ddd;
+}
+
+#mean-variance-formContainer table body TR.current-series th {
+    
+}
+
+#mean-variance-formContainerDetachTrigger {
+    cursor: pointer;
+    font-size: 0.8em;
+    text-decoration: underline;
+}
+#mean-variance-formContainerHost.detached #mean-variance-formContainerDetachTrigger {
+    display: none;
+}
+
+table.cell-info {
+    z-index: 9999999;
+}
+table.cell-info td {
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+    padding: 0 0.25em;
+}

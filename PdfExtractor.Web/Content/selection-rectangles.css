@@ -1,0 +1,127 @@
+﻿.rectangle {
+    border: 3px dashed #FF0000;
+    background-color: #fdd;
+    background-color: rgba(255,0,0,0.2);
+    position: absolute;
+}
+
+.rectangle > .id {
+    margin: 3px 0 0 3px;
+    padding: 1px 5px;
+    color: white;
+    font-weight: bold;
+    font-size: 1.3em;
+    font-family: "Lucida Console";
+    display: inline-block;
+    background-color: red;
+    border: 1px solid black;
+}
+
+.rectangle > .data {
+    display: none;
+}
+.rectangle.has-data > .data {
+    margin: 3px 0 0 3px;
+    padding: 1px 5px;
+    color: white;
+    font-weight: bold;
+    font-size: 1.3em;
+    font-family: "Lucida Console";
+    display: inline-block;
+    background-color: blue;
+    border: 1px solid black;
+}
+
+
+
+.rectangle > .id.hidden {
+    display: none;
+}
+
+.rectangle.hovered {
+    background-color: #f88;
+    background-color: rgba(255, 0, 0, 0.4);
+}
+
+.rectangle.focused {
+    background-color: #f88;
+    background-color: rgba(255, 0, 0, 0.4);
+    border-color: black;
+}
+
+.rectangle.focused > .id {
+    color: white;
+    font-weight: bold;
+}
+
+.info {
+    position: fixed;
+    left: 0;
+    top: 50px;
+    padding: 0.5em;
+    background-color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 1;
+}
+
+.info > .header {
+    text-align: center;
+}
+
+.canvas-overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 0;
+
+    width: 100%;
+    height: 100%;
+    /*border: 5px solid red;*/
+    border-width: 0;
+    cursor: crosshair;
+
+    /* debugging: display: none */
+}
+
+body.annotations-disabled .canvas-overlay {
+    display: none;
+}
+
+.canvas-overlay * {
+    cursor: pointer;
+    z-index: 5;
+}
+
+
+.info > .header, .info > .content > table td {
+    border: 1px solid #888;
+}
+.info > .content > table {
+    margin-top: -1px;
+}
+.info > .content > table td {
+    border-collapse: collapse;
+}
+.info > .header {
+    cursor: pointer;
+}
+
+.info > .header:before {
+    content: "<< ";
+}
+body.annotations-disabled .info > .header:before {
+    content: "";
+}
+.info > .header:after {
+    content: "";
+}
+body.annotations-disabled .info > .header:after {
+    content: " >>";
+}
+
+
+body.annotations-disabled .info > .header {
+}
+body.annotations-disabled .info > .content {
+    display: none;
+}

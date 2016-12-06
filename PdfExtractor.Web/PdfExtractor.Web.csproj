@@ -1,0 +1,896 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F6848A9E-33A0-4F31-A6D9-8E9D510D3B6A}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PdfExtractor.Web</RootNamespace>
+    <AssemblyName>PdfExtractor.Web</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>false</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+    </Reference>
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="WebGrease">
+      <Private>True</Private>
+      <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
+    </Reference>
+    <Reference Include="Antlr3.Runtime">
+      <Private>True</Private>
+      <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Owin">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.1\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.EntityFramework">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.1\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin">
+      <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.3.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security">
+      <HintPath>..\packages\Microsoft.Owin.Security.3.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Facebook">
+      <HintPath>..\packages\Microsoft.Owin.Security.Facebook.3.0.1\lib\net45\Microsoft.Owin.Security.Facebook.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Cookies">
+      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.3.0.1\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.OAuth">
+      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.3.0.1\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Google">
+      <HintPath>..\packages\Microsoft.Owin.Security.Google.3.0.1\lib\net45\Microsoft.Owin.Security.Google.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Twitter">
+      <HintPath>..\packages\Microsoft.Owin.Security.Twitter.3.0.1\lib\net45\Microsoft.Owin.Security.Twitter.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.MicrosoftAccount">
+      <HintPath>..\packages\Microsoft.Owin.Security.MicrosoftAccount.3.0.1\lib\net45\Microsoft.Owin.Security.MicrosoftAccount.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\IdentityConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\SettingsController.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Startup.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\images\annotation-check.svg" />
+    <Content Include="Content\images\annotation-comment.svg" />
+    <Content Include="Content\images\annotation-help.svg" />
+    <Content Include="Content\images\annotation-insert.svg" />
+    <Content Include="Content\images\annotation-key.svg" />
+    <Content Include="Content\images\annotation-newparagraph.svg" />
+    <Content Include="Content\images\annotation-noicon.svg" />
+    <Content Include="Content\images\annotation-note.svg" />
+    <Content Include="Content\images\annotation-paragraph.svg" />
+    <Content Include="Content\images\findbarButton-next%402x.png" />
+    <Content Include="Content\images\findbarButton-next-rtl%402x.png" />
+    <Content Include="Content\images\findbarButton-next-rtl.png" />
+    <Content Include="Content\images\findbarButton-next.png" />
+    <Content Include="Content\images\findbarButton-previous%402x.png" />
+    <Content Include="Content\images\findbarButton-previous-rtl%402x.png" />
+    <Content Include="Content\images\findbarButton-previous-rtl.png" />
+    <Content Include="Content\images\findbarButton-previous.png" />
+    <Content Include="Content\images\grab.cur" />
+    <Content Include="Content\images\grabbing.cur" />
+    <Content Include="Content\images\loading-icon.gif" />
+    <Content Include="Content\images\loading-small%402x.png" />
+    <Content Include="Content\images\loading-small.png" />
+    <Content Include="Content\images\secondaryToolbarButton-documentProperties%402x.png" />
+    <Content Include="Content\images\secondaryToolbarButton-documentProperties.png" />
+    <Content Include="Content\images\secondaryToolbarButton-firstPage%402x.png" />
+    <Content Include="Content\images\secondaryToolbarButton-firstPage.png" />
+    <Content Include="Content\images\secondaryToolbarButton-handTool%402x.png" />
+    <Content Include="Content\images\secondaryToolbarButton-handTool.png" />
+    <Content Include="Content\images\secondaryToolbarButton-lastPage%402x.png" />
+    <Content Include="Content\images\secondaryToolbarButton-lastPage.png" />
+    <Content Include="Content\images\secondaryToolbarButton-rotateCcw%402x.png" />
+    <Content Include="Content\images\secondaryToolbarButton-rotateCcw.png" />
+    <Content Include="Content\images\secondaryToolbarButton-rotateCw%402x.png" />
+    <Content Include="Content\images\secondaryToolbarButton-rotateCw.png" />
+    <Content Include="Content\images\shadow.png" />
+    <Content Include="Content\images\texture.png" />
+    <Content Include="Content\images\toolbarButton-bookmark%402x.png" />
+    <Content Include="Content\images\toolbarButton-bookmark.png" />
+    <Content Include="Content\images\toolbarButton-download%402x.png" />
+    <Content Include="Content\images\toolbarButton-download.png" />
+    <Content Include="Content\images\toolbarButton-menuArrows%402x.png" />
+    <Content Include="Content\images\toolbarButton-menuArrows.png" />
+    <Content Include="Content\images\toolbarButton-openFile%402x.png" />
+    <Content Include="Content\images\toolbarButton-openFile.png" />
+    <Content Include="Content\images\toolbarButton-pageDown%402x.png" />
+    <Content Include="Content\images\toolbarButton-pageDown-rtl%402x.png" />
+    <Content Include="Content\images\toolbarButton-pageDown-rtl.png" />
+    <Content Include="Content\images\toolbarButton-pageDown.png" />
+    <Content Include="Content\images\toolbarButton-pageUp%402x.png" />
+    <Content Include="Content\images\toolbarButton-pageUp-rtl%402x.png" />
+    <Content Include="Content\images\toolbarButton-pageUp-rtl.png" />
+    <Content Include="Content\images\toolbarButton-pageUp.png" />
+    <Content Include="Content\images\toolbarButton-presentationMode%402x.png" />
+    <Content Include="Content\images\toolbarButton-presentationMode.png" />
+    <Content Include="Content\images\toolbarButton-print%402x.png" />
+    <Content Include="Content\images\toolbarButton-print.png" />
+    <Content Include="Content\images\toolbarButton-search%402x.png" />
+    <Content Include="Content\images\toolbarButton-search.png" />
+    <Content Include="Content\images\toolbarButton-secondaryToolbarToggle%402x.png" />
+    <Content Include="Content\images\toolbarButton-secondaryToolbarToggle-rtl%402x.png" />
+    <Content Include="Content\images\toolbarButton-secondaryToolbarToggle-rtl.png" />
+    <Content Include="Content\images\toolbarButton-secondaryToolbarToggle.png" />
+    <Content Include="Content\images\toolbarButton-sidebarToggle%402x.png" />
+    <Content Include="Content\images\toolbarButton-sidebarToggle-rtl%402x.png" />
+    <Content Include="Content\images\toolbarButton-sidebarToggle-rtl.png" />
+    <Content Include="Content\images\toolbarButton-sidebarToggle.png" />
+    <Content Include="Content\images\toolbarButton-viewAttachments%402x.png" />
+    <Content Include="Content\images\toolbarButton-viewAttachments.png" />
+    <Content Include="Content\images\toolbarButton-viewOutline%402x.png" />
+    <Content Include="Content\images\toolbarButton-viewOutline-rtl%402x.png" />
+    <Content Include="Content\images\toolbarButton-viewOutline-rtl.png" />
+    <Content Include="Content\images\toolbarButton-viewOutline.png" />
+    <Content Include="Content\images\toolbarButton-viewThumbnail%402x.png" />
+    <Content Include="Content\images\toolbarButton-viewThumbnail.png" />
+    <Content Include="Content\images\toolbarButton-zoomIn%402x.png" />
+    <Content Include="Content\images\toolbarButton-zoomIn.png" />
+    <Content Include="Content\images\toolbarButton-zoomOut%402x.png" />
+    <Content Include="Content\images\toolbarButton-zoomOut.png" />
+    <Content Include="Content\images\treeitem-collapsed%402x.png" />
+    <Content Include="Content\images\treeitem-collapsed-rtl%402x.png" />
+    <Content Include="Content\images\treeitem-collapsed-rtl.png" />
+    <Content Include="Content\images\treeitem-collapsed.png" />
+    <Content Include="Content\images\treeitem-expanded%402x.png" />
+    <Content Include="Content\images\treeitem-expanded.png" />
+    <Content Include="Content\selection-rectangles.css" />
+    <Content Include="Content\PdfSandbox.css" />
+    <Content Include="Content\tipped\tipped.css" />
+    <Content Include="Content\viewer.css" />
+    <Content Include="Content\wpd\images\barchart.png" />
+    <Content Include="Content\wpd\images\crosshair.png" />
+    <Content Include="Content\wpd\images\crosshair.svg" />
+    <Content Include="Content\wpd\images\icon.png" />
+    <Content Include="Content\wpd\images\icon.svg" />
+    <Content Include="Content\wpd\images\map.png" />
+    <Content Include="Content\wpd\images\map.svg" />
+    <Content Include="Content\wpd\images\perspective.png" />
+    <Content Include="Content\wpd\images\polaraxes.png" />
+    <Content Include="Content\wpd\images\polaraxes.svg" />
+    <Content Include="Content\wpd\images\ternaryaxes.png" />
+    <Content Include="Content\wpd\images\ternaryaxes.svg" />
+    <Content Include="Content\wpd\images\ternarynormal.png" />
+    <Content Include="Content\wpd\images\ternarynormal.svg" />
+    <Content Include="Content\wpd\images\ternaryreverse.png" />
+    <Content Include="Content\wpd\images\ternaryreverse.svg" />
+    <Content Include="Content\wpd\images\xyaxes.png" />
+    <Content Include="Content\wpd\images\xyaxes.svg" />
+    <Content Include="Content\wpd\start.png" />
+    <Content Include="Content\wpd\styles.css" />
+    <Content Include="Content\wpd\widgets.css" />
+    <Content Include="favicon.ico" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Global.asax" />
+    <Content Include="Content\Site.css" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="BMJ 2011 Olesen.pdf" />
+    <Content Include="Scripts\Chart.bundle.js" />
+    <Content Include="Scripts\debugger.js" />
+    <Content Include="Content\wpd\images\perspective.odg" />
+    <Content Include="App_Data\Settings.json" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jBox\jBox.css" />
+    <Content Include="Scripts\jBox\jBox.js" />
+    <Content Include="Scripts\jBox\jBox.min.js" />
+    <Content Include="Scripts\jBox\plugins\Confirm\jBox.Confirm.css" />
+    <Content Include="Scripts\jBox\plugins\Confirm\jBox.Confirm.js" />
+    <Content Include="Scripts\jBox\plugins\Confirm\jBox.Confirm.min.js" />
+    <Content Include="Scripts\jBox\plugins\Image\jBox.Image.css" />
+    <Content Include="Scripts\jBox\plugins\Image\jBox.Image.js" />
+    <Content Include="Scripts\jBox\plugins\Image\jBox.Image.min.js" />
+    <Content Include="Scripts\jBox\plugins\Notice\jBox.Notice.css" />
+    <Content Include="Scripts\jBox\plugins\Notice\jBox.Notice.js" />
+    <Content Include="Scripts\jBox\plugins\Notice\jBox.Notice.min.js" />
+    <Content Include="Scripts\jBox\themes\ModalBorder.css" />
+    <Content Include="Scripts\jBox\themes\NoticeBorder.css" />
+    <Content Include="Scripts\jBox\themes\TooltipBorder.css" />
+    <Content Include="Scripts\jBox\themes\TooltipDark.css" />
+    <Content Include="Scripts\jquery.resize.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\plot.ly.1.19.2.min.js" />
+    <Content Include="Scripts\respond.js" />
+    <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\selection-rectangles.js" />
+    <Content Include="Scripts\tabulator\.gitignore" />
+    <Content Include="Scripts\tabulator\examples.html" />
+    <Content Include="Scripts\tabulator\tabulator.css" />
+    <Content Include="Scripts\tabulator\tabulator.js" />
+    <Content Include="Scripts\tabulator\themes\tabulator_autumn.css" />
+    <Content Include="Scripts\tabulator\themes\tabulator_midnight.css" />
+    <Content Include="Scripts\tabulator\themes\tabulator_modern.css" />
+    <Content Include="Scripts\tabulator\themes\tabulator_simple.css" />
+    <Content Include="Scripts\tipped\tipped.max.lee.js" />
+    <Content Include="Scripts\tipped\tipped.js" />
+    <Content Include="Scripts\viewer-poc\web\pdf.js" />
+    <Content Include="Scripts\viewer-poc\web\pdf.worker.js" />
+    <Content Include="Scripts\viewer-poc\web\compatibility.js" />
+    <Content Include="Scripts\viewer-poc\web\debugger.js" />
+    <Content Include="Scripts\viewer-poc\web\images\annotation-check.svg" />
+    <Content Include="Scripts\viewer-poc\web\images\annotation-comment.svg" />
+    <Content Include="Scripts\viewer-poc\web\images\annotation-help.svg" />
+    <Content Include="Scripts\viewer-poc\web\images\annotation-insert.svg" />
+    <Content Include="Scripts\viewer-poc\web\images\annotation-key.svg" />
+    <Content Include="Scripts\viewer-poc\web\images\annotation-newparagraph.svg" />
+    <Content Include="Scripts\viewer-poc\web\images\annotation-noicon.svg" />
+    <Content Include="Scripts\viewer-poc\web\images\annotation-note.svg" />
+    <Content Include="Scripts\viewer-poc\web\images\annotation-paragraph.svg" />
+    <Content Include="Scripts\viewer-poc\web\images\findbarButton-next%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\findbarButton-next-rtl%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\findbarButton-next-rtl.png" />
+    <Content Include="Scripts\viewer-poc\web\images\findbarButton-next.png" />
+    <Content Include="Scripts\viewer-poc\web\images\findbarButton-previous%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\findbarButton-previous-rtl%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\findbarButton-previous-rtl.png" />
+    <Content Include="Scripts\viewer-poc\web\images\findbarButton-previous.png" />
+    <Content Include="Scripts\viewer-poc\web\images\grab.cur" />
+    <Content Include="Scripts\viewer-poc\web\images\grabbing.cur" />
+    <Content Include="Scripts\viewer-poc\web\images\loading-icon.gif" />
+    <Content Include="Scripts\viewer-poc\web\images\loading-small%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\loading-small.png" />
+    <Content Include="Scripts\viewer-poc\web\images\secondaryToolbarButton-documentProperties%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\secondaryToolbarButton-documentProperties.png" />
+    <Content Include="Scripts\viewer-poc\web\images\secondaryToolbarButton-firstPage%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\secondaryToolbarButton-firstPage.png" />
+    <Content Include="Scripts\viewer-poc\web\images\secondaryToolbarButton-handTool%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\secondaryToolbarButton-handTool.png" />
+    <Content Include="Scripts\viewer-poc\web\images\secondaryToolbarButton-lastPage%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\secondaryToolbarButton-lastPage.png" />
+    <Content Include="Scripts\viewer-poc\web\images\secondaryToolbarButton-rotateCcw%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\secondaryToolbarButton-rotateCcw.png" />
+    <Content Include="Scripts\viewer-poc\web\images\secondaryToolbarButton-rotateCw%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\secondaryToolbarButton-rotateCw.png" />
+    <Content Include="Scripts\viewer-poc\web\images\shadow.png" />
+    <Content Include="Scripts\viewer-poc\web\images\texture.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-bookmark%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-bookmark.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-download%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-download.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-menuArrows%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-menuArrows.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-openFile%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-openFile.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-pageDown%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-pageDown-rtl%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-pageDown-rtl.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-pageDown.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-pageUp%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-pageUp-rtl%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-pageUp-rtl.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-pageUp.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-presentationMode%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-presentationMode.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-print%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-print.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-search%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-search.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-secondaryToolbarToggle%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-secondaryToolbarToggle-rtl%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-secondaryToolbarToggle-rtl.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-secondaryToolbarToggle.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-sidebarToggle%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-sidebarToggle-rtl%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-sidebarToggle-rtl.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-sidebarToggle.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-viewAttachments%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-viewAttachments.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-viewOutline%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-viewOutline-rtl%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-viewOutline-rtl.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-viewOutline.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-viewThumbnail%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-viewThumbnail.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-zoomIn%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-zoomIn.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-zoomOut%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\toolbarButton-zoomOut.png" />
+    <Content Include="Scripts\viewer-poc\web\images\treeitem-collapsed%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\treeitem-collapsed-rtl%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\treeitem-collapsed-rtl.png" />
+    <Content Include="Scripts\viewer-poc\web\images\treeitem-collapsed.png" />
+    <Content Include="Scripts\viewer-poc\web\images\treeitem-expanded%402x.png" />
+    <Content Include="Scripts\viewer-poc\web\images\treeitem-expanded.png" />
+    <Content Include="Scripts\viewer-poc\web\jquery-3.1.0.min.js" />
+    <Content Include="Scripts\viewer-poc\web\l10n.js" />
+    <Content Include="Scripts\viewer-poc\web\spatialhash.js" />
+    <Content Include="Scripts\viewer-poc\web\viewer.css" />
+    <Content Include="Scripts\viewer-poc\web\viewer.html" />
+    <Content Include="Scripts\viewer-poc\web\viewer.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\browser\browserInfo.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\core\AEalgos\averagingWindow.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\core\AEalgos\averagingWindowCore.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\core\AEalgos\averagingWindowWithStepSize.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\core\AEalgos\barExtraction.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\core\AEalgos\blobdetector.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\core\AEalgos\xStepWithInterpolation.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\core\appData.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\core\autoDetection.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\core\axes\bar.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\core\axes\image.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\core\axes\map.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\core\axes\polar.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\core\axes\ternary.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\core\axes\xy.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\core\calibration.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\core\colorAnalysis.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\core\connectedPoints.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\core\dataSeries.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\core\dateConversion.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\core\gridDetectionCore.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\core\inputParser.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\core\mathFunctions.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\core\plotData.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\main.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\services\ajax.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\services\args.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\services\download.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\services\i18n.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\services\plotly.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\services\saveResume.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\services\scriptInjection.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\services\websockets.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\tools\alignAxes.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\tools\autodetect.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\tools\colorPicker.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\tools\dataProviders.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\tools\utils.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\tools\graphicsHelper.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\tools\gridDetection.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\tools\imageOps.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\tools\keyCodes.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\tools\meanVarianceDataCollection.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\tools\manualDataCollection.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\tools\mask.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\tools\measurement.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\tools\perspective.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\widgets\dataSeriesManagement.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\widgets\dataTable.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\widgets\graphicsWidget.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\widgets\layoutManager.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\widgets\popups.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\widgets\sidebars.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\widgets\toolbars.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\widgets\transformationEquations.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\widgets\webcam.js" />
+    <Content Include="Scripts\wpd\javascript_tweaked\widgets\zoom.js" />
+    <Content Include="Scripts\wpd\wpd_combined_tweaked.js">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>wpd_combined_tweaked.tt</DependentUpon>
+    </Content>
+    <Content Include="Scripts\wpd\wpd_combined_tweaked.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>wpd_combined_tweaked.js</LastGenOutput>
+    </Content>
+    <Content Include="Scripts\_references.js" />
+    <EmbeddedResource Include="solutionpath.txt" />
+    <Content Include="Web.config" />
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Views\Web.config" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Home\About.cshtml" />
+    <Content Include="Views\Home\Contact.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
+    <Content Include="Views\Account\ConfirmEmail.cshtml" />
+    <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
+    <Content Include="Views\Account\ExternalLoginFailure.cshtml" />
+    <Content Include="Views\Account\ForgotPassword.cshtml" />
+    <Content Include="Views\Account\ForgotPasswordConfirmation.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Account\Register.cshtml" />
+    <Content Include="Views\Account\ResetPassword.cshtml" />
+    <Content Include="Views\Account\ResetPasswordConfirmation.cshtml" />
+    <Content Include="Views\Account\SendCode.cshtml" />
+    <Content Include="Views\Account\VerifyCode.cshtml" />
+    <Content Include="Views\Manage\AddPhoneNumber.cshtml" />
+    <Content Include="Views\Manage\ChangePassword.cshtml" />
+    <Content Include="Views\Manage\Index.cshtml" />
+    <Content Include="Views\Manage\ManageLogins.cshtml" />
+    <Content Include="Views\Manage\SetPassword.cshtml" />
+    <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
+    <Content Include="Views\Shared\Lockout.cshtml" />
+    <Content Include="Views\Shared\_LoginPartial.cshtml" />
+    <Content Include="Views\Home\PdfTest.cshtml" />
+    <Content Include="Views\Home\PdfTest2.cshtml" />
+    <Content Include="Views\Home\PdfSandbox.cshtml" />
+    <Content Include="Scripts\viewer-poc\web\An Algorithm for Identifying, Extracting and Converting Document Image Table Structures into LaTeX Format.pdf" />
+    <Content Include="Scripts\viewer-poc\web\BMJ 2011 Olesen.pdf" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\78-EUC-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\78-EUC-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\78-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\78-RKSJ-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\78-RKSJ-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\78-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\78ms-RKSJ-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\78ms-RKSJ-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\83pv-RKSJ-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\90ms-RKSJ-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\90ms-RKSJ-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\90msp-RKSJ-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\90msp-RKSJ-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\90pv-RKSJ-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\90pv-RKSJ-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Add-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Add-RKSJ-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Add-RKSJ-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Add-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Adobe-CNS1-0.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Adobe-CNS1-1.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Adobe-CNS1-2.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Adobe-CNS1-3.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Adobe-CNS1-4.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Adobe-CNS1-5.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Adobe-CNS1-6.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Adobe-CNS1-UCS2.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Adobe-GB1-0.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Adobe-GB1-1.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Adobe-GB1-2.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Adobe-GB1-3.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Adobe-GB1-4.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Adobe-GB1-5.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Adobe-GB1-UCS2.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Adobe-Japan1-0.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Adobe-Japan1-1.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Adobe-Japan1-2.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Adobe-Japan1-3.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Adobe-Japan1-4.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Adobe-Japan1-5.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Adobe-Japan1-6.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Adobe-Japan1-UCS2.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Adobe-Korea1-0.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Adobe-Korea1-1.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Adobe-Korea1-2.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Adobe-Korea1-UCS2.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\B5-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\B5-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\B5pc-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\B5pc-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\CNS-EUC-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\CNS-EUC-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\CNS1-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\CNS1-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\CNS2-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\CNS2-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\ETen-B5-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\ETen-B5-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\ETenms-B5-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\ETenms-B5-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\ETHK-B5-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\ETHK-B5-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\EUC-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\EUC-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Ext-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Ext-RKSJ-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Ext-RKSJ-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Ext-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\GB-EUC-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\GB-EUC-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\GB-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\GB-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\GBK-EUC-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\GBK-EUC-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\GBK2K-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\GBK2K-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\GBKp-EUC-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\GBKp-EUC-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\GBpc-EUC-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\GBpc-EUC-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\GBT-EUC-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\GBT-EUC-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\GBT-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\GBT-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\GBTpc-EUC-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\GBTpc-EUC-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Hankaku.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Hiragana.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\HKdla-B5-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\HKdla-B5-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\HKdlb-B5-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\HKdlb-B5-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\HKgccs-B5-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\HKgccs-B5-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\HKm314-B5-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\HKm314-B5-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\HKm471-B5-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\HKm471-B5-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\HKscs-B5-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\HKscs-B5-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Katakana.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\KSC-EUC-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\KSC-EUC-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\KSC-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\KSC-Johab-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\KSC-Johab-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\KSC-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\KSCms-UHC-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\KSCms-UHC-HW-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\KSCms-UHC-HW-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\KSCms-UHC-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\KSCpc-EUC-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\KSCpc-EUC-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\LICENSE" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\NWP-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\NWP-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\RKSJ-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\RKSJ-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\Roman.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniCNS-UCS2-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniCNS-UCS2-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniCNS-UTF16-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniCNS-UTF16-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniCNS-UTF32-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniCNS-UTF32-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniCNS-UTF8-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniCNS-UTF8-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniGB-UCS2-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniGB-UCS2-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniGB-UTF16-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniGB-UTF16-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniGB-UTF32-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniGB-UTF32-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniGB-UTF8-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniGB-UTF8-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniJIS-UCS2-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniJIS-UCS2-HW-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniJIS-UCS2-HW-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniJIS-UCS2-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniJIS-UTF16-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniJIS-UTF16-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniJIS-UTF32-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniJIS-UTF32-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniJIS-UTF8-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniJIS-UTF8-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniJIS2004-UTF16-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniJIS2004-UTF16-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniJIS2004-UTF32-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniJIS2004-UTF32-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniJIS2004-UTF8-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniJIS2004-UTF8-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniJISPro-UCS2-HW-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniJISPro-UCS2-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniJISPro-UTF8-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniJISX0213-UTF32-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniJISX0213-UTF32-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniJISX02132004-UTF32-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniJISX02132004-UTF32-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniKS-UCS2-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniKS-UCS2-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniKS-UTF16-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniKS-UTF16-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniKS-UTF32-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniKS-UTF32-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniKS-UTF8-H.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\UniKS-UTF8-V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\V.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\cmaps\WP-Symbol.bcmap" />
+    <Content Include="Scripts\viewer-poc\web\compressed.tracemonkey-pldi-09.pdf" />
+    <Content Include="Scripts\viewer-poc\web\Eur Heart J 2012 LaHaye.pdf" />
+    <Content Include="Scripts\viewer-poc\web\J Thromb Haemost 2011 Olesen.pdf" />
+    <Content Include="Scripts\viewer-poc\web\locale\ach\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\af\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\ak\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\an\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\ar\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\ast\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\as\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\az\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\be\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\bg\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\bn-BD\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\bn-IN\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\br\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\bs\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\ca\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\csb\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\cs\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\cy\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\da\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\de\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\el\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\en-GB\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\en-US\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\en-ZA\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\eo\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\es-AR\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\es-CL\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\es-ES\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\es-MX\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\et\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\eu\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\fa\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\ff\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\fi\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\fr\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\fy-NL\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\ga-IE\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\gd\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\gl\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\gu-IN\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\he\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\hi-IN\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\hr\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\hu\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\hy-AM\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\id\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\is\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\it\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\ja\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\ka\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\kk\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\km\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\kn\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\ko\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\ku\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\lg\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\lij\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\TestPdf.pdf" />
+    <Content Include="Scripts\tabulator\ajax_sim.php" />
+    <Content Include="Scripts\tabulator\bower.json" />
+    <Content Include="Scripts\tabulator\LICENSE" />
+    <Content Include="Scripts\tabulator\package.json" />
+    <Content Include="Scripts\tabulator\README.md" />
+    <Content Include="Scripts\tabulator\tabulator.less" />
+    <Content Include="Scripts\tabulator\themes\tabulator_autumn.less" />
+    <Content Include="Scripts\tabulator\themes\tabulator_midnight.less" />
+    <Content Include="Scripts\tabulator\themes\tabulator_modern.less" />
+    <Content Include="Scripts\tabulator\themes\tabulator_simple.less" />
+    <None Include="Scripts\viewer-poc\web\locale\locale.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\lt\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\lv\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\mai\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\mk\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\ml\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\mn\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\mr\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\ms\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\my\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\nb-NO\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\nl\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\nn-NO\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\nso\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\oc\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\or\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\pa-IN\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\pl\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\pt-BR\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\pt-PT\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\rm\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\ro\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\ru\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\rw\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\sah\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\si\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\sk\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\sl\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\son\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\sq\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\sr\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\sv-SE\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\sw\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\ta-LK\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\ta\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\te\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\th\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\tl\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\tn\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\tr\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\uk\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\ur\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\vi\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\wo\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\xh\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\zh-CN\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\zh-TW\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\locale\zu\viewer.properties" />
+    <Content Include="Scripts\viewer-poc\web\web.config" />
+    <Content Include="Views\Home\SelectionRectangleSandbox.cshtml" />
+    <Content Include="Views\Home\ChartSandbox.cshtml" />
+    <Content Include="Scripts\viewer-poc\web\Scatter plots.pdf" />
+    <Content Include="Scripts\viewer-poc\web\Report_Data types_UI dev_2-converted to pdf.pdf" />
+    <Content Include="Scripts\viewer-poc\web\Report_Data types_UI dev_2_page-inserted-for-pdf-export.pdf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\Settings\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="packages.config" />
+    <None Include="Project_Readme.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>57945</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost/PdfExtractor</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+  </Target>
+  <PropertyGroup>
+    <PreBuildEvent>echo $(SolutionDir) &gt; $(ProjectDir)\solutionpath.txt</PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

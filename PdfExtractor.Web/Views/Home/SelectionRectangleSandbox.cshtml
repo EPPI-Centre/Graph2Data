@@ -1,0 +1,60 @@
+﻿@model dynamic
+
+<div class="canvas-wrapper">
+    <canvas id="canvas1" class="canvas"></canvas>
+    <canvas id="canvas2" class="canvas"></canvas>
+    <!--div class="canvas-overlay"></div-->
+</div>
+<div id="long"></div>
+
+<style type="text/css">
+    html {
+        height: 100%;
+    }
+     body, .container.body-content {
+        position: relative;
+        min-height: 100%;
+     }
+
+    .canvas {
+        border: 1px solid green;
+    }
+
+    .canvas-wrapper {
+        position: relative;
+        height: 100%;
+    }
+</style>
+<link href="~/Content/selection-rectangles.css" rel="stylesheet"/>
+@section scripts {
+    <script type="text/javascript" src="~/Scripts/selection-rectangles.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.resize.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            window.setTimeout(function() {
+                var long = [];
+                for (var i = 0; i < 1000; i++) {
+                    long.push("line " + (i + 1));
+                }
+                $('#long').html(long.join('<br>'));
+            }, 0);
+            var cavases = $('.canvas-wrapper > .canvas');
+            cavases.each(function () {
+                var ctx = this.getContext('2d');
+                var canvas = ctx.canvas;
+                var width = canvas.width;
+                var height = canvas.height;
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(width - 1, height - 1);
+                ctx.stroke();
+            });
+
+            window.selectionRectangles.init([]);
+
+            $('canvas.canvas').each(function(idx, c) {
+                window.selectionRectangles.init([c]);
+            });
+        });
+    </script>
+};

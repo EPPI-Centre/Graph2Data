@@ -1,0 +1,185 @@
+﻿@model dynamic
+
+@{
+    ViewBag.Title = "Pdf Test";
+}
+
+<style type="text/css">
+    .button-bar {
+        margin: 50px 50px 0px 50px;
+    }
+    #pdf-viewer {
+        margin: 10px 50px 50px 50px;
+    }
+    .prev {
+        margin-right: 0.25em;
+    }
+    .next {
+        margin-left: 0.25em;
+    }
+    .zoom-bar {
+        margin-left: 2em;
+    }
+    .page-info {
+        color: white;
+    }
+    .zoom-info {
+        color: white;
+    }
+    .zoom.out {
+        margin-right: 0.25em;
+    }
+    .zoom.in {
+        margin-left: 0.25em;
+    }
+</style>
+@section scripts {
+    @Scripts.Render("~/bundles/pdfjsold")
+    <script type="text/javascript">
+            DEFAULT_URL = "http://localhost/PdfExtractor/Scripts/viewer-poc/web/BMJ 2011 Olesen.pdf";
+            console.log("DEFAULT_URL: '" + DEFAULT_URL + "'");
+    </script>
+    <script type="text/javascript">
+        // elems
+        var viewer, prev, next, pageInfo, zoomInfo, zoomIn, zoomOut;
+
+        // flow control
+        var pdf, curPage = 1, viewerContext, pageCount;
+
+        // zoom
+        var zoomLevels = [0.1, 0.25, 0.33, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 3, 4, 5];
+        var zoomUb = zoomLevels.length - 1;
+        var curZoomIndex = 6;
+
+        function getCurZoom() {
+            return zoomLevels[curZoomIndex];
+        }
+
+        function loadPdf(pdfUri, whenLoaded) {
+            console.log("Lee: PDFJS.pdfBug was initially: " + PDFJS.pdfBug);
+            PDFJS.pdfBug = "all";
+            console.log("Lee: PDFJS.pdfBug is now: " + PDFJS.pdfBug);
+            PDFJS.getDocument(pdfUri).then(whenLoaded);
+        }
+
+        function displayPdf(pdfUri) {
+            loadPdf(pdfUri,
+                function(loadedPdf) {
+                    pdf = loadedPdf;
+
+                    pageCount = pdf.pdfInfo.numPages;
+                    loadCurPage();
+                });
+        }
+
+        function loadCurPage() {
+            // Fetch the page.
+            pdf.getPage(curPage)
+                .then(function(page) {
+                    var scale = getCurZoom();
+                    var viewport = page.getViewport(scale);
+
+                    if (!viewerContext) {
+                        viewerContext = viewer.getContext('2d');
+                    }
+                    viewer.height = viewport.height;
+                    viewer.width = viewport.width;
+
+                    var renderContext = {
+                        canvasContext: viewerContext,
+                        viewport: viewport
+                    };
+                    page.render(renderContext);
+                    showPageInfo();
+                    showZoomInfo();
+                    //page.getTextContent().then(function (content) {
+                    //    var jsonContent = JSON.stringify(content);
+                    //    //debugger;
+                    //});
+                    //page.renderTextLayer();
+                });
+        }
+
+        function findElems() {
+            viewer = $('#pdf-viewer').get(0);
+            prev = $('a.prev');
+            next = $('a.next');
+            pageInfo = $('.page-info');
+            zoomInfo = $('.zoom-info');
+            zoomIn = $('.zoom.in');
+            zoomOut = $('.zoom.out');
+        }
+
+        function showPageInfo() {
+            pageInfo.html(['Page ', curPage, ' of ', pageCount].join(''));
+        }
+
+        function showZoomInfo() {
+            zoomInfo.html([(getCurZoom() * 100), '%'].join(''));
+        }
+
+        function prevPage() {
+            if (curPage > 1) {
+                curPage--;
+                loadCurPage();
+            }
+        }
+
+        function nextPage() {
+            if (curPage < pageCount) {
+                curPage++;
+                loadCurPage();
+            }
+        }
+
+        function doZoomIn() {
+            if (curZoomIndex < zoomUb) {
+                curZoomIndex++;
+                loadCurPage();
+            }
+        }
+
+        function doZoomOut() {
+            if (curZoomIndex > 0) {
+                curZoomIndex--;
+                loadCurPage();
+            }
+        }
+
+        function wireUpElems() {
+            prev.on('click',
+                function() {
+                    prevPage();
+                });
+            next.on('click',
+                function() {
+                    nextPage();
+                });
+            zoomIn.on('click',
+                function() {
+                    doZoomIn();
+                });
+            zoomOut.on('click',
+                function() {
+                    doZoomOut();
+                });
+        };
+
+        $(function() {
+            findElems();
+            wireUpElems();
+            displayPdf("@Model.PdfPath");
+        });
+    </script>
+}
+<div class="button-bar">
+    <a href="#" class="navigate prev"><span class="glyphicon glyphicon-step-backward"></span></a>
+    <span class="page-info"></span>
+    <a href="#" class="navigate next"><span class="glyphicon glyphicon-step-forward"></span></a>
+    <span class="zoom-bar">
+        <a href="#" class="zoom out"><span class="glyphicon glyphicon-zoom-out"></span></a>
+        <span class="zoom-info"></span>
+        <a href="#" class="zoom in"><span class="glyphicon glyphicon-zoom-in"></span></a>
+    </span>
+</div>
+<canvas id="pdf-viewer" style="border:1px solid black;"></canvas>

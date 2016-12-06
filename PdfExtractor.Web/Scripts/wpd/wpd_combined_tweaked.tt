@@ -1,0 +1,65 @@
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.IO" #>
+<#@ output extension=".js" #>
+
+
+<#
+    var patterns = new[] {
+        "javascript_tweaked/*.js",
+        "javascript_tweaked/core/*.js",
+        "javascript_tweaked/core/AEalgos/*.js",
+        "javascript_tweaked/core/axes/*.js",
+        "javascript_tweaked/widgets/*.js",
+        "javascript_tweaked/tools/*.js",
+        "javascript_tweaked/services/*.js",
+        "javascript_tweaked/browser/*.js"
+    }
+    .Select(p => 
+		Path.Combine(Host.ResolvePath(""), p)
+    );
+    var files = FindFiles(patterns);
+
+	var showSourceFilePathsInCombinedFile = true;
+
+    var content = CombineFiles(
+		files, 
+		p => showSourceFilePathsInCombinedFile
+			? $"// source file:\r\n//\t'{p}'\r\n//\r\n\r\n"
+			: string.Empty
+		);
+#>
+<#= content #>
+<#+
+    public IEnumerable<string> FindFiles(IEnumerable<string> filePathPatterns)
+    {
+        var files = filePathPatterns
+            .SelectMany(p =>
+            {
+                var folder = Path.GetDirectoryName(p);
+                var filePattern = Path.GetFileName(p);
+                return Directory.GetFiles(folder, filePattern);
+            });
+
+        return files;
+    }
+
+    public string CombineFiles(IEnumerable<string> filePaths, Func<string, string> headerGenerator = null)
+    {
+        var content = filePaths.Aggregate(
+            new StringBuilder(),
+            (sb, p) => {
+				if (headerGenerator != null) {
+					sb.Append(headerGenerator(p));
+				}
+                sb.Append(File.ReadAllText(p));
+                return sb;
+            }
+        ).ToString();
+
+        return content;
+    }
+#>

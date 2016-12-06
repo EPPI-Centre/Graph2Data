@@ -1,0 +1,69 @@
+﻿@model dynamic
+
+<div id="myDiv" style="width: 480px; height: 400px;"></div>
+
+@section scripts {
+
+    <script type="text/javascript" src="~/Scripts/plot.ly.1.19.2.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            var trace1 = {
+                x: [1, 2, 3, 4],
+                y: [10, 15, 13, 17],
+                mode: 'lines+markers',
+                name: 'one',
+                line: {
+                    color: 'red',
+                    width: 2
+                },
+                marker: {
+                    color: 'red',
+                    size: 8
+                }
+            };
+
+            var trace2 = {
+                x: [1, 2, 3, 4],
+                y: [16, 5, 11, 9],
+                type: 'scatter',
+                name: 'two',
+                line: {
+                    color: 'green',
+                    width: 2
+                },
+                marker: {
+                    color: 'green',
+                    size: 8
+                }
+            };
+
+            var data = [trace1, trace2];
+
+            var layout = {
+                title: 'Line and Scatter Styling',
+                xaxis: {
+                    title: 'x-axis title',
+                    //showgrid: false,
+                    //zeroline: true,
+                    //mirror: 'ticks',
+                    //gridcolor: '#bdbdbd',
+                    //gridwidth: 1,
+                    rangemode: 'tozero',
+                    autorange: true
+                },
+                yaxis: {
+                    title: 'y-axis title',
+                    //showgrid: false,
+                    //zeroline: true,
+                    //mirror: 'ticks',
+                    //gridcolor: '#bdbdbd',
+                    //gridwidth: 1,
+                    rangemode: 'tozero',
+                    autorange: true
+                }
+            };
+
+            Plotly.newPlot('myDiv', data, layout);
+        });
+    </script>
+}
