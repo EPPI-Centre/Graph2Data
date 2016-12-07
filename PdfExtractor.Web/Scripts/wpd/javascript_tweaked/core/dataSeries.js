@@ -58,23 +58,39 @@ wpd.DataSeries = (function () {
             return hasMetadata;
         };
 
-        this.getIndividualData = function () {
+        this.getIndividualMetaData = function () {
             var md = this.seriesMetaData;
 
             if (!md.individualData) {
-                md.individualData = new wpd.DataSeries();
-                md.individualData.name = this.name + "_individualData";
+                var series = new wpd.DataSeries();
+                series.name = this.name + "_individualData";
+
+                md.individualData = {
+                    series: series,
+                    counts: {}
+                };
+                
             }
             return md.individualData;
         };
 
+        this.getMeasureFieldMetaData = function(measureFieldId) {
+            var md = this.seriesMetaData;
+            var mfmd = md.measureFieldData[measureFieldId];
+            return mfmd;
+        }
+
         this.setMeasureFieldMetaData = function (omFields) {
             var md = this.seriesMetaData;
-            md.measureFieldData = {};
+            if (!md.hasOwnProperty('measureFieldData')) {
+                md.measureFieldData = {};
+            }
 
             for (var i = 0; i < omFields.length; i++) {
                 var mf = omFields[i];
-                md.measureFieldData[mf.id] = { n: 0 };
+                if (!md.measureFieldData.hasOwnProperty(mf.id)) {
+                    md.measureFieldData[mf.id] = { n: 0 };
+                }
             }
         }
 
