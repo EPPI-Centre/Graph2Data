@@ -207,6 +207,10 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         var dataPopup = null, nestedDataPopup = null;
         var dataPopupVisible = null, nestedDataPopupVisible = null;
 
+        function getIncludeIndividuals() {
+            return $includeIndividuals.is(":checked");
+        }
+
         function showDataPopup() {
             if (!dataPopup) {
                 dataPopup = new jBox('Modal', {
@@ -717,7 +721,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         this.getDataStructure = function () {
             var dso = null;
             var option = $dataStructureList.find(':selected')[0];
-            var includeIndividuals = $includeIndividuals.is(":checked");
+            var includeIndividuals = getIncludeIndividuals();
 
             forEachDataStructure(function (index, ds) {
                 if (option.id === ds.id) {
@@ -912,7 +916,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
             $outcomeMeasureList.on('change', outcomeMeasureChanged);
             $dataStructureList.on('change', dataStructureChanged);
-            $includeIndividuals.on('change', dataStructureChanged);
+            $includeIndividuals.on('change', includeIndividualsChanged);
 
             $dataPointCountEdit.on('change', dataPointCountChanged);
             $dataSeriesCountEdit.on('change', dataSeriesCountChanged);
@@ -1277,7 +1281,11 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             var p, s, m, di, series, cellContents;
 
             var measureCount = om.fields.length;
-            var measureIterations = om.hasFields ? measureCount : dataPointCount;
+            var measureIterations = om.hasFields
+                ? measureCount
+                : ii
+                    ? 1
+                    : dataPointCount;
 
             var html = [
                 "<table>",
@@ -1504,6 +1512,14 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             });
         }
 
+        function showDataPointCounterIfNeeded() {
+            if (curOutcomeMeasure.hasFields || getIncludeIndividuals()) {
+                $dataPointCountEditWrapper.addClass('hidden');
+            } else {
+                $dataPointCountEditWrapper.removeClass('hidden');
+            }
+        }
+
         function updateOutcomeMeasureFieldMetaData() {
             wpd.appData.getPlotData().setMeasureFieldMetaData(curOutcomeMeasure.fields);
         }
@@ -1511,14 +1527,19 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             curOutcomeMeasure = self.getOutcomeMeasure();
             updateOutcomeMeasureFieldMetaData();
 
-            if (curOutcomeMeasure.hasFields) {
-                $dataPointCountEditWrapper.addClass('hidden');
-            } else {
-                $dataPointCountEditWrapper.removeClass('hidden');
-            }
+            showDataPointCounterIfNeeded();
+            //if (curOutcomeMeasure.hasFields) {
+            //    $dataPointCountEditWrapper.addClass('hidden');
+            //} else {
+            //    $dataPointCountEditWrapper.removeClass('hidden');
+            //}
             self.buildTable();
         }
 
+        function includeIndividualsChanged(ev) {
+            showDataPointCounterIfNeeded();
+            self.buildTable();
+        }
         function dataStructureChanged(ev) {
             self.buildTable();
         }
