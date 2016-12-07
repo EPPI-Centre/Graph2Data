@@ -46,7 +46,8 @@ wpd.DataSeries = (function () {
             // intervention_npPlusRx: {
             //      n: 19 // subjects for this sample
             // },
-            }
+            },
+            individualData: null // new wpd.DataSeries()
         };
 
         this.name = "Default Dataset";
@@ -55,6 +56,16 @@ wpd.DataSeries = (function () {
 
         this.hasMetadata = function () {
             return hasMetadata;
+        };
+
+        this.getIndividualData = function () {
+            var md = this.seriesMetaData;
+
+            if (!md.individualData) {
+                md.individualData = new wpd.DataSeries();
+                md.individualData.name = this.name + "_individualData";
+            }
+            return md.individualData;
         };
 
         this.setMeasureFieldMetaData = function (omFields) {

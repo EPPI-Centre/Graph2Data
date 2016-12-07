@@ -1,4 +1,4 @@
-﻿<script@model dynamic
+﻿@model dynamic
 
 @section scripts {
     @Scripts.Render("~/bundles/pdfjs")
@@ -20,7 +20,7 @@
 
     <script type="text/javascript" src="~/Scripts/purl.js"></script>
 
-<script type="text/javascript">
+    <script type="text/javascript">
         window.alert = function(msg) {
             var modal = new jBox('Modal',
             {
@@ -58,8 +58,8 @@
         @{
             //var blah = Url.Content("~/Scripts/viewer-poc/web/BMJ 2011 Olesen.pdf");
             //var blah = Url.Content("~/Scripts/viewer-poc/web/Report_Data types_UI dev_2-converted to pdf.pdf");
-            var blah = Url.Content("~/Scripts/viewer-poc/web/Report_Data types_UI dev_2_page-inserted-for-pdf-export.pdf");
-            //var blah = Url.Content("~/Scripts/viewer-poc/web/Scatter plots.pdf");
+            //var blah = Url.Content("~/Scripts/viewer-poc/web/Report_Data types_UI dev_2_page-inserted-for-pdf-export.pdf");
+            var blah = Url.Content("~/Scripts/viewer-poc/web/Scatter plots.pdf");
             var uri = new Uri(Request.Url.Scheme + System.Uri.SchemeDelimiter + Request.Url.Host + blah);
             var fileUri = uri.AbsoluteUri;
         }
@@ -733,6 +733,7 @@
                         <div id="mean-variance-formContainerHost">
                             <div id="mean-variance-formContainerDetachTrigger">Detach</div>
                             <div id="mean-variance-formContainer"></div>
+                            <div id="mean-variance-nestedFormContainer"></div>
                         </div>
                     </p>
                 </div>

@@ -1,8 +1,4 @@
-﻿.hovered {
-    /*background-color: green !important;*/
-}
-
-.same-row {
+﻿.same-row {
     /*border: 3px solid red !important; */
     background-color: red !important;
 }
@@ -30,10 +26,9 @@
 .pdfSandboxContainer .toolbar {
     position: fixed;
     top: 51px;
-}
-.pdfSandboxContainer .toolbar {
     visibility: visible;
 }
+
 
 .pdfSandboxContainer {
     width: 100%;
@@ -91,23 +86,28 @@ body.wpd-visible {
 .wpdContainer .extended-crosshair {
     border: none; 
     width: 20px; 
-    background-image: url('/wpd/images/crosshair.png'); 
+    background-image: url('wpd/images/crosshair.png'); 
     background-repeat: no-repeat; 
     background-position: center;
 }
 
 
-#mean-variance-formContainer table td, #mean-variance-formContainer table th {
+#mean-variance-formContainer table td, 
+#mean-variance-formContainer table th,
+#mean-variance-nestedFormContainer table td, 
+#mean-variance-nestedFormContainer table th {
     border-collapse: collapse;
     border: 1px solid #666666;
     padding: 0.25em;
 }
 
-#mean-variance-formContainer table th {
+#mean-variance-formContainer table th,
+#mean-variance-nestedFormContainer table th {
     text-align: center;
 }
 
-#mean-variance-formContainer table th[rowspan] {
+#mean-variance-formContainer table th[rowspan],
+#mean-variance-nestedFormContainer table th[rowspan] {
     white-space: nowrap;
 }
 
@@ -131,23 +131,25 @@ body.wpd-visible {
     color: white;
 }
 
-#mean-variance-formContainer input.group-name {
-    
+#mean-variance-formContainer input.subject-data-points {
+    background-color: rgb(196, 238, 238) !important;
+    color: blue;
+    cursor: pointer;
 }
-#mean-variance-formContainer input.group-name.focused {
-    background-color: #ddd;
+#mean-variance-formContainer input.subject-data-points.focused {
+    background-color: rgb(147, 238, 238) !important;
+    color: blue;
 }
 
 .wpdContainer .popup td label {
     cursor: pointer;
 }
 
-#mean-variance-formContainer table tbody tr.current-series td, #mean-variance-formContainer table tbody tr.current-series th {
+#mean-variance-formContainer table tbody tr.current-series td, 
+#mean-variance-formContainer table tbody tr.current-series th,
+#mean-variance-nestedFormContainer table tbody tr.current-series td, 
+#mean-variance-nestedFormContainer table tbody tr.current-series th {
     background-color: #ddd;
-}
-
-#mean-variance-formContainer table body TR.current-series th {
-    
 }
 
 #mean-variance-formContainerDetachTrigger {
@@ -155,7 +157,8 @@ body.wpd-visible {
     font-size: 0.8em;
     text-decoration: underline;
 }
-#mean-variance-formContainerHost.detached #mean-variance-formContainerDetachTrigger {
+#mean-variance-formContainerHost.detached #mean-variance-formContainerDetachTrigger,
+#mean-variance-formContainerHost.detached #mean-variance-nestedFormContainer {
     display: none;
 }
 
@@ -166,4 +169,25 @@ table.cell-info td {
     border: 1px solid #ccc;
     border-collapse: collapse;
     padding: 0 0.25em;
+}
+
+#mean-variance-nestedFormContainer input.value {
+    background-color: rgb(255, 255, 212);
+    cursor: pointer;
+}
+#mean-variance-nestedFormContainer input.value.focused {
+    background-color: yellow;
+}
+
+#mean-variance-nestedFormContainer input.count {
+    background-color: rgb(255, 211, 246);    
+    cursor: pointer;
+}
+#mean-variance-nestedFormContainer input.count.focused {
+    background-color: rgb(255, 146, 233);    
+}
+
+
+label[for] {
+    cursor: pointer;
 }

@@ -4,8 +4,12 @@
     {
       "filename": "BMJ 2011 Olesen.pdf",
       "dataEntryPopupPosition": {
-        "x": 489.0,
-        "y": 91.96875
+        "x": 707.0,
+        "y": 27.96875
+      },
+      "nestedDataEntryPopupPosition": {
+        "x": 525.46875,
+        "y": 157.125
       }
     },
     {
@@ -13,7 +17,8 @@
       "dataEntryPopupPosition": {
         "x": 450.0,
         "y": 244.0
-      }
+      },
+      "nestedDataEntryPopupPosition": null
     }
   ]
 }

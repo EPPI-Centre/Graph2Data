@@ -52,8 +52,22 @@ wpd.utils = (function () {
         });
     }
 
+    function _$(elem) {
+        var ret = null;
+        if (elem != null) {
+            ret = elem instanceof jQuery
+                ? elem[0]
+                : elem;
+        }
+
+        return ret;
+    }
     function getElemId(elem) {
+        elem = _$(elem);
+
         if (!elem) {
+            elem = "null";
+
             return elem;
         }
         var info = [elem.tagName];
@@ -73,7 +87,8 @@ wpd.utils = (function () {
 
     return {
         notice: notice,
-        getElemId: getElemId
+        getElemId: getElemId,
+        _$: _$
     };
 
 })();

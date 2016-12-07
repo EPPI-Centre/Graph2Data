@@ -24,6 +24,7 @@ namespace PdfExtractor.Web.Controllers
         {
             public string Filename { get; set; }
             public Coord DataEntryPopupPosition { get; set; }
+            public Coord NestedDataEntryPopupPosition { get; set; }
         }
 
         public class Settings

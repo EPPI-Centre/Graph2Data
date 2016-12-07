@@ -36,11 +36,11 @@ wpd.PlotData = (function () {
         this.gridData = null;
         this.calibration = null;
         this.metaSeries = {
-            //groupNames: {
+            groupNames: {
             //    series: new wpd.DataSeries(),
             //    text: [],
-            //    visible: false
-            //}
+                visible: false
+            }
         };
 
         this.angleMeasurementData = null;
