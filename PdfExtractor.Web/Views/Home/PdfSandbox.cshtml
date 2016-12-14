@@ -4,6 +4,9 @@
     @Scripts.Render("~/bundles/pdfjs")
     @Styles.Render("~/Content/pdfstyle")
 
+    @Scripts.Render("~/bundles/jquery-ui")
+    @Styles.Render("~/bundles/jquery-ui-style")
+
     <script type="text/javascript" src="~/Scripts/jquery.resize.js"></script>
 
     <link rel="stylesheet" href="~/Content/PdfSandbox.css" type="text/css" media="screen"/>
@@ -732,8 +735,8 @@
                     <p>
                         <div id="mean-variance-formContainerHost">
                             <div id="mean-variance-formContainerDetachTrigger">Detach</div>
-                            <div id="mean-variance-formContainer"></div>
-                            <div id="mean-variance-nestedFormContainer"></div>
+                            <div id="mean-variance-formContainer" class='table-container'></div>
+                            <div id="mean-variance-nestedFormContainer" class='table-container'></div>
                         </div>
                     </p>
                 </div>

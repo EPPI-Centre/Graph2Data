@@ -320,6 +320,11 @@
     <Content Include="Scripts\jBox\themes\NoticeBorder.css" />
     <Content Include="Scripts\jBox\themes\TooltipBorder.css" />
     <Content Include="Scripts\jBox\themes\TooltipDark.css" />
+    <Content Include="Scripts\jquery-ui-1.12.1.only-spinner\jquery-ui.css" />
+    <Content Include="Scripts\jquery-ui-1.12.1.only-spinner\jquery-ui.js" />
+    <Content Include="Scripts\jquery-ui-1.12.1.only-spinner\jquery-ui.min.css" />
+    <Content Include="Scripts\jquery-ui-1.12.1.only-spinner\jquery-ui.min.js" />
+    <Content Include="Scripts\jquery.mousewheel.min.js" />
     <Content Include="Scripts\jquery.resize.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />

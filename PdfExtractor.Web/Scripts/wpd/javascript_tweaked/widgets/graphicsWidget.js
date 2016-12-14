@@ -618,6 +618,10 @@ wpd.graphicsWidget = (function () {
         }
     }
 
+    function getTool() {
+        return activeTool;
+    }
+
     function removeTool() {
         if(activeTool != null && activeTool.onRemove != undefined) {
             activeTool.onRemove();
@@ -706,6 +710,7 @@ wpd.graphicsWidget = (function () {
         runImageOp: runImageOp,
 
         setTool: setTool,
+        getTool: getTool,
         removeTool: removeTool,
 
         getAllContexts: getAllContexts,

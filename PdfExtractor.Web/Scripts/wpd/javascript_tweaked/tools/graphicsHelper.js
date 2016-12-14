@@ -30,7 +30,12 @@ wpd.graphicsHelper = (function () {
     // label - e.g. "Bar 0"
     function drawPoint(imagePx, fillStyle, label, textStrokeStyle, pointStrokeStyles, radius) {
         textStrokeStyle = textStrokeStyle || "rgb(255, 255, 255)";
-        pointStrokeStyles = pointStrokeStyles || [{ style: "rgb(255, 255, 255)", width: 1 }];
+        pointStrokeStyles = pointStrokeStyles || {};
+        pointStrokeStyles.default =
+            pointStrokeStyles.default
+            || [{ style: "rgb(255, 255, 255)", width: 1 }];
+        pointStrokeStyles.orig = pointStrokeStyles.orig || pointStrokeStyles.default;
+
         radius = radius || 2;
 
         var screenPx = wpd.graphicsWidget.screenPx(imagePx.x, imagePx.y),
@@ -55,14 +60,19 @@ wpd.graphicsHelper = (function () {
                 context.fillText(label, point.x - 10, point.y + 18);
             }
 
+            var pss = isOrigDataContext
+                ? pointStrokeStyles.orig
+                : pointStrokeStyles.default;
 
-            var r = radius + pointStrokeStyles.reduce (function(a, b) {
+            var r = radius + pss.reduce(function (a, b) {
                 return { width: a.width + b.width };
             }, { width: 0 }).width;
 
-            for (var i = pointStrokeStyles.length - 1; i >= 0; i--) {
-                var ss = pointStrokeStyles[i];
-                if (!isOrigDataContext || (ss.hasOwnProperty('onZoom') && ss.onZoom)) {
+            for (var i = pss.length - 1; i >= 0; i--) {
+                var ss = pss[i];
+                if (
+                    !isOrigDataContext ||
+                    (ss.hasOwnProperty('onZoom') && ss.onZoom)) {
                     context.beginPath();
                     context.strokeStyle = ss.style;
                     context.lineWidth = ss.width;
