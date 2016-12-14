@@ -82,6 +82,9 @@ body.wpd-visible {
     overflow: hidden;
 }
 
+body:not(.wpd-visible) .jBox-wrapper {
+    display: none !important;
+}
 
 .wpdContainer .extended-crosshair {
     border: none; 

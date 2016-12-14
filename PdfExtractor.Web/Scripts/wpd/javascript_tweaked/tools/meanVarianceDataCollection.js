@@ -211,6 +211,17 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             return $includeIndividuals.is(":checked");
         }
 
+        function hideAllDataPopups() {
+            $.each([
+                dataPopup,
+                nestedDataPopup
+            ], function (idx, pu) {
+                if (pu) {
+                    pu.close();
+                }
+            });
+        }
+
         function showDataPopup() {
             if (!dataPopup) {
                 dataPopup = new jBox('Modal', {
@@ -473,163 +484,170 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         }
 
         function configureDataStructures() {
-            dataStructures = [
-                {
-                    id: 'mean-and-standard-error',
-                    text: "Mean and Standard Error (SEM)",
-                    dataPoints: [{
-                        name: "Mean",
-                        abbrev: "Mean",
-                        css: "mean",
-                        isReferencePoint: true
-                    }, {
-                        name: "Standard Error (upper)",
-                        abbrev: "SEM",
-                        css: "variance"
-                    }]
+            dataStructures = [{
+                id: 'mean-only',
+                text: "Mean only",
+                dataPoints: [{
+                    name: "Mean",
+                    abbrev: "Mean",
+                    css: "mean"
+               // , isReferencePoint: true  // irrelevant as this is the only field
+                }]
+            }, {
+                id: 'mean-and-standard-error',
+                text: "Mean and Standard Error (SEM)",
+                dataPoints: [{
+                    name: "Mean",
+                    abbrev: "Mean",
+                    css: "mean",
+                    isReferencePoint: true
                 }, {
-                    id: 'mean-and-standard-deviation',
-                    text: "Mean and Standard Deviation (SD)",
-                    dataPoints: [{
-                        name: "Mean",
-                        abbrev: "Mean",
-                        css: "mean",
-                        isReferencePoint: true
-                    }, {
-                        name: "Standard Deviation (upper)",
-                        abbrev: "SD",
-                        css: "variance"
-                    }]
+                    name: "Standard Error (upper)",
+                    abbrev: "SEM",
+                    css: "variance"
+                }]
+            }, {
+                id: 'mean-and-standard-deviation',
+                text: "Mean and Standard Deviation (SD)",
+                dataPoints: [{
+                    name: "Mean",
+                    abbrev: "Mean",
+                    css: "mean",
+                    isReferencePoint: true
                 }, {
-                    id: 'mean-and-confidence-interval-95',
-                    text: "Mean and 95% CI",
-                    dataPoints: [{
-                        name: "Mean",
-                        abbrev: "Mean",
-                        css: "mean",
-                        isReferencePoint: true
-                    }, {
-                        name: "95% Confidence range (upper)",
-                        abbrev: "CI95",
-                        css: "variance"
-                    }, {
-                            name: "Lower Quartile",
-                            abbrev: "Q1",
-                                css: "variance"
-                    }, {
-                            name: "Upper Quartile",
-                            abbrev: "Q3",
-                            css: "variance"
-                        }]
+                    name: "Standard Deviation (upper)",
+                    abbrev: "SD",
+                    css: "variance"
+                }]
+            }, {
+                id: 'mean-and-confidence-interval-95',
+                text: "Mean and 95% CI",
+                dataPoints: [{
+                    name: "Mean",
+                    abbrev: "Mean",
+                    css: "mean",
+                    isReferencePoint: true
                 }, {
-                    id: 'mean-and-confidence-interval-99',
-                    text: "Mean and 99% CI",
-                    varianceAbbrev: "CI99",
-                    dataPoints: [{
-                        name: "Mean",
-                        abbrev: "Mean",
-                        css: "mean",
-                        isReferencePoint: true
-                    }, {
-                        name: "99% Confidence range (upper)",
-                        abbrev: "CI99",
-                        css: "variance"
-                    }, {
-                        name: "Lower Quartile",
-                        abbrev: "Q1",
-                        css: "variance"
-                    }, {
-                        name: "Upper Quartile",
-                        abbrev: "Q3",
-                        css: "variance"
-                    }]
+                    name: "95% Confidence range (upper)",
+                    abbrev: "CI95",
+                    css: "variance"
                 }, {
-                    id: 'median-and-confidence-interval-95',
-                    text: "Median and 95% CI",
-                    dataPoints: [{
-                        name: "Median",
-                        abbrev: "Median",
-                        css: "mean",
-                        isReferencePoint: true
-                    }, {
-                        name: "95% Confidence range (upper)",
-                        abbrev: "CI95",
-                        css: "variance"
-                    }, {
-                        name: "Lower Quartile",
-                        abbrev: "Q1",
-                        css: "variance"
-                    }, {
-                        name: "Upper Quartile",
-                        abbrev: "Q3",
-                        css: "variance"
-                    }]
+                    name: "Lower Quartile",
+                    abbrev: "Q1",
+                    css: "variance"
                 }, {
-                    id: 'median-and-confidence-interval-99',
-                    text: "Median and 99% CI",
-                    varianceAbbrev: "CI99",
-                    dataPoints: [{
-                        name: "Median",
-                        abbrev: "Median",
-                        css: "mean",
-                        isReferencePoint: true
-                    }, {
-                        name: "99% Confidence range (upper)",
-                        abbrev: "CI99",
-                        css: "variance"
-                    }, {
-                        name: "Lower Quartile",
-                        abbrev: "Q1",
-                        css: "variance"
-                    }, {
-                        name: "Upper Quartile",
-                        abbrev: "Q3",
-                        css: "variance"
+                    name: "Upper Quartile",
+                    abbrev: "Q3",
+                    css: "variance"
                     }]
+            }, {
+                id: 'mean-and-confidence-interval-99',
+                text: "Mean and 99% CI",
+                varianceAbbrev: "CI99",
+                dataPoints: [{
+                    name: "Mean",
+                    abbrev: "Mean",
+                    css: "mean",
+                    isReferencePoint: true
                 }, {
-                    id: 'median-and-interquartile-range',
-                    text: "Median and Interquartile Range",
-                    dataPoints: [{
-                        name: "Median",
-                        abbrev: "Median",
-                        css: "mean",
-                        isReferencePoint: true
-                    }, {
-                        name: "Lower Quartile",
-                        abbrev: "Q1",
-                        css: "variance"
-                    }, {
-                        name: "Upper Quartile",
-                        abbrev: "Q3",
-                        css: "variance"
-                    }]
+                    name: "99% Confidence range (upper)",
+                    abbrev: "CI99",
+                    css: "variance"
                 }, {
-                    id: 'box-and-whisker',
-                    text: "Box and whisker plot",
-                    dataPoints: [{
-                        name: "Median",
-                        abbrev: "Median",
-                        css: "mean",
-                        isReferencePoint: true
-                    }, {
-                        name: "Lower Quartile",
-                        abbrev: "Q1",
-                        css: "variance"
-                    }, {
-                        name: "Uper Quartile",
-                        abbrev: "Q3",
-                        css: "variance"
-                    }, {
-                        name: "Lower",
-                        abbrev: "Lower",
-                        css: "variance"
-                    }, {
-                        name: "Upper",
-                        abbrev: "Upper",
-                        css: "variance"
-                    }]
-                }
-            ];
+                    name: "Lower Quartile",
+                    abbrev: "Q1",
+                    css: "variance"
+                }, {
+                    name: "Upper Quartile",
+                    abbrev: "Q3",
+                    css: "variance"
+                }]
+            }, {
+                id: 'median-and-confidence-interval-95',
+                text: "Median and 95% CI",
+                dataPoints: [{
+                    name: "Median",
+                    abbrev: "Median",
+                    css: "mean",
+                    isReferencePoint: true
+                }, {
+                    name: "95% Confidence range (upper)",
+                    abbrev: "CI95",
+                    css: "variance"
+                }, {
+                    name: "Lower Quartile",
+                    abbrev: "Q1",
+                    css: "variance"
+                }, {
+                    name: "Upper Quartile",
+                    abbrev: "Q3",
+                    css: "variance"
+                }]
+            }, {
+                id: 'median-and-confidence-interval-99',
+                text: "Median and 99% CI",
+                varianceAbbrev: "CI99",
+                dataPoints: [{
+                    name: "Median",
+                    abbrev: "Median",
+                    css: "mean",
+                    isReferencePoint: true
+                }, {
+                    name: "99% Confidence range (upper)",
+                    abbrev: "CI99",
+                    css: "variance"
+                }, {
+                    name: "Lower Quartile",
+                    abbrev: "Q1",
+                    css: "variance"
+                }, {
+                    name: "Upper Quartile",
+                    abbrev: "Q3",
+                    css: "variance"
+                }]
+            }, {
+                id: 'median-and-interquartile-range',
+                text: "Median and Interquartile Range",
+                dataPoints: [{
+                    name: "Median",
+                    abbrev: "Median",
+                    css: "mean",
+                    isReferencePoint: true
+                }, {
+                    name: "Lower Quartile",
+                    abbrev: "Q1",
+                    css: "variance"
+                }, {
+                    name: "Upper Quartile",
+                    abbrev: "Q3",
+                    css: "variance"
+                }]
+            }, {
+                id: 'box-and-whisker',
+                text: "Box and whisker plot",
+                dataPoints: [{
+                    name: "Median",
+                    abbrev: "Median",
+                    css: "mean",
+                    isReferencePoint: true
+                }, {
+                    name: "Lower Quartile",
+                    abbrev: "Q1",
+                    css: "variance"
+                }, {
+                    name: "Uper Quartile",
+                    abbrev: "Q3",
+                    css: "variance"
+                }, {
+                    name: "Lower",
+                    abbrev: "Lower",
+                    css: "variance"
+                }, {
+                    name: "Upper",
+                    abbrev: "Upper",
+                    css: "variance"
+                }]
+            }];
 
             forEachDataStructure(function(key, ds) {
                 ds.dataPoints.splice(0, 0,
