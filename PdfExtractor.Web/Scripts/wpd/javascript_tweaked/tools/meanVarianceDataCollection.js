@@ -253,8 +253,14 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             }
             dataPopup.open();
         }
+        function focusNextAvailableValueCell() {
+            var $available = self.findNextAvaialbleNestedValueCell();
+            selectCell($available);
+        }
+
         function showNestedDataPopup() {
             var zIndex = dataPopup.wrapper.css("zIndex");
+
             if (!nestedDataPopup) {
                 nestedDataPopup = new jBox('Modal', {
                     content: $nestedFormContainer,
@@ -1050,10 +1056,11 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                         if (info.isSubjectDataPoints) {
                             self.setModifierMode(self.modes.selectSubjectDataPoints);
                             self.buildNestedTable();
+                            $nestedFormContainer.removeClass('hidden');
                             if (dataPopupVisible && !nestedDataPopupVisible) {
-                                $nestedFormContainer.removeClass('hidden');
                                 showNestedDataPopup();
                             }
+                            focusNextAvailableValueCell();
                             wpd.graphicsWidget.forceHandlerRepaint();
                         } else {
                             if (self.getModifierMode() === self.modes.selectSubjectDataPoints) {
@@ -1245,6 +1252,40 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             return di;
         }
 
+        this.findNextAvaialbleNestedValueCell = function() {
+            var outerSeries = plotData.getActiveDataSeries();
+            var imd = outerSeries.getIndividualMetaData();
+            var individualSeries = imd.series;
+            var pointCount = individualSeries.getPixelCount();
+            var iterationCount = pointCount + 1;
+            var di, pixel;
+            var $avail = null;
+
+            for (p = 0; p < iterationCount; p++) {
+                forEachSubTableSpecField(function(idx, stsf) {
+                    di = getNestedDataIndex(p, idx, subTableSpecs);
+                    if (!stsf.isManualEntry) {
+                        if (di >= pointCount) {
+                            if (p === (iterationCount - 1)) {
+                                var valueEdits = $nestedFormContainer.find("." + stsf.css);
+                                var tabIndices = valueEdits.map(function() {
+                                    return $(this).attr('tabindex');
+                                });
+                                var maxTabIndex = Math.max.apply(null, tabIndices);
+                                $avail = getCellWithTabIndex(maxTabIndex);
+
+                            } else {
+                                pixel = $(individualSeries.getPixel(p));
+                                $avail = getCellCorrespondingToPoint(individualSeries, pixel);
+                            }
+                            return true;
+                        }
+                    }
+                });
+            }
+
+            return $avail;
+        };
         this.buildNestedTable = function () {
             // call this to show the nested table in a popup:
             //  nestedDataPopup.open();
@@ -1602,26 +1643,16 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     var info = getInfo($target);
                  // $target.addClass('tooltip-showing');
 
-                    //var html = ["<table class='cell-info'><tbody>"];
-                    //for (var prop in info) {
-                    //    if (
-                    //        info.hasOwnProperty(prop)
-                    //        && typeof info[prop] !== "function"
-                    //    ) {
-                    //        html.push(tr(prop, info[prop]));
-                    //    }
-                    //}
-                    //html.push("</tbody></table>");
-                    //this.setContent(html.join(''));
-
                     this.setContent(info.summarize());
 
-                    var zIndex = Math.max(
-                        dataPopup.wrapper.css("zIndex"),
-                        nestedDataPopup ? nestedDataPopup.wrapper.css("zIndex") : 0
-                    );
+                    if (dataPopup) {
+                        var zIndex = Math.max(
+                            dataPopup.wrapper.css("zIndex"),
+                            nestedDataPopup ? nestedDataPopup.wrapper.css("zIndex") : 0
+                        );
 
-                    this.wrapper.css({ zIndex: zIndex + 1 });
+                        this.wrapper.css({ zIndex: zIndex + 1 });
+                    }
                 },
                 onClose: function() {
                  // var target = this.source[0];
@@ -1685,7 +1716,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             self.buildTable();
         }
 
-        function getCellCorrespondingToSelectedPoint(dataSeries, alsoSelect) {
+        function getCellCorrespondingToSelectedPoint(dataSeries) {
             var spi = dataSeries.getSelectedPixels()[0];
             var sp = spi != null ? dataSeries.getPixel(spi) : null;
             var activeCell = setActiveCell(
@@ -1694,10 +1725,19 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 : null
             );
 
-            if (alsoSelect) {
-                selectCell(activeCell);
-            }
+            return activeCell;
         }
+
+        function getCellWithTabIndex(tabIndex) {
+            var $cell = $([
+                ".table-container input",
+                "[tabindex='",
+                    tabIndex,
+                "']"
+                ].join(''));
+
+            return $cell;
+                }
 
         function getCellCorrespondingToPoint(dataSeries, point) {
             var meanVarianceInfo = dataSeries.getPixelMetaDataByKey(point, 'meanVarianceInfo');
@@ -1705,7 +1745,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
              // "#mean-variance-formContainer input",
                 ".table-container input",
                 "[tabindex='",
-                meanVarianceInfo.tabIndex,
+                    meanVarianceInfo.tabIndex,
                 "']"
             ].join(''));
 
@@ -1713,10 +1753,10 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         }
 
         function selectCell($cell) {
-         // $("#mean-variance-formContainer input.focused").removeClass('focused');
             $(".table-container input.focused").removeClass('focused');
             if ($cell) {
                 $cell.addClass('focused');
+                $cell.focus().select();
             }
         }
 
@@ -1924,8 +1964,8 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 var nextTabIndex = curTabIndex + 1;
 
                 self.buildNestedTable();
-                var next = $("[tabindex='" + nextTabIndex + "']");
-                next.focus().select();
+                var $next = $("[tabindex='" + nextTabIndex + "']");
+                selectCell ($next);
             } else {
                 // TODO: Change to a confirm and add the point if 'Yes'
                 alert("This cell already has data!");
@@ -1945,7 +1985,8 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             dataSeries.unselectAll();
             dataSeries.selectNearestPixel(imagePos.x, imagePos.y);
 
-            getCellCorrespondingToSelectedPoint(dataSeries, true);
+            var cell = getCellCorrespondingToSelectedPoint(dataSeries);
+            selectCell(cell);
 
             wpd.graphicsWidget.forceHandlerRepaint();
             wpd.graphicsWidget.updateZoomOnEvent(ev);
@@ -1958,7 +1999,9 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             if (pixelIndex >= 0) {
                 activeDataSeries.unselectAll();
                 activeDataSeries.selectPixel(pixelIndex);
-                getCellCorrespondingToSelectedPoint(activeDataSeries, true);
+                var cell = getCellCorrespondingToSelectedPoint(activeDataSeries);
+                selectCell(cell);
+
                 activeCell.val('');
 
                 activeDataSeries.removePixelAtIndex(pixelIndex);
@@ -2040,9 +2083,11 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 pointPy = selPoint.y,
                 stepSize = ev.shiftKey === true ? 5 / wpd.graphicsWidget.getZoomRatio() : 0.5 / wpd.graphicsWidget.getZoomRatio(),
                 aci = getActiveCellInfo(),
-                activeCell = aci.cell;
+                activeCell = aci.cell, 
+                cell;
 
-            getCellCorrespondingToSelectedPoint(activeDataSeries, true);
+            cell = getCellCorrespondingToSelectedPoint(activeDataSeries);
+            selectCell(cell);
 
             if (wpd.keyCodes.isUp(ev.keyCode)) {
                 pointPy = pointPy - stepSize;
@@ -2056,14 +2101,18 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 activeDataSeries.selectPreviousPixel();
                 selIndex = activeDataSeries.getSelectedPixels()[0];
                 selPoint = activeDataSeries.getPixel(selIndex);
-                getCellCorrespondingToSelectedPoint(activeDataSeries, true);
+                cell = getCellCorrespondingToSelectedPoint(activeDataSeries);
+                selectCell(cell);
+
                 pointPx = selPoint.x;
                 pointPy = selPoint.y;
             } else if (wpd.keyCodes.isAlphabet(ev.keyCode, 'w')) {
                 activeDataSeries.selectNextPixel();
                 selIndex = activeDataSeries.getSelectedPixels()[0];
                 selPoint = activeDataSeries.getPixel(selIndex);
-                getCellCorrespondingToSelectedPoint(activeDataSeries, true);
+                cell = getCellCorrespondingToSelectedPoint(activeDataSeries);
+                selectCell(cell);
+
                 pointPx = selPoint.x;
                 pointPy = selPoint.y;
             } else if (wpd.keyCodes.isAlphabet(ev.keyCode, 'e')) {
@@ -2084,7 +2133,9 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     pointPx = selPoint.x;
                     pointPy = selPoint.y;
                 }
-                getCellCorrespondingToSelectedPoint(activeDataSeries, true);
+                cell = getCellCorrespondingToSelectedPoint(activeDataSeries);
+                selectCell(cell);
+
                 wpd.graphicsWidget.resetData();
                 wpd.graphicsWidget.forceHandlerRepaint();
                 wpd.graphicsWidget.updateZoomToImagePosn(pointPx, pointPy);
