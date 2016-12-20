@@ -765,6 +765,8 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
         configureSubTableSpecs();
 
+        wpd._config.profileSettings.getProfile().activate();
+
         // TODO: Be clearer about which things should be done within OnAttach
         $outcomeMeasureList.change();
 

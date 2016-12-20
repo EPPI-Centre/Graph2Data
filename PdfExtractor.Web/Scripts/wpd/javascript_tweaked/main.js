@@ -55,7 +55,7 @@ wpd.initApp = function (config) {// This is run when the page loads.
 
         profileChosen: function(ev) {
             var profile = this.getProfile();
-            profile.activate();
+            profile.choose();
         },
 
         configureProfiles: function() {
@@ -71,7 +71,7 @@ wpd.initApp = function (config) {// This is run when the page loads.
 
             this.forEachProfile(function(i, profile) {
                 profile.id = "profile_" + profile.id;
-                profile.activate = function () {
+                profile.choose = function () {
                     wpd.popup.close('chooseProfile');
                     wpd.alignAxes.start({
                         plotTypeId: profile.plotTypeId,
@@ -80,6 +80,9 @@ wpd.initApp = function (config) {// This is run when the page loads.
                             alert("now to apply the profile settings to this tool!");
                         }
                     });
+                };
+                profile.activate = function() {
+                    alert("Profile is being activated - it should set Outcome Measure, DataStructure, 'Include Individuals', '# Data series' and '# Data points'");
                 };
             }, this);
         },
