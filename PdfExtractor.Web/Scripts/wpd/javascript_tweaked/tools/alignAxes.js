@@ -68,6 +68,7 @@ wpd.xyCalibration = (function () {
         plot.axes = axes;
         plot.calibration = calib;
         wpd.popup.close('xyAlignment');
+        wpd.alignAxes.calibratorClosed(this);
         return true;
     }
 
@@ -120,6 +121,7 @@ wpd.barCalibration = (function () {
         plot.axes = axes;
         plot.calibration = calib;
         wpd.popup.close('barAlignment');
+        wpd.alignAxes.calibratorClosed(this);
         return true;
     }
 
@@ -131,7 +133,6 @@ wpd.barCalibration = (function () {
         align: align
     };
 })();
-
 
 wpd.polarCalibration = (function () {
 
@@ -176,6 +177,7 @@ wpd.polarCalibration = (function () {
         plot.axes = axes;
         plot.calibration = calib;
         wpd.popup.close('polarAlignment');
+        wpd.alignAxes.calibratorClosed(this);
         return true;
     }
 
@@ -223,6 +225,7 @@ wpd.ternaryCalibration = (function () {
         plot.axes = axes;
         plot.calibration = calib;
         wpd.popup.close('ternaryAlignment');
+        wpd.alignAxes.calibratorClosed(this);
         return true;
     }
 
@@ -269,6 +272,7 @@ wpd.mapCalibration = (function () {
         plot.axes = axes;
         plot.calibration = calib;
         wpd.popup.close('mapAlignment');
+        wpd.alignAxes.calibratorClosed(this);
         return true;
     }
 
@@ -282,13 +286,12 @@ wpd.mapCalibration = (function () {
 
 })();
 
-
 wpd.AxesCornersTool = (function () {
 
     var Tool = function(maxPoints, dimensions, pointLabels, reloadTool) {
         var pointCount = 0,
             ncal = new wpd.Calibration(dimensions),
-            isCapturingCorners = true; 
+            isCapturingCorners = true;
 
         if(reloadTool) {
             pointCount = maxPoints;
@@ -307,12 +310,12 @@ wpd.AxesCornersTool = (function () {
 
             if(isCapturingCorners) {
                 pointCount = pointCount + 1;
-                
+
                 var calib =  wpd.alignAxes.getActiveCalib();
                 calib.addPoint(imagePos.x, imagePos.y, 0, 0);
                 calib.unselectAll();
                 calib.selectPoint(pointCount-1);
-                wpd.graphicsWidget.forceHandlerRepaint(); 
+                wpd.graphicsWidget.forceHandlerRepaint();
 
                 if(pointCount === maxPoints) {
                     isCapturingCorners = false;
@@ -354,7 +357,7 @@ wpd.AxesCornersTool = (function () {
             } else {
                 return;
             }
-            
+
             cal.changePointPx(cal.getSelectedPoints()[0], pointPx, pointPy);
             wpd.graphicsWidget.forceHandlerRepaint();
             wpd.graphicsWidget.updateZoomToImagePosn(pointPx, pointPy);
@@ -366,7 +369,6 @@ wpd.AxesCornersTool = (function () {
 
     return Tool;
 })();
-
 
 wpd.AlignmentCornersRepainter = (function () {
     var Tool = function () {
@@ -406,7 +408,8 @@ wpd.alignAxes = (function () {
     var calib, calibrator;
 
     var _memento = {
-        plotTypeId: null
+        // plotTypeId: 'r_xy' etc....
+        // afterCalibrated: function (calibrator) { ... }
     };
 
     function getMemento() {
@@ -419,12 +422,7 @@ wpd.alignAxes = (function () {
     }
 
     function initiatePlotAlignment(memento) {
-        //xyEl = document.getElementById('r_xy');
-        //barEl = document.getElementById('r_bar');
-        //polarEl = document.getElementById('r_polar');
-        //ternaryEl = document.getElementById('r_ternary');
-        //mapEl = document.getElementById('r_map');
-        //imageEl = document.getElementById('r_image');
+        _memento = memento; // TODO: this memento stuff needs rationalizing
 
         var idMap = {
             r_xy: wpd.xyCalibration,
@@ -449,7 +447,7 @@ wpd.alignAxes = (function () {
                 calibrator = val;
             }
         }
-        if (memento) {
+        if (_memento) {
             setCalibrator(idMap[_memento.plotTypeId]);
         } else {
             for (var id in idMap) {
@@ -466,35 +464,21 @@ wpd.alignAxes = (function () {
 
         wpd.popup.close('axesList');
 
-        //if (xyEl.checked === true) {
-        //    calibrator = wpd.xyCalibration;
-        //} else if(barEl.checked === true) {
-        //    calibrator = wpd.barCalibration;
-        //} else if(polarEl.checked === true) {
-        //    calibrator = wpd.polarCalibration;
-        //} else if(ternaryEl.checked === true) {
-        //    calibrator = wpd.ternaryCalibration;
-        //} else if(mapEl.checked === true) {
-        //    calibrator = wpd.mapCalibration;
-        //} else if(imageEl.checked === true) {
-        //    calibrator = null;
-        //    var imageAxes = new wpd.ImageAxes();
-        //    imageAxes.calibrate();
-        //    wpd.appData.getPlotData().axes = imageAxes;
-        //    wpd.appData.isAligned(true);
-        //    wpd.acquireData.load();
-        //}
-
         if(calibrator != null) {
             calibrator.start();
             wpd.graphicsWidget.setRepainter(new wpd.AlignmentCornersRepainter());
         }
     }
 
+    function calibratorClosed(calibrator) {
+        if (_memento.afterCalibrated && typeof _memento.afterCalibrated === "function") {
+            _memento.afterCalibrated();
+        }
+    }
+
     function calibrationCompleted() {
         wpd.sidebar.show('axes-calibration-sidebar');
     }
-
 
     function getCornerValues() {
         calibrator.getCornerValues();
@@ -530,7 +514,7 @@ wpd.alignAxes = (function () {
     }
 
     function reloadCalibrationForEditing() {
-        wpd.popup.close('edit-or-reset-calibration-popup');        
+        wpd.popup.close('edit-or-reset-calibration-popup');
         calibrator.reload();
         wpd.graphicsWidget.setRepainter(new wpd.AlignmentCornersRepainter());
         wpd.graphicsWidget.forceHandlerRepaint();
@@ -547,8 +531,9 @@ wpd.alignAxes = (function () {
         editAlignment: editAlignment,
         reloadCalibrationForEditing: reloadCalibrationForEditing,
         getMemento: getMemento,
-        applyMemento: applyMemento
-    };
+        applyMemento: applyMemento,
+        calibratorClosed: calibratorClosed
+};
 
 })();
 

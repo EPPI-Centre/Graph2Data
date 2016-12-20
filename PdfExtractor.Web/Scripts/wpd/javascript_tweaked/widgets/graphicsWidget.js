@@ -481,7 +481,7 @@ wpd.graphicsWidget = (function () {
         window.addEventListener('paste', function(event) {pasteHandler(event);}, false);
     }
 
-    function loadImage(originalImage) {
+    function loadImage(originalImage, afterImageLoaded) {
         
         if($mainCanvas == null) {
             init();
@@ -507,18 +507,22 @@ wpd.graphicsWidget = (function () {
 
         // TODO: move this logic outside the graphics widget!
         if (firstLoad === false) {
-            wpd.popup.show('axesList');
+            if (afterImageLoaded != null && typeof afterImageLoaded === "function") {
+                afterImageLoaded();
+            } else {
+                wpd.popup.show('axesList');
+            }
         }
         firstLoad = false;
     }
 
-    function loadImageFromSrc(imgSrc, setFirstLoad) {
+    function loadImageFromSrc(imgSrc, setFirstLoad, afterImageLoaded) {
         if (setFirstLoad != null) {
             firstLoad = setFirstLoad;
         }
         var originalImage = document.createElement('img');
         originalImage.onload = function () {
-            loadImage(originalImage);
+            loadImage(originalImage, afterImageLoaded);
         };
         originalImage.src = imgSrc;
     }

@@ -1,9 +1,9 @@
 /*
-	WebPlotDigitizer - http://arohatgi.info/WebPlotdigitizer
+    WebPlotDigitizer - http://arohatgi.info/WebPlotdigitizer
 
-	Copyright 2010-2016 Ankit Rohatgi <ankitrohatgi@hotmail.com>
+    Copyright 2010-2016 Ankit Rohatgi <ankitrohatgi@hotmail.com>
 
-	This file is part of WebPlotDigitizer.
+    This file is part of WebPlotDigitizer.
 
     WebPlotDIgitizer is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,16 +32,126 @@ wpd.initApp = function (config) {// This is run when the page loads.
         appContainerElem: document.body,
         focusedSelection: null,
         wpdPlotMemento: null,
-        userSettings: { }
+        userSettings: {},
     };
     //wpd.appData.lee_setPlotMemento(wpd._config.wpdPlotMemento);
+
+    wpd._config.profileSettings = wpd._config.profileSettings ||
+    {
+        $profileSelectionList: null,
+        $confirmProfileChoice: null,
+
+        profiles: [],
+
+        bootProfiles: function() {
+            this.$profileSelectionList = $('#profile-selection-list');
+            var $confirmProfileChoice = $('#confirmProfileChoice');
+
+            this.configureProfiles();
+            this.populateProfiles();
+            $confirmProfileChoice.on('click', this.profileChosen);
+
+        },
+
+        profileChosen: function(ev) {
+            var profile = this.getProfile();
+            profile.activate();
+        },
+
+        configureProfiles: function() {
+            this.profiles = [{
+                id: 'scatter-plot-xy',
+                name: "Scatter plot (XY)",
+                plotTypeId: 'r_xy'
+            }, {
+                id: 'scatter-plot-1d',
+                name: "Scatter plot (1D)",
+                plotTypeId: 'r_bar'
+            }];
+
+            this.forEachProfile(function(i, profile) {
+                profile.id = "profile_" + profile.id;
+                profile.activate = function () {
+                    wpd.popup.close('chooseProfile');
+                    wpd.alignAxes.start({
+                        plotTypeId: profile.plotTypeId,
+                        afterCalibrated: function (calibrator) {
+                            // apply profile settings
+                            alert("now to apply the profile settings to this tool!");
+                        }
+                    });
+                };
+            }, this);
+        },
+
+        forEachProfile: function (callback, bindTo) {
+            if (bindTo != null) {
+                callback = callback.bind(bindTo);
+            }
+            for (var i = 0; i < this.profiles.length; i++) {
+                var profile = this.profiles[i];
+                if (callback(i, profile)) {
+                    break;
+                }
+            }
+        },
+
+        getProfile: function() {
+            var profile = null;
+            var option = this.$profileSelectionList.find(':selected')[0];
+
+            this.forEachProfile(function(index, p) {
+                if (option.id === p.id) {
+                    profile = p;
+                    return true;
+                }
+            });
+
+            return profile;
+        },
+
+        populateProfiles: function() {
+            this.$profileSelectionList.html("");
+
+            this.forEachProfile(function(index, profile) {
+                this.$profileSelectionList.append([
+                    "<option id='",
+                    profile.id,
+                    "'>",
+                    profile.name,
+                    "</option>"
+                ].join(''));
+            }, this);
+        }
+    };
+
+
+    var ps = wpd._config.profileSettings;
+    for (var prop in ps) {
+        if (ps.hasOwnProperty(prop)) {
+            var val = ps[prop];
+            if (typeof val === 'function') {
+                ps[prop] = val.bind(ps);
+            }
+        }
+    }
+    wpd._config.profileSettings.bootProfiles();
+
+
+
+
 
     wpd.browserInfo.checkBrowser();
     wpd.layoutManager.initialLayout(config);
     if (!wpd.loadRemoteData()) {
         if (!!config.graphImage) {
-            wpd.graphicsWidget.loadImageFromURL(config.graphImage.imageSrc,
-                false //true <-- TODO - this bool needs to be dynamic
+            wpd.graphicsWidget.loadImageFromURL(
+                config.graphImage.imageSrc,
+                false, //true <-- TODO - this bool needs to be dynamic
+                function () {
+                    //wpd.popup.show('axesList');
+                    wpd.popup.show('chooseProfile');
+                }
             );
             //wpd.graphicsWidget.leeInit();
             //wpd.graphicsWidget.loadImageFromData(
@@ -64,8 +174,8 @@ wpd.initApp = function (config) {// This is run when the page loads.
 
 wpd.loadRemoteData = function() {
 
-    if(typeof wpdremote === "undefined") { 
-        return false; 
+    if(typeof wpdremote === "undefined") {
+        return false;
     }
     if(wpdremote.status != null && wpdremote.status === 'fail') {
         wpd.messagePopup.show('Remote Upload Failed!', 'Remote Upload Failed!');

@@ -1,9 +1,9 @@
 /*
-	WebPlotDigitizer - http://arohatgi.info/WebPlotDigitizer
+    WebPlotDigitizer - http://arohatgi.info/WebPlotDigitizer
 
-	Copyright 2010-2016 Ankit Rohatgi <ankitrohatgi@hotmail.com>
+    Copyright 2010-2016 Ankit Rohatgi <ankitrohatgi@hotmail.com>
 
-	This file is part of WebPlotDigitizer.
+    This file is part of WebPlotDigitizer.
 
     WebPlotDigitizer is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -195,6 +195,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
         var dataStructures = null,
             outcomeMeasures = null,
+            profiles = null,
             subTableSpecs,
             curOutcomeMeasure,
             nestedSeries = null;
@@ -223,6 +224,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         }
 
         function showDataPopup() {
+         // if (dataPopup != null) {
             if (!dataPopup) {
                 dataPopup = new jBox('Modal', {
                     content: $formContainer,
@@ -258,7 +260,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     onDragEnd: function () {
                         // console.log("onDragEnd!");
                     },
-                    maxHeight: 500,
+                    maxHeight: 250,
                     maxWidth: 800
                 });
             }
@@ -304,7 +306,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     onDragEnd: function () {
                         // console.log("onDragEnd!");
                     },
-                    maxHeight: 150000,
+                    maxHeight: 250,
                     maxWidth: 300,
                     zIndex: zIndex + 1
                 });
@@ -353,11 +355,11 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 activeRow.closest('table').find('tr').removeClass(currentSeriesClassName);
                 activeRow.addClass(currentSeriesClassName);
 
-                if (!info.isGroupName) {
+                if (!info.is.groupName) {
                     var ourSeries = _$activeCell.closest('tr').attr('data-series');
                     $("tr[data-series='" + ourSeries + "'").addClass(currentSeriesClassName);
                 }
-                
+
             }
 
             return _$activeCell;
@@ -398,7 +400,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 var activeCell = getActiveCell();
                 if (activeCell) {
                     var info = getInfo(activeCell);
-                    if (info.isSubjectDataPoints) {
+                    if (info.is.subjectDataPoints) {
                         showNestedDataPopup();
                     }
                 }
@@ -682,7 +684,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         }
 
         function configureSubTableSpecs() {
-            subTableSpecs = { 
+            subTableSpecs = {
                 fields: [{
                     title: "Value",
                     css: 'value'
@@ -691,7 +693,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     css: "count",
                     isManualEntry: true
                 }]
-                // , manualEntryFieldIndex = ?? // generated 
+                // , manualEntryFieldIndex = ?? // generated
             };
 
             forEachSubTableSpecField(function(idx, stsf) {
@@ -739,6 +741,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 ].join(''));
             });
         }
+
         function populateDataStructures() {
             $dataStructureList.html("");
 
@@ -752,6 +755,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 ].join(''));
             });
         }
+
 
         configureOutcomeMeasures();
         populateOutcomeMeasures();
@@ -804,7 +808,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             var oldMode = this.getMode();
 
             modeStack.push(newMode);
-            
+
             this._applyModeTransition(oldMode, newMode);
             this._showMode();
         };
@@ -899,7 +903,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         function getInfo($edit) {
             var dataInfo = $edit.data('dataInfo');
             var isConfig = {
-             // groupName: 'group-name',
+                groupName: 'group-name',
                 seriesName: 'series-name',
                 mean: 'mean',
                 variance: 'variance',
@@ -914,33 +918,29 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 dataMeasure: $edit.attr('data-measure'),
                 dataPoint: $edit.attr('data-point'), // within ds.dataPoints[]
 
-             // isGroupName: $edit.hasClass('group-name'),
-                isSeriesName: $edit.hasClass('series-name'),
-                isMean: $edit.hasClass('mean'),
-                isVariance: $edit.hasClass('variance'),
-                isSubjectCount: $edit.hasClass('subject-count'),
-                isSubjectDataPoints: $edit.hasClass('subject-data-points'),
-                isSubjectDataPointsValue: $edit.hasClass('value'),
-                isSubjectDataPointsCount: $edit.hasClass('count'),
-
                 dataIndex: dataInfo ? dataInfo.dataIndex : null,
                 tabIndex: $edit.attr('tabindex')
-             // , is: "mean" // for example - to be set later
+                // , isName: "mean" // for example - to be set later
+                // , is: { prop names from isConfig - values are bool } // set later
             };
-            for (var is in isConfig) {
-                if (isConfig.hasOwnProperty(is)) {
-                    if ($edit.hasClass(isConfig[is])) {
-                        info.is = is;
+
+            info.is = {};
+            for (var prop in isConfig) {
+                if (isConfig.hasOwnProperty(prop)) {
+                    var yes = $edit.hasClass(isConfig[prop]);
+                    info.is[prop] = yes;
+                    if (yes) {
+                        info.isName = prop;
                         break;
                     }
                 }
             }
 
             info.dataSeries = (
-                info.isMean ||
-                info.isVariance ||
-                info.isSubjectDataPoints ||
-                info.isSubjectCount
+                info.is.mean ||
+                info.is.variance ||
+                info.is.subjectDataPoints ||
+                info.is.subjectCount
             )
                 ? $edit.attr('data-series')
                 : null;
@@ -957,7 +957,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                         (info.dataPoint   ? info.dataPoint   : "-")
                     ].join(' / ')),
 
-                    tr("is", info.is),
+                    tr("is", info.isName),
                     tr("dataIndex", info.dataIndex),
                     tr("tabIndex", info.tabIndex)
                 ];
@@ -967,23 +967,14 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             };
 
             info.dump = function(msg) {
-                //var text = [];
-
-                //for (var prop in info) {
-                //    if (info.hasOwnProperty(prop)) {
-                //        text.push(prop + ": " + info[prop])
-                //    }
-                //}
-
-                //text = text.join('');
-
                 var text = JSON.stringify(info);
 
-                console.log(msg + "--------" + text);
+             // console.log(msg + "--------" + text);
             };
 
             return info;
         };
+
         function dataSeriesNameChangedHandler(seriesIndex, series) {
             var seriesTitleEdit = $([
                 "#mean-variance-formContainer input.series-name[data-series='",
@@ -1002,7 +993,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
             $(wpd._config.appContainerElem).on({
                 click: function(e) {
-                    
+
                 },
                 keydown: function(e) {
                     if (wpd.keyCodes.isAlphabet(e.keyCode, 't')) {
@@ -1030,7 +1021,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 $dataPointCountEdit,
                 $dataSeriesCountEdit
             ];
-        
+
             $locked.on({
                 change: function (e) {
                     if ($(this).is(':checked')) {
@@ -1053,7 +1044,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     var info = getInfo(edit);
                     setActiveCell(edit);
 
-                    if (info.isGroupName) {
+                    if (info.is.groupName) {
                         self.setModifierMode(self.modes.selectGroupNames);
                     } else {
                         if (self.getModifierMode() === self.modes.selectGroupNames) {
@@ -1062,16 +1053,16 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     }
                  // edit.addClass('focused');
 
-                    if (info.isMean ||
-                        info.isVariance ||
-                     // info.isGroupName ||
-                        info.isSubjectDataPoints ||
-                        info.isSubjectCount) {
-                        if (info.isMean || info.isVariance || info.isSubjectDataPoints || info.isSubjectCount) {
+                    if (info.is.mean ||
+                        info.is.variance ||
+                     // info.is.groupName ||
+                        info.is.subjectDataPoints ||
+                        info.is.subjectCount) {
+                        if (info.is.mean || info.is.variance || info.is.subjectDataPoints || info.is.subjectCount) {
                             plotData.setActiveDataSeriesIndex(info.dataSeries);
                         }
 
-                        if (info.isSubjectDataPoints) {
+                        if (info.is.subjectDataPoints) {
                             self.setModifierMode(self.modes.selectSubjectDataPoints);
                             self.buildNestedTable();
                             $nestedFormContainer.removeClass('hidden');
@@ -1112,7 +1103,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     var info = getInfo(edit);
 
                     var isBarChart = plotData.axes.dataPointsHaveLabels;
-                    var handleSpecialKeys = !info.isSeriesName;
+                    var handleSpecialKeys = !info.is.seriesName;
 
                     if (handleSpecialKeys &&
                     (
@@ -1132,12 +1123,12 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 change: function (e) {
                     var $edit = $(this);
                     var info = getInfo($edit);
-                    if (info.isGroupName) {
+                    if (info.is.groupName) {
                         var groupNames = plotData.metaSeries.groupNames;
                         var label = $edit.val();
                         groupNames.text[info.dataPoint] = label;
                         $edit.attr('title', label);
-                    } else if (info.isSubjectCount) {
+                    } else if (info.is.subjectCount) {
                         // Store the 'n' value!
                         var series = plotData.getActiveDataSeries();
                         var measureFieldId = curOutcomeMeasure.fields[info.dataMeasure].id;
@@ -1154,7 +1145,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
                     setActiveNestedCell(edit);
 
-                    if (info.isSubjectDataPointsValue) {
+                    if (info.is.subjectDataPointsValue) {
                         if (info.dataSeries) {
                             plotData.setActiveDataSeriesIndex(info.dataSeries);
                         }
@@ -1182,7 +1173,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     var $edit = $(this);
                     var info = getInfo($edit);
 
-                    if (info.isSubjectDataPointsCount) {
+                    if (info.is.subjectDataPointsCount) {
                         var outerSeries = plotData.getActiveDataSeries();
                         var imd = outerSeries.getIndividualMetaData();
                         var counts = imd.counts;
@@ -1222,13 +1213,13 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             var di = null;
             var ds = dataStructure;
             var dp = ds.dataPoints[dataPointIndex];
-            
+
             if (!dp.isManualEntry) {
                 var pointCount = ds.dataPoints.length;
                 di =
                     measureIndex * (pointCount - 1) +   // (1)
                     (
-                     // dataPointIndex < ds.refPointFieldIndex // TODO: is this correct? should it be the manualEntry field-index? 
+                     // dataPointIndex < ds.refPointFieldIndex // TODO: is this correct? should it be the manualEntry field-index?
                         dataPointIndex < ds.manualEntryFieldIndex // <--- TODO: like this
                             ? dataPointIndex
                             : dataPointIndex - 1        // (1)
@@ -1408,7 +1399,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
 
         // TODO: Update buildTable to add an additional row (individuals) and restrict to one column
-        // when gathering individuals plus mean and small v variance, store the data for each group of 
+        // when gathering individuals plus mean and small v variance, store the data for each group of
         // individuals as a series and have the mean and small v variance as a series which lives in metaData
         //
 
@@ -1842,10 +1833,10 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         function getCellValue(imagePos, info, plotData, dataSeries) {
             var val = null;
 
-            if (info.isMean) {
+            if (info.is.mean) {
                 val = getNormalizedDataValueY(plotData.getDataPoint(imagePos));
             }
-            else if (info.isVariance) {
+            else if (info.is.variance) {
                 // Get the corresponding mean cell
                 var $meanCell = getCellForSeriesMeasureAndPoint(
                     info.dataSeries,
@@ -1864,24 +1855,24 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     alert("Please enter the mean before the error bar");
                 }
             }
-            else if (info.isSubjectCount) {
+            else if (info.is.subjectCount) {
                 var om = curOutcomeMeasure;
                 val = dataSeries.seriesMetaData.measureFieldData[
                     om.fields[info.dataMeasure].id].n;
             }
-            else if (info.isSubjectDataPoints) {
+            else if (info.is.subjectDataPoints) {
                 var activeNestedCell = getActiveNestedCell();
                 if (activeNestedCell) {
                     var nestedInfo = getInfo(activeNestedCell);
-                    if (nestedInfo.isSubjectDataPointsValue) {
+                    if (nestedInfo.is.subjectDataPointsValue) {
                         val = getNormalizedDataValueY(plotData.getDataPoint(imagePos));
                     }
                 }
             }
-            else if (info.isSubjectDataPointsValue) {
+            else if (info.is.subjectDataPointsValue) {
                 val = getNormalizedDataValueY(plotData.getDataPoint(imagePos));
             }
-            //else if (info.isGroupName) {
+            //else if (info.is.groupName) {
             //    dataPoint = plotData.getDataPoint(imagePos);
             //}
             return val;
@@ -1952,12 +1943,12 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             //    pointLabel = [
             //        "S", info.dataSeries, ".",
             //        info.dataPoint,
-            //        (info.isVariance ? "E" : "")
+            //        (info.is.variance ? "E" : "")
             //    ].join('');
             //}
 
             // if (blah && confirm ("This group already data - would you like to override it?"))) {}
-            if (info.isGroupName || !aci.activeCell.val()) {
+            if (info.is.groupName || !aci.activeCell.val()) {
                 var metaData = { meanVarianceInfo: info };
 
                 //if (plotData.axes.dataPointsHaveLabels) {
@@ -2101,7 +2092,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 pointPy = selPoint.y,
                 stepSize = ev.shiftKey === true ? 5 / wpd.graphicsWidget.getZoomRatio() : 0.5 / wpd.graphicsWidget.getZoomRatio(),
                 aci = getActiveCellInfo(),
-                activeCell = aci.cell, 
+                activeCell = aci.cell,
                 cell;
 
             cell = getCellCorrespondingToSelectedPoint(activeDataSeries);
@@ -2181,7 +2172,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 var dataPointView = getCellValue({ x: pointPx, y: pointPy }, info, plotData, activeDataSeries);
                 activeCell.val(dataPointView);
 
-                if (info.isMean) {
+                if (info.is.mean) {
                     // also adjust dependent cells
                     var $dependentCells = getDependentCells(activeCell, info);
                     $dependentCells.each(function (idx, cell) {
@@ -2292,15 +2283,15 @@ wpd.DataPointsRepainter = (function () {
                 isSelected = series.getSelectedPixels().indexOf(dindex) >= 0;
                 var info = series.getPixelMetaDataByKey(imagePos, 'meanVarianceInfo');
                 if (info) {
-                    var isMean = info.isMean;
+                    var isMean = info.is.mean;
 
-                    fillStyle = info.isMean
+                    fillStyle = info.is.mean
                         ? blue
-                        : info.isSubjectDataPoints
+                        : info.is.subjectDataPoints
                             ? orange
-                            : info.isSubjectDataPointsCount
+                            : info.is.subjectDataPointsCount
                                 ? black
-                                : info.isVariance
+                                : info.is.variance
                                     ? red
                                     : white;
                 } else {

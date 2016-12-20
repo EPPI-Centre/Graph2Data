@@ -968,6 +968,17 @@
         <p align="center"><input type="button" value="Align Axes" onclick="wpd.alignAxes.start();">&nbsp;<input type="button" value="Cancel" onClick="wpd.popup.close('axesList');"></p>
     </div>
 
+    <!-- Choose profile -->
+    <div id="chooseProfile" class="popup" style="width: 400px;">
+        <div class="popupheading">Choose Plot Type</div>
+        <p>&nbsp;</p>
+        <center>
+            Profile <select id="profile-selection-list"></select>
+        </center>
+        <p>&nbsp;</p>
+        <p align="center"><input id="confirmProfileChoice" type="button" value="Choose Profile">&nbsp;<input type="button" value="Cancel" onClick="wpd.popup.close('chooseProfile');"></p>
+    </div>
+
     <!-- XY Alignment -->
     <div id="xyAlignment" class="popup" style="width: 400px;">
         <div class="popupheading">X and Y Axes Calibration</div>
