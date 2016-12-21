@@ -765,7 +765,6 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
         configureSubTableSpecs();
 
-        wpd._config.profileSettings.getProfile().activate();
 
         // TODO: Be clearer about which things should be done within OnAttach
         $outcomeMeasureList.change();
@@ -1200,9 +1199,40 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 }
             }, '.series-name');
 
-            $outcomeMeasureList.change();
-            $dataPointCountEdit.val('2').change();
-            $dataSeriesCountEdit.val('4').change();
+            function applyProfile(profile) {
+                $outcomeMeasureList
+                    .find('option#' + profile.outcomeMeasureId)
+                    .attr('selected', 'selected')
+                    .change();
+
+                $dataStructureList
+                    .find('option#' + profile.dataStructureId)
+                    .attr('selected', 'selected')
+                    .change();
+
+                if (profile.includeIndividuals) {
+                    $includeIndividuals
+                        .attr('checked', 'checked')
+                        .trigger('change');
+                } else {
+                    $includeIndividuals
+                        .removeAttr('checked')
+                        .trigger('change');
+                }
+
+                $dataSeriesCountEdit
+                    .val(profile.dataSeriesCount)
+                    .change();
+
+                $dataPointCountEdit
+                    .val(profile.dataPointCount)
+                    .change();
+
+                lock();
+            }
+
+            applyProfile(wpd._config.profileSettings.getProfile());
+
             showDataPopup();
         };
 
@@ -1919,6 +1949,12 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             };
         }
 
+        function lock() {
+            $locked
+                .attr('checked', 'checked')
+                .trigger('change');
+        }
+
         function createPointsMouseClick(ev, pos, imagePos) {
             var mi = getModeInfo();
             var aci = getActiveCellInfo();
@@ -1963,8 +1999,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
                 var dataPointView = getCellValue(imagePos, info, plotData, asi.series);
 
-
-                $locked.attr('checked', 'checked').trigger('change');
+                lock();
                 aci.cell.val(dataPointView);
 
                 aci.cell.data('dataInfo',

@@ -62,11 +62,21 @@ wpd.initApp = function (config) {// This is run when the page loads.
             this.profiles = [{
                 id: 'scatter-plot-xy',
                 name: "Scatter plot (XY)",
-                plotTypeId: 'r_xy'
+                plotTypeId: 'r_xy',
+                outcomeMeasureId: 'simple-table-capture',
+                dataStructureId: 'mean-only',
+                includeIndividuals: true,
+                dataSeriesCount: 4,
+                dataPointCount: 2
             }, {
                 id: 'scatter-plot-1d',
                 name: "Scatter plot (1D)",
-                plotTypeId: 'r_bar'
+                plotTypeId: 'r_bar',
+                outcomeMeasureId: 'simple-table-capture',
+                dataStructureId: 'mean-only',
+                includeIndividuals: true,
+                dataSeriesCount: 4,
+                dataPointCount: 2
             }];
 
             this.forEachProfile(function(i, profile) {
@@ -76,13 +86,8 @@ wpd.initApp = function (config) {// This is run when the page loads.
                     wpd.alignAxes.start({
                         plotTypeId: profile.plotTypeId,
                         afterCalibrated: function (calibrator) {
-                            // apply profile settings
-                            alert("now to apply the profile settings to this tool!");
                         }
                     });
-                };
-                profile.activate = function() {
-                    alert("Profile is being activated - it should set Outcome Measure, DataStructure, 'Include Individuals', '# Data series' and '# Data points'");
                 };
             }, this);
         },
