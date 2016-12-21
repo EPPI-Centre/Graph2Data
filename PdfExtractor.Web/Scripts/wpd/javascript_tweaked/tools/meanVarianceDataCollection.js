@@ -193,9 +193,9 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         var $detachFormContainerTrigger = $('#mean-variance-formContainerDetachTrigger');
         var $nestedFormContainer = $('#mean-variance-nestedFormContainer');
 
-        var dataStructures = null,
-            outcomeMeasures = null,
-            profiles = null,
+        var
+            //dataStructures = null,
+            //outcomeMeasures = null,
             subTableSpecs,
             curOutcomeMeasure,
             nestedSeries = null;
@@ -418,64 +418,63 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             selectSubjectDataPoints: "selectSubjectDataPoints"
         };
 
-        function configureOutcomeMeasures() {
-            outcomeMeasures = [{
-                id: 'simple-table-capture',
-                text: "Simple TableCapture",
-                fields: []
-            }, {
-                id: 'model-experiment',
-                text: "Model Characterising",
-                fields: [{
-                    id: "model_shamPlusVehicle",
-                    text: "Sham + Vehicle",
-                    isControl: true,
-                    css: "model-control"
-                }, {
-                    id: "model_npPlusVehicle",
-                    text: "NP + Vehicle",
-                    isControl: false,
-                    css: "model-data"
-                }]
-            }, {
-                id: 'intervention-experiment',
-                text: "Intervention Testing",
-                fields: [
-                    {
-                        id: "intervention_npPlusVehicle",
-                        text: "NP + Vehicle",
-                        isControl: true,
-                        css: "intervention-control"
-                    }, {
-                        id: "intervention_npPlusRx",
-                        text: "NP + Rx",
-                        isControl: false,
-                        css: "intervention-data"
-                    }
-                ]
-            }];
+        //function configureOutcomeMeasures() {
+        //    outcomeMeasures = [{
+        //        id: 'simple-table-capture',
+        //        text: "Simple TableCapture",
+        //        fields: []
+        //    }, {
+        //        id: 'model-experiment',
+        //        text: "Model Characterising",
+        //        fields: [{
+        //            id: "model_shamPlusVehicle",
+        //            text: "Sham + Vehicle",
+        //            isControl: true,
+        //            css: "model-control"
+        //        }, {
+        //            id: "model_npPlusVehicle",
+        //            text: "NP + Vehicle",
+        //            isControl: false,
+        //            css: "model-data"
+        //        }]
+        //    }, {
+        //        id: 'intervention-experiment',
+        //        text: "Intervention Testing",
+        //        fields: [
+        //            {
+        //                id: "intervention_npPlusVehicle",
+        //                text: "NP + Vehicle",
+        //                isControl: true,
+        //                css: "intervention-control"
+        //            }, {
+        //                id: "intervention_npPlusRx",
+        //                text: "NP + Rx",
+        //                isControl: false,
+        //                css: "intervention-data"
+        //            }
+        //        ]
+        //    }];
+        //    forEachOutcomeMeasure(function(index, om) {
+        //        om.hasFields = (om.fields && om.fields.length > 0);
+        //    });
+        //}
 
-            forEachOutcomeMeasure(function(index, om) {
-                om.hasFields = (om.fields && om.fields.length > 0);
-            });
-        }
-
-        function forEachOutcomeMeasure(callback) {
-            for (var i = 0; i < outcomeMeasures.length; i++) {
-                var om = outcomeMeasures[i];
-                if (callback(i, om)) {
-                    break;
-                }
-            }
-        }
-        function forEachDataStructure(callback) {
-            for (var i = 0; i < dataStructures.length; i++) {
-                var ds = dataStructures[i];
-                if (callback(i, ds)) {
-                    break;
-                }
-            }
-        }
+        //function forEachOutcomeMeasure(callback) {
+        //    for (var i = 0; i < outcomeMeasures.length; i++) {
+        //        var om = outcomeMeasures[i];
+        //        if (callback(i, om)) {
+        //            break;
+        //        }
+        //    }
+        //}
+        //function forEachDataStructure(callback) {
+        //    for (var i = 0; i < dataStructures.length; i++) {
+        //        var ds = dataStructures[i];
+        //        if (callback(i, ds)) {
+        //            break;
+        //        }
+        //    }
+        //}
         function forEachSubTableSpecField(callback) {
             for (var i = 0; i < subTableSpecs.fields.length; i++) {
                 var stsf = subTableSpecs.fields[i];
@@ -485,203 +484,203 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             }
         }
 
-        function configureDataStructures() {
-            dataStructures = [{
-                id: 'mean-only',
-                text: "Mean only",
-                dataPoints: [{
-                    name: "Mean",
-                    abbrev: "Mean",
-                    css: "mean"
-               // , isReferencePoint: true  // irrelevant as this is the only field
-                }]
-            }, {
-                id: 'mean-and-standard-error',
-                text: "Mean and Standard Error (SEM)",
-                dataPoints: [{
-                    name: "Mean",
-                    abbrev: "Mean",
-                    css: "mean",
-                    isReferencePoint: true
-                }, {
-                    name: "Standard Error (upper)",
-                    abbrev: "SEM",
-                    css: "variance"
-                }]
-            }, {
-                id: 'mean-and-standard-deviation',
-                text: "Mean and Standard Deviation (SD)",
-                dataPoints: [{
-                    name: "Mean",
-                    abbrev: "Mean",
-                    css: "mean",
-                    isReferencePoint: true
-                }, {
-                    name: "Standard Deviation (upper)",
-                    abbrev: "SD",
-                    css: "variance"
-                }]
-            }, {
-                id: 'mean-and-confidence-interval-95',
-                text: "Mean and 95% CI",
-                dataPoints: [{
-                    name: "Mean",
-                    abbrev: "Mean",
-                    css: "mean",
-                    isReferencePoint: true
-                }, {
-                    name: "95% Confidence range (upper)",
-                    abbrev: "CI95",
-                    css: "variance"
-                }, {
-                    name: "Lower Quartile",
-                    abbrev: "Q1",
-                    css: "variance"
-                }, {
-                    name: "Upper Quartile",
-                    abbrev: "Q3",
-                    css: "variance"
-                    }]
-            }, {
-                id: 'mean-and-confidence-interval-99',
-                text: "Mean and 99% CI",
-                varianceAbbrev: "CI99",
-                dataPoints: [{
-                    name: "Mean",
-                    abbrev: "Mean",
-                    css: "mean",
-                    isReferencePoint: true
-                }, {
-                    name: "99% Confidence range (upper)",
-                    abbrev: "CI99",
-                    css: "variance"
-                }, {
-                    name: "Lower Quartile",
-                    abbrev: "Q1",
-                    css: "variance"
-                }, {
-                    name: "Upper Quartile",
-                    abbrev: "Q3",
-                    css: "variance"
-                }]
-            }, {
-                id: 'median-and-confidence-interval-95',
-                text: "Median and 95% CI",
-                dataPoints: [{
-                    name: "Median",
-                    abbrev: "Median",
-                    css: "mean",
-                    isReferencePoint: true
-                }, {
-                    name: "95% Confidence range (upper)",
-                    abbrev: "CI95",
-                    css: "variance"
-                }, {
-                    name: "Lower Quartile",
-                    abbrev: "Q1",
-                    css: "variance"
-                }, {
-                    name: "Upper Quartile",
-                    abbrev: "Q3",
-                    css: "variance"
-                }]
-            }, {
-                id: 'median-and-confidence-interval-99',
-                text: "Median and 99% CI",
-                varianceAbbrev: "CI99",
-                dataPoints: [{
-                    name: "Median",
-                    abbrev: "Median",
-                    css: "mean",
-                    isReferencePoint: true
-                }, {
-                    name: "99% Confidence range (upper)",
-                    abbrev: "CI99",
-                    css: "variance"
-                }, {
-                    name: "Lower Quartile",
-                    abbrev: "Q1",
-                    css: "variance"
-                }, {
-                    name: "Upper Quartile",
-                    abbrev: "Q3",
-                    css: "variance"
-                }]
-            }, {
-                id: 'median-and-interquartile-range',
-                text: "Median and Interquartile Range",
-                dataPoints: [{
-                    name: "Median",
-                    abbrev: "Median",
-                    css: "mean",
-                    isReferencePoint: true
-                }, {
-                    name: "Lower Quartile",
-                    abbrev: "Q1",
-                    css: "variance"
-                }, {
-                    name: "Upper Quartile",
-                    abbrev: "Q3",
-                    css: "variance"
-                }]
-            }, {
-                id: 'box-and-whisker',
-                text: "Box and whisker plot",
-                dataPoints: [{
-                    name: "Median",
-                    abbrev: "Median",
-                    css: "mean",
-                    isReferencePoint: true
-                }, {
-                    name: "Lower Quartile",
-                    abbrev: "Q1",
-                    css: "variance"
-                }, {
-                    name: "Uper Quartile",
-                    abbrev: "Q3",
-                    css: "variance"
-                }, {
-                    name: "Lower",
-                    abbrev: "Lower",
-                    css: "variance"
-                }, {
-                    name: "Upper",
-                    abbrev: "Upper",
-                    css: "variance"
-                }]
-            }];
+        //function configureDataStructures() {
+        //    dataStructures = [{
+        //        id: 'mean-only',
+        //        text: "Mean only",
+        //        dataPoints: [{
+        //            name: "Mean",
+        //            abbrev: "Mean",
+        //            css: "mean"
+        //       // , isReferencePoint: true  // irrelevant as this is the only field
+        //        }]
+        //    }, {
+        //        id: 'mean-and-standard-error',
+        //        text: "Mean and Standard Error (SEM)",
+        //        dataPoints: [{
+        //            name: "Mean",
+        //            abbrev: "Mean",
+        //            css: "mean",
+        //            isReferencePoint: true
+        //        }, {
+        //            name: "Standard Error (upper)",
+        //            abbrev: "SEM",
+        //            css: "variance"
+        //        }]
+        //    }, {
+        //        id: 'mean-and-standard-deviation',
+        //        text: "Mean and Standard Deviation (SD)",
+        //        dataPoints: [{
+        //            name: "Mean",
+        //            abbrev: "Mean",
+        //            css: "mean",
+        //            isReferencePoint: true
+        //        }, {
+        //            name: "Standard Deviation (upper)",
+        //            abbrev: "SD",
+        //            css: "variance"
+        //        }]
+        //    }, {
+        //        id: 'mean-and-confidence-interval-95',
+        //        text: "Mean and 95% CI",
+        //        dataPoints: [{
+        //            name: "Mean",
+        //            abbrev: "Mean",
+        //            css: "mean",
+        //            isReferencePoint: true
+        //        }, {
+        //            name: "95% Confidence range (upper)",
+        //            abbrev: "CI95",
+        //            css: "variance"
+        //        }, {
+        //            name: "Lower Quartile",
+        //            abbrev: "Q1",
+        //            css: "variance"
+        //        }, {
+        //            name: "Upper Quartile",
+        //            abbrev: "Q3",
+        //            css: "variance"
+        //            }]
+        //    }, {
+        //        id: 'mean-and-confidence-interval-99',
+        //        text: "Mean and 99% CI",
+        //        varianceAbbrev: "CI99",
+        //        dataPoints: [{
+        //            name: "Mean",
+        //            abbrev: "Mean",
+        //            css: "mean",
+        //            isReferencePoint: true
+        //        }, {
+        //            name: "99% Confidence range (upper)",
+        //            abbrev: "CI99",
+        //            css: "variance"
+        //        }, {
+        //            name: "Lower Quartile",
+        //            abbrev: "Q1",
+        //            css: "variance"
+        //        }, {
+        //            name: "Upper Quartile",
+        //            abbrev: "Q3",
+        //            css: "variance"
+        //        }]
+        //    }, {
+        //        id: 'median-and-confidence-interval-95',
+        //        text: "Median and 95% CI",
+        //        dataPoints: [{
+        //            name: "Median",
+        //            abbrev: "Median",
+        //            css: "mean",
+        //            isReferencePoint: true
+        //        }, {
+        //            name: "95% Confidence range (upper)",
+        //            abbrev: "CI95",
+        //            css: "variance"
+        //        }, {
+        //            name: "Lower Quartile",
+        //            abbrev: "Q1",
+        //            css: "variance"
+        //        }, {
+        //            name: "Upper Quartile",
+        //            abbrev: "Q3",
+        //            css: "variance"
+        //        }]
+        //    }, {
+        //        id: 'median-and-confidence-interval-99',
+        //        text: "Median and 99% CI",
+        //        varianceAbbrev: "CI99",
+        //        dataPoints: [{
+        //            name: "Median",
+        //            abbrev: "Median",
+        //            css: "mean",
+        //            isReferencePoint: true
+        //        }, {
+        //            name: "99% Confidence range (upper)",
+        //            abbrev: "CI99",
+        //            css: "variance"
+        //        }, {
+        //            name: "Lower Quartile",
+        //            abbrev: "Q1",
+        //            css: "variance"
+        //        }, {
+        //            name: "Upper Quartile",
+        //            abbrev: "Q3",
+        //            css: "variance"
+        //        }]
+        //    }, {
+        //        id: 'median-and-interquartile-range',
+        //        text: "Median and Interquartile Range",
+        //        dataPoints: [{
+        //            name: "Median",
+        //            abbrev: "Median",
+        //            css: "mean",
+        //            isReferencePoint: true
+        //        }, {
+        //            name: "Lower Quartile",
+        //            abbrev: "Q1",
+        //            css: "variance"
+        //        }, {
+        //            name: "Upper Quartile",
+        //            abbrev: "Q3",
+        //            css: "variance"
+        //        }]
+        //    }, {
+        //        id: 'box-and-whisker',
+        //        text: "Box and whisker plot",
+        //        dataPoints: [{
+        //            name: "Median",
+        //            abbrev: "Median",
+        //            css: "mean",
+        //            isReferencePoint: true
+        //        }, {
+        //            name: "Lower Quartile",
+        //            abbrev: "Q1",
+        //            css: "variance"
+        //        }, {
+        //            name: "Uper Quartile",
+        //            abbrev: "Q3",
+        //            css: "variance"
+        //        }, {
+        //            name: "Lower",
+        //            abbrev: "Lower",
+        //            css: "variance"
+        //        }, {
+        //            name: "Upper",
+        //            abbrev: "Upper",
+        //            css: "variance"
+        //        }]
+        //    }];
 
-            forEachDataStructure(function(key, ds) {
-                ds.dataPoints.splice(0, 0,
-                {
-                    name: "Subjects in sample",
-                    abbrev: "n",
-                    isManualEntry: true,
-                    css: "subject-count"
-                });
+        //    forEachDataStructure(function(key, ds) {
+        //        ds.dataPoints.splice(0, 0,
+        //        {
+        //            name: "Subjects in sample",
+        //            abbrev: "n",
+        //            isManualEntry: true,
+        //            css: "subject-count"
+        //        });
 
-                function getDependentFieldsSelector() {
-                    var dsc = {};
-                    var df = [];
-                    for (var i = 0; i < ds.dataPoints.length; i++) {
-                        var dp = ds.dataPoints[i];
-                        if (!dp.isReferencePoint && !dp.isManualEntry) {
-                            dsc[dp.css] = true;
-                        }
-                    }
-                    for (var prop in dsc) {
-                        if (dsc.hasOwnProperty(prop)) {
-                            df.push("." + prop);
-                        }
-                    }
-                    return df.join(',');
-                }
+        //        function getDependentFieldsSelector() {
+        //            var dsc = {};
+        //            var df = [];
+        //            for (var i = 0; i < ds.dataPoints.length; i++) {
+        //                var dp = ds.dataPoints[i];
+        //                if (!dp.isReferencePoint && !dp.isManualEntry) {
+        //                    dsc[dp.css] = true;
+        //                }
+        //            }
+        //            for (var prop in dsc) {
+        //                if (dsc.hasOwnProperty(prop)) {
+        //                    df.push("." + prop);
+        //                }
+        //            }
+        //            return df.join(',');
+        //        }
 
-                ds.manualEntryFieldIndex = getManualEntryFieldIndexForDataStructure(ds);
-                ds.refPointFieldIndex = getReferencePointFieldIndexForDataStructure(ds);
-                ds.dependentFieldsSelector = getDependentFieldsSelector();
-            });
-        }
+        //        ds.manualEntryFieldIndex = getManualEntryFieldIndexForDataStructure(ds);
+        //        ds.refPointFieldIndex = getReferencePointFieldIndexForDataStructure(ds);
+        //        ds.dependentFieldsSelector = getDependentFieldsSelector();
+        //    });
+        //}
 
         function configureSubTableSpecs() {
             subTableSpecs = {
@@ -704,34 +703,34 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             });
         }
 
-        function getReferencePointFieldIndexForDataStructure(ds) {
-            var index = null;
+        //function getReferencePointFieldIndexForDataStructure(ds) {
+        //    var index = null;
 
-            for (var i = 0; i < ds.dataPoints.length; i++) {
-                if (ds.dataPoints[i].isReferencePoint) {
-                    index = i;
-                    break;
-                }
-            }
-            return index;
-        }
+        //    for (var i = 0; i < ds.dataPoints.length; i++) {
+        //        if (ds.dataPoints[i].isReferencePoint) {
+        //            index = i;
+        //            break;
+        //        }
+        //    }
+        //    return index;
+        //}
 
-        function getManualEntryFieldIndexForDataStructure(ds) {
-            var index = null;
+        //function getManualEntryFieldIndexForDataStructure(ds) {
+        //    var index = null;
 
-            for (var i = 0; i < ds.dataPoints.length; i++) {
-                if (ds.dataPoints[i].isManualEntry) {
-                    index = i;
-                    break;
-                }
-            }
-            return index;
-        }
+        //    for (var i = 0; i < ds.dataPoints.length; i++) {
+        //        if (ds.dataPoints[i].isManualEntry) {
+        //            index = i;
+        //            break;
+        //        }
+        //    }
+        //    return index;
+        //}
 
         function populateOutcomeMeasures() {
             $outcomeMeasureList.html("");
 
-            forEachOutcomeMeasure(function(index, om) {
+            wpd._config.profileSettings.forEachOutcomeMeasure(function (index, om) {
                 $outcomeMeasureList.append([
                     "<option id='",
                     om.id,
@@ -745,7 +744,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         function populateDataStructures() {
             $dataStructureList.html("");
 
-            forEachDataStructure(function(index, ds) {
+            wpd._config.profileSettings.forEachDataStructure(function(index, ds) {
                 $dataStructureList.append([
                     "<option id='",
                     ds.id,
@@ -757,10 +756,10 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         }
 
 
-        configureOutcomeMeasures();
+     // configureOutcomeMeasures();
         populateOutcomeMeasures();
 
-        configureDataStructures();
+     // configureDataStructures();
         populateDataStructures();
 
         configureSubTableSpecs();
@@ -773,7 +772,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             var outcomeMeasure = null;
             var option = $outcomeMeasureList.find(':selected')[0];
 
-            forEachOutcomeMeasure(function (index, om) {
+            wpd._config.profileSettings.forEachOutcomeMeasure(function (index, om) {
                 if (option.id === om.id) {
                     outcomeMeasure = om;
                     return true;
@@ -788,7 +787,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             var option = $dataStructureList.find(':selected')[0];
             var includeIndividuals = getIncludeIndividuals();
 
-            forEachDataStructure(function (index, ds) {
+            wpd._config.profileSettings.forEachDataStructure(function (index, ds) {
                 if (option.id === ds.id) {
                     dso = {
                         dataStructure: ds,
