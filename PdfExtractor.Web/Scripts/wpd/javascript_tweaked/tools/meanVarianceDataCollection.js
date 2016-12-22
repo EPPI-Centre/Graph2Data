@@ -192,7 +192,6 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         var $formContainer = $('#mean-variance-formContainer');
         var $detachFormContainerTrigger = $('#mean-variance-formContainerDetachTrigger');
         var $nestedFormContainer = $('#mean-variance-nestedFormContainer');
-        var $showGrid = $('#show-grid');
         var $snapToGridX = $('#snap-to-grid-x');
         var $snapToGridY = $('#snap-to-grid-y');
         var $gridEditX = $('#grid-edit-x');
@@ -200,7 +199,6 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
         var dataStructures = wpd._config.profileSettings.dataStructures;
         var gridSettings = {
-            show: true,
             snap: {
                 x: true,
                 y: false
@@ -571,7 +569,6 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         }
 
         function populateGridSettings() {
-            showCheckboxSetting($showGrid, gridSettings.show);
             showCheckboxSetting($snapToGridX, gridSettings.snap.x);
             showCheckboxSetting($snapToGridY, gridSettings.snap.y);
             var dim = gridSettings.getDimensions();
@@ -835,7 +832,6 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             $dataPointCountEdit.on('change', dataPointCountChanged);
             $dataSeriesCountEdit.on('change', dataSeriesCountChanged);
 
-            $showGrid.on('change', showGridChanged);
             $snapToGridX.on('change', snapToGridChanged);
             $snapToGridY.on('change', snapToGridChanged);
             $gridEditX.on('change', gridDimensionsChanged);
@@ -1575,9 +1571,6 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             dataPointCount = parseInt($dataPointCountEdit.val(), 10);
             self.buildTable();
         };
-        function showGridChanged(ev) {
-            gridSettings.show = $showGrid.is(':checked');
-        }
         function snapToGridChanged(ev) {
             gridSettings.snap.x = $snapToGridX.is(':checked');
             gridSettings.snap.y = $snapToGridY.is(':checked');
