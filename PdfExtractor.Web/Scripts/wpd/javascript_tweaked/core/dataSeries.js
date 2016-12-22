@@ -1,9 +1,9 @@
 /*
-	WebPlotDigitizer - http://arohatgi.info/WebPlotdigitizer
+    WebPlotDigitizer - http://arohatgi.info/WebPlotdigitizer
 
-	Copyright 2010-2016 Ankit Rohatgi <ankitrohatgi@hotmail.com>
+    Copyright 2010-2016 Ankit Rohatgi <ankitrohatgi@hotmail.com>
 
-	This file is part of WebPlotDigitizer.
+    This file is part of WebPlotDigitizer.
 
     WebPlotDIgitizer is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -69,7 +69,7 @@ wpd.DataSeries = (function () {
                     series: series,
                     counts: {}
                 };
-                
+
             }
             return md.individualData;
         };
@@ -149,7 +149,7 @@ wpd.DataSeries = (function () {
 
         this.findNearestPixel = function(x, y, threshold) {
             threshold = (threshold == null) ? 50 : parseFloat(threshold);
-            var minDist, minIndex = -1, 
+            var minDist, minIndex = -1,
                 i, dist;
             for(i = 0; i < dataPoints.length; i++) {
                 dist = Math.sqrt((x - dataPoints[i].x)*(x - dataPoints[i].x) + (y - dataPoints[i].y)*(y - dataPoints[i].y));
@@ -168,14 +168,14 @@ wpd.DataSeries = (function () {
             }
         };
 
-        this.clearAll = function() { 
-            dataPoints = []; 
-            hasMetadata = false; 
-         // mkeys = []; 
+        this.clearAll = function() {
+            dataPoints = [];
+            hasMetadata = false;
+         // mkeys = [];
         };
 
         this.getCount = function() { return dataPoints.length; };
- 
+
         this.selectPixel = function(index) {
             if(selections.indexOf(index) >= 0) {
                 return;

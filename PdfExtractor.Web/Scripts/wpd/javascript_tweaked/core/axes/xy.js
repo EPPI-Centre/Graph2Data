@@ -1,9 +1,9 @@
 /*
-	WebPlotDigitizer - http://arohatgi.info/WebPlotdigitizer
+    WebPlotDigitizer - http://arohatgi.info/WebPlotdigitizer
 
-	Copyright 2010-2016 Ankit Rohatgi <ankitrohatgi@hotmail.com>
+    Copyright 2010-2016 Ankit Rohatgi <ankitrohatgi@hotmail.com>
 
-	This file is part of WebPlotDigitizer.
+    This file is part of WebPlotDigitizer.
 
     WebPlotDIgitizer is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ wpd.XYAxes = (function () {
             initialFormattingX, initialFormattingY,
 
             x1, x2, x3, x4, y1, y2, y3, y4,
-            xmin, xmax, ymin, ymax, 
+            xmin, xmax, ymin, ymax,
             a_mat = [0, 0, 0, 0], a_inv_mat = [0, 0, 0, 0],
             c_vec = [0, 0],
 
@@ -52,7 +52,7 @@ wpd.XYAxes = (function () {
                     cp4 = cal.getPoint(3),
                     ip = new wpd.InputParser(),
                     dat_mat, pix_mat;
-                
+
                 x1 = cp1.px;
                 y1 = cp1.py;
                 x2 = cp2.px;
@@ -75,7 +75,7 @@ wpd.XYAxes = (function () {
                 isXDate = ip.isDate;
                 xmax = ip.parse(xmax);
                 if(!ip.isValid || (ip.isDate != isXDate)) { return false; }
-                initialFormattingX = ip.formatting; 
+                initialFormattingX = ip.formatting;
 
                 // Validate Y-Axes:
                 ymin = ip.parse(ymin);
@@ -83,7 +83,7 @@ wpd.XYAxes = (function () {
                 isYDate = ip.isDate;
                 ymax = ip.parse(ymax);
                 if(!ip.isValid || (ip.isDate != isYDate)) { return false; }
-                initialFormattingY = ip.formatting; 
+                initialFormattingY = ip.formatting;
 
                 isLogScaleX = isLogX;
                 isLogScaleY = isLogY;
@@ -113,7 +113,7 @@ wpd.XYAxes = (function () {
                 calibration = cal;
                 return true;
             };
-        
+
         this.getBounds = function() {
             return {
                 x1: xmin,
@@ -228,7 +228,7 @@ wpd.XYAxes = (function () {
             } else {
                 xdEqn = 'x_data = ' + xdEqn;
             }
-            
+
             if (isLogScaleY) {
                 ydEqn = 'y_data = pow(10, ' + ydEqn + ')';
             } else {

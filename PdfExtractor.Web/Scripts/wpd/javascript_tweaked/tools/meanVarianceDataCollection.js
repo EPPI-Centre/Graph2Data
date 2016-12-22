@@ -192,10 +192,87 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         var $formContainer = $('#mean-variance-formContainer');
         var $detachFormContainerTrigger = $('#mean-variance-formContainerDetachTrigger');
         var $nestedFormContainer = $('#mean-variance-nestedFormContainer');
+        var $showGrid = $('#show-grid');
+        var $snapToGridX = $('#snap-to-grid-x');
+        var $snapToGridY = $('#snap-to-grid-y');
+        var $gridEditX = $('#grid-edit-x');
+        var $gridEditY = $('#grid-edit-y');
 
-        var
-            //dataStructures = null,
-            //outcomeMeasures = null,
+        var dataStructures = wpd._config.profileSettings.dataStructures;
+        var gridSettings = {
+            show: true,
+            snap: {
+                x: true,
+                y: false
+            },
+            _dimensions: {
+                x: 100,
+                y: 100
+            },
+            _pixelDimensions: {
+                x: 0,
+                y: 0
+            },
+            _origin: {},
+
+            getDimensions: function() {
+                return {
+                    x: this._dimensions.x,
+                    y: this._dimensions.y
+                };
+            },
+            dumpPoint: function(msg, p) {
+                console.log(msg + p.x.toFixed(2) + "," + p.y.toFixed(2));
+            },
+            setDimensions: function (d) {
+                this._dimensions.x = d.x;
+                this._dimensions.y = d.y;
+
+                this.inferPixelDimensions();
+            },
+            inferPixelDimensions: function() {
+                this._origin = plotData.getPixelPoint({ x: 0, y: 0 });
+                this._origin = wpd.graphicsWidget.screenPx(this._origin.x, this._origin.y);
+
+                var point = plotData.getPixelPoint(this._dimensions);
+                point = wpd.graphicsWidget.screenPx(point.x, point.y);
+                var offset = { x: point.x - this._origin.x, y: point.y - this._origin.y };
+                this._pixelDimensions = offset;
+            },
+            getPixelDimensions: function () {
+                return {
+                    x: this._pixelDimensions.x,
+                    y: this._pixelDimensions.y
+                };
+            },
+            //setPixelDimensions: function (d) {
+            //    this._pixelDimensions = d;
+            //},
+            quantize: function (point) {
+                function q(val, dim) {
+                    return Math.round(val / dim) * dim;
+                }
+                if (this.snap.x) {
+                    point.x =
+                        q(point.x - this._origin.x, this._pixelDimensions.x)
+                        + this._origin.x;
+                }
+                if (this.snap.y) {
+                    point.y =
+                        q(point.y - this._origin.y, this._pixelDimensions.y)
+                        + this._origin.y;
+                }
+            }
+        };
+
+        wpd.graphicsWidget.setGridSettingsFactory(function() {
+            return gridSettings;
+        });
+
+        wpd.utils.bindMemberFunctions(gridSettings);
+
+            var
+         // outcomeMeasures = wpd._config.profileSettings.outcomeMeasures,
             subTableSpecs,
             curOutcomeMeasure,
             nestedSeries = null;
@@ -418,63 +495,6 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             selectSubjectDataPoints: "selectSubjectDataPoints"
         };
 
-        //function configureOutcomeMeasures() {
-        //    outcomeMeasures = [{
-        //        id: 'simple-table-capture',
-        //        text: "Simple TableCapture",
-        //        fields: []
-        //    }, {
-        //        id: 'model-experiment',
-        //        text: "Model Characterising",
-        //        fields: [{
-        //            id: "model_shamPlusVehicle",
-        //            text: "Sham + Vehicle",
-        //            isControl: true,
-        //            css: "model-control"
-        //        }, {
-        //            id: "model_npPlusVehicle",
-        //            text: "NP + Vehicle",
-        //            isControl: false,
-        //            css: "model-data"
-        //        }]
-        //    }, {
-        //        id: 'intervention-experiment',
-        //        text: "Intervention Testing",
-        //        fields: [
-        //            {
-        //                id: "intervention_npPlusVehicle",
-        //                text: "NP + Vehicle",
-        //                isControl: true,
-        //                css: "intervention-control"
-        //            }, {
-        //                id: "intervention_npPlusRx",
-        //                text: "NP + Rx",
-        //                isControl: false,
-        //                css: "intervention-data"
-        //            }
-        //        ]
-        //    }];
-        //    forEachOutcomeMeasure(function(index, om) {
-        //        om.hasFields = (om.fields && om.fields.length > 0);
-        //    });
-        //}
-
-        //function forEachOutcomeMeasure(callback) {
-        //    for (var i = 0; i < outcomeMeasures.length; i++) {
-        //        var om = outcomeMeasures[i];
-        //        if (callback(i, om)) {
-        //            break;
-        //        }
-        //    }
-        //}
-        //function forEachDataStructure(callback) {
-        //    for (var i = 0; i < dataStructures.length; i++) {
-        //        var ds = dataStructures[i];
-        //        if (callback(i, ds)) {
-        //            break;
-        //        }
-        //    }
-        //}
         function forEachSubTableSpecField(callback) {
             for (var i = 0; i < subTableSpecs.fields.length; i++) {
                 var stsf = subTableSpecs.fields[i];
@@ -483,204 +503,6 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 }
             }
         }
-
-        //function configureDataStructures() {
-        //    dataStructures = [{
-        //        id: 'mean-only',
-        //        text: "Mean only",
-        //        dataPoints: [{
-        //            name: "Mean",
-        //            abbrev: "Mean",
-        //            css: "mean"
-        //       // , isReferencePoint: true  // irrelevant as this is the only field
-        //        }]
-        //    }, {
-        //        id: 'mean-and-standard-error',
-        //        text: "Mean and Standard Error (SEM)",
-        //        dataPoints: [{
-        //            name: "Mean",
-        //            abbrev: "Mean",
-        //            css: "mean",
-        //            isReferencePoint: true
-        //        }, {
-        //            name: "Standard Error (upper)",
-        //            abbrev: "SEM",
-        //            css: "variance"
-        //        }]
-        //    }, {
-        //        id: 'mean-and-standard-deviation',
-        //        text: "Mean and Standard Deviation (SD)",
-        //        dataPoints: [{
-        //            name: "Mean",
-        //            abbrev: "Mean",
-        //            css: "mean",
-        //            isReferencePoint: true
-        //        }, {
-        //            name: "Standard Deviation (upper)",
-        //            abbrev: "SD",
-        //            css: "variance"
-        //        }]
-        //    }, {
-        //        id: 'mean-and-confidence-interval-95',
-        //        text: "Mean and 95% CI",
-        //        dataPoints: [{
-        //            name: "Mean",
-        //            abbrev: "Mean",
-        //            css: "mean",
-        //            isReferencePoint: true
-        //        }, {
-        //            name: "95% Confidence range (upper)",
-        //            abbrev: "CI95",
-        //            css: "variance"
-        //        }, {
-        //            name: "Lower Quartile",
-        //            abbrev: "Q1",
-        //            css: "variance"
-        //        }, {
-        //            name: "Upper Quartile",
-        //            abbrev: "Q3",
-        //            css: "variance"
-        //            }]
-        //    }, {
-        //        id: 'mean-and-confidence-interval-99',
-        //        text: "Mean and 99% CI",
-        //        varianceAbbrev: "CI99",
-        //        dataPoints: [{
-        //            name: "Mean",
-        //            abbrev: "Mean",
-        //            css: "mean",
-        //            isReferencePoint: true
-        //        }, {
-        //            name: "99% Confidence range (upper)",
-        //            abbrev: "CI99",
-        //            css: "variance"
-        //        }, {
-        //            name: "Lower Quartile",
-        //            abbrev: "Q1",
-        //            css: "variance"
-        //        }, {
-        //            name: "Upper Quartile",
-        //            abbrev: "Q3",
-        //            css: "variance"
-        //        }]
-        //    }, {
-        //        id: 'median-and-confidence-interval-95',
-        //        text: "Median and 95% CI",
-        //        dataPoints: [{
-        //            name: "Median",
-        //            abbrev: "Median",
-        //            css: "mean",
-        //            isReferencePoint: true
-        //        }, {
-        //            name: "95% Confidence range (upper)",
-        //            abbrev: "CI95",
-        //            css: "variance"
-        //        }, {
-        //            name: "Lower Quartile",
-        //            abbrev: "Q1",
-        //            css: "variance"
-        //        }, {
-        //            name: "Upper Quartile",
-        //            abbrev: "Q3",
-        //            css: "variance"
-        //        }]
-        //    }, {
-        //        id: 'median-and-confidence-interval-99',
-        //        text: "Median and 99% CI",
-        //        varianceAbbrev: "CI99",
-        //        dataPoints: [{
-        //            name: "Median",
-        //            abbrev: "Median",
-        //            css: "mean",
-        //            isReferencePoint: true
-        //        }, {
-        //            name: "99% Confidence range (upper)",
-        //            abbrev: "CI99",
-        //            css: "variance"
-        //        }, {
-        //            name: "Lower Quartile",
-        //            abbrev: "Q1",
-        //            css: "variance"
-        //        }, {
-        //            name: "Upper Quartile",
-        //            abbrev: "Q3",
-        //            css: "variance"
-        //        }]
-        //    }, {
-        //        id: 'median-and-interquartile-range',
-        //        text: "Median and Interquartile Range",
-        //        dataPoints: [{
-        //            name: "Median",
-        //            abbrev: "Median",
-        //            css: "mean",
-        //            isReferencePoint: true
-        //        }, {
-        //            name: "Lower Quartile",
-        //            abbrev: "Q1",
-        //            css: "variance"
-        //        }, {
-        //            name: "Upper Quartile",
-        //            abbrev: "Q3",
-        //            css: "variance"
-        //        }]
-        //    }, {
-        //        id: 'box-and-whisker',
-        //        text: "Box and whisker plot",
-        //        dataPoints: [{
-        //            name: "Median",
-        //            abbrev: "Median",
-        //            css: "mean",
-        //            isReferencePoint: true
-        //        }, {
-        //            name: "Lower Quartile",
-        //            abbrev: "Q1",
-        //            css: "variance"
-        //        }, {
-        //            name: "Uper Quartile",
-        //            abbrev: "Q3",
-        //            css: "variance"
-        //        }, {
-        //            name: "Lower",
-        //            abbrev: "Lower",
-        //            css: "variance"
-        //        }, {
-        //            name: "Upper",
-        //            abbrev: "Upper",
-        //            css: "variance"
-        //        }]
-        //    }];
-
-        //    forEachDataStructure(function(key, ds) {
-        //        ds.dataPoints.splice(0, 0,
-        //        {
-        //            name: "Subjects in sample",
-        //            abbrev: "n",
-        //            isManualEntry: true,
-        //            css: "subject-count"
-        //        });
-
-        //        function getDependentFieldsSelector() {
-        //            var dsc = {};
-        //            var df = [];
-        //            for (var i = 0; i < ds.dataPoints.length; i++) {
-        //                var dp = ds.dataPoints[i];
-        //                if (!dp.isReferencePoint && !dp.isManualEntry) {
-        //                    dsc[dp.css] = true;
-        //                }
-        //            }
-        //            for (var prop in dsc) {
-        //                if (dsc.hasOwnProperty(prop)) {
-        //                    df.push("." + prop);
-        //                }
-        //            }
-        //            return df.join(',');
-        //        }
-
-        //        ds.manualEntryFieldIndex = getManualEntryFieldIndexForDataStructure(ds);
-        //        ds.refPointFieldIndex = getReferencePointFieldIndexForDataStructure(ds);
-        //        ds.dependentFieldsSelector = getDependentFieldsSelector();
-        //    });
-        //}
 
         function configureSubTableSpecs() {
             subTableSpecs = {
@@ -702,30 +524,6 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 }
             });
         }
-
-        //function getReferencePointFieldIndexForDataStructure(ds) {
-        //    var index = null;
-
-        //    for (var i = 0; i < ds.dataPoints.length; i++) {
-        //        if (ds.dataPoints[i].isReferencePoint) {
-        //            index = i;
-        //            break;
-        //        }
-        //    }
-        //    return index;
-        //}
-
-        //function getManualEntryFieldIndexForDataStructure(ds) {
-        //    var index = null;
-
-        //    for (var i = 0; i < ds.dataPoints.length; i++) {
-        //        if (ds.dataPoints[i].isManualEntry) {
-        //            index = i;
-        //            break;
-        //        }
-        //    }
-        //    return index;
-        //}
 
         function populateOutcomeMeasures() {
             $outcomeMeasureList.html("");
@@ -755,15 +553,38 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             });
         }
 
+        function showCheckboxSetting($cb, isChecked) {
+            if (isChecked) {
+                $cb.attr('checked', 'checked');
+            } else {
+                $cb.removeAttr('checked');
+            }
+        }
+        function showEditSetting($edit, value) {
+            $edit.val(value).change();
+        }
 
-     // configureOutcomeMeasures();
+        function forceExtendedCrosshairAsRequired() {
+            wpd.graphicsWidget.setExtendedCrosshair(
+                gridSettings.snap.x || gridSettings.snap.y
+            );
+        }
+
+        function populateGridSettings() {
+            showCheckboxSetting($showGrid, gridSettings.show);
+            showCheckboxSetting($snapToGridX, gridSettings.snap.x);
+            showCheckboxSetting($snapToGridY, gridSettings.snap.y);
+            var dim = gridSettings.getDimensions();
+            showEditSetting($gridEditX, dim.x);
+            showEditSetting($gridEditY, dim.y);
+
+            forceExtendedCrosshairAsRequired();
+        }
+
         populateOutcomeMeasures();
-
-     // configureDataStructures();
         populateDataStructures();
-
+        populateGridSettings();
         configureSubTableSpecs();
-
 
         // TODO: Be clearer about which things should be done within OnAttach
         $outcomeMeasureList.change();
@@ -1013,6 +834,13 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
             $dataPointCountEdit.on('change', dataPointCountChanged);
             $dataSeriesCountEdit.on('change', dataSeriesCountChanged);
+
+            $showGrid.on('change', showGridChanged);
+            $snapToGridX.on('change', snapToGridChanged);
+            $snapToGridY.on('change', snapToGridChanged);
+            $gridEditX.on('change', gridDimensionsChanged);
+            $gridEditY.on('change', gridDimensionsChanged);
+
 
             var lockable = [
                 $outcomeMeasureList,
@@ -1747,6 +1575,33 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             dataPointCount = parseInt($dataPointCountEdit.val(), 10);
             self.buildTable();
         };
+        function showGridChanged(ev) {
+            gridSettings.show = $showGrid.is(':checked');
+        }
+        function snapToGridChanged(ev) {
+            gridSettings.snap.x = $snapToGridX.is(':checked');
+            gridSettings.snap.y = $snapToGridY.is(':checked');
+
+            forceExtendedCrosshairAsRequired();
+        }
+        function gridDimensionsChanged(ev) {
+            gridSettings.setDimensions({
+                x: parseInt($gridEditX.val(), 10),
+                y: parseInt($gridEditY.val(), 10)
+            });
+
+            var dim = gridSettings.getDimensions();
+            var pxDim = gridSettings.getPixelDimensions();
+            console.log([
+                dim.x.toFixed(2),
+                ",",
+                dim.y.toFixed(2),
+                " -> ",
+                pxDim.x.toFixed(2),
+                ",",
+                pxDim.y.toFixed(2)
+            ].join(''));
+        }
         function dataSeriesCountChanged(ev) {
             dataSeriesCount = parseInt($dataSeriesCountEdit.val(), 10);
             plotData.ensureSeriesCount(dataSeriesCount); //, dataPointCount);
@@ -1991,6 +1846,11 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 //if (plotData.axes.dataPointsHaveLabels) {
                 //    metaData.label = pointLabel;
                 //}
+
+                imagePos = wpd.graphicsWidget.screenPx(imagePos.x, imagePos.y);
+                gridSettings.quantize(imagePos);
+                imagePos = wpd.graphicsWidget.imagePx(imagePos.x, imagePos.y);
+
                 var dataIndex = asi.series.addPixel(imagePos.x, imagePos.y, metaData);
 
                 //wpd.graphicsHelper.drawPoint(imagePos, "rgb(200,0,0)", pointLabel);

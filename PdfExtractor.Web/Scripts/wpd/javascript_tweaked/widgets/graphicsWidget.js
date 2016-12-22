@@ -1,9 +1,9 @@
 /*
-	WebPlotDigitizer - http://arohatgi.info/WebPlotDigitizer
+    WebPlotDigitizer - http://arohatgi.info/WebPlotDigitizer
 
-	Copyright 2010-2016 Ankit Rohatgi <ankitrohatgi@hotmail.com>
+    Copyright 2010-2016 Ankit Rohatgi <ankitrohatgi@hotmail.com>
 
-	This file is part of WebPlotDigitizer.
+    This file is part of WebPlotDigitizer.
 
     WebPlotDigitizer is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -49,23 +49,26 @@ wpd.graphicsWidget = (function () {
         height,
         originalWidth,
         originalHeight,
-        
+
         aspectRatio,
         displayAspectRatio,
-        
+
         originalImageData,
         scaledImage,
         zoomRatio,
         extendedCrosshair = false,
         hoverTimer,
-        
-        activeTool,
+
+        toolStack = [],
+        //activeTool,
         repaintHandler,
-        
+
         isCanvasInFocus = false,
-        
-        firstLoad = true;
-        
+
+        firstLoad = true,
+
+        gridSettingsFactory;
+
 
     function posn(ev) { // get screen pixel from event
         var mainCanvasPosition = $mainCanvas.getBoundingClientRect();
@@ -116,7 +119,7 @@ wpd.graphicsWidget = (function () {
             oriDataCtx: oriDataCtx
         };
     }
- 
+
     function resize(cwidth, cheight) {
 
         cwidth = parseInt(cwidth, 10);
@@ -160,7 +163,7 @@ wpd.graphicsWidget = (function () {
 
     function drawImage() {
         if(originalImageData == null) return;
-        
+
         mainCtx.fillStyle = "rgb(255, 255, 255)";
         mainCtx.fillRect(0, 0, width, height);
         mainCtx.drawImage($oriImageCanvas, 0, 0, width, height);
@@ -169,10 +172,10 @@ wpd.graphicsWidget = (function () {
             repaintHandler.onRedraw();
         }
 
-        if(activeTool != null && activeTool.onRedraw != undefined) {
-            activeTool.onRedraw();
+        if(getTool() != null && getTool().onRedraw != undefined) {
+            getTool().onRedraw();
         }
-                
+
     }
 
     function forceHandlerRepaint() {
@@ -182,7 +185,7 @@ wpd.graphicsWidget = (function () {
     }
 
     function setRepainter(fhandle) {
-        
+
         if(repaintHandler != null && repaintHandler.painterName != undefined && fhandle != null && fhandle.painterName != undefined) {
             if(repaintHandler.painterName == fhandle.painterName) {
                 return;  // Avoid same handler to be attached repeatedly.
@@ -210,7 +213,7 @@ wpd.graphicsWidget = (function () {
     }
 
     function copyImageDataLayerToScreen() {
-        dataCtx.drawImage($oriDataCanvas, 0, 0, width, height); 
+        dataCtx.drawImage($oriDataCanvas, 0, 0, width, height);
     }
 
     function zoomIn() {
@@ -256,38 +259,52 @@ wpd.graphicsWidget = (function () {
         $hoverCanvas.width = $hoverCanvas.width;
     }
 
-    function toggleExtendedCrosshair(ev) { // called when backslash is hit
-        if (ev.keyCode === 220) {
-            ev.preventDefault();
-            toggleExtendedCrosshairBtn(); 
-        }
+    function setExtendedCrosshair(newValue) {
+        extendedCrosshair = newValue;
+        showExtendedCrosshairState();
     }
 
-    function toggleExtendedCrosshairBtn() { // called directly when toolbar button is hit
-        extendedCrosshair = !(extendedCrosshair);
+    function setGridSettingsFactory(factory) {
+        gridSettingsFactory = factory;
+    }
+
+    function showExtendedCrosshairState() {
         var $crosshairBtn = document.getElementById('extended-crosshair-btn');
-        if(extendedCrosshair) {
+        if (extendedCrosshair) {
             $crosshairBtn.classList.add('pressed-button');
         } else {
             $crosshairBtn.classList.remove('pressed-button');
         }
         $hoverCanvas.width = $hoverCanvas.width;
     }
+    function toggleExtendedCrosshair(ev) { // called when backslash is hit
+        if (ev.keyCode === 220) {
+            ev.preventDefault();
+            toggleExtendedCrosshairBtn();
+        }
+    }
+
+    function toggleExtendedCrosshairBtn() { // called directly when toolbar button is hit
+        extendedCrosshair = !(extendedCrosshair);
+        showExtendedCrosshairState();
+    }
 
     function hoverOverCanvas(ev) {
         var pos = posn(ev),
             xpos = pos.x,
             ypos = pos.y,
+            qpos = { x: xpos, y: ypos },
             imagePos = imagePx(xpos, ypos);
 
         if(extendedCrosshair) {
+            gridSettingsFactory().quantize(qpos);
             $hoverCanvas.width = $hoverCanvas.width;
             hoverCtx.strokeStyle = "rgba(0,0,0, 0.5)";
             hoverCtx.beginPath();
-            hoverCtx.moveTo(xpos, 0);
-            hoverCtx.lineTo(xpos, height);
-            hoverCtx.moveTo(0, ypos);
-            hoverCtx.lineTo(width, ypos);
+            hoverCtx.moveTo(qpos.x, 0);
+            hoverCtx.lineTo(qpos.x, height);
+            hoverCtx.moveTo(0, qpos.y);
+            hoverCtx.lineTo(width, qpos.y);
             hoverCtx.stroke();
         }
 
@@ -309,9 +326,9 @@ wpd.graphicsWidget = (function () {
 
         iw = zsize.width/zratio;
         ih = zsize.height/zratio;
-        
+
         ix0 = ix - iw/2.0; iy0 = iy - ih/2.0;
-        
+
         ixmin = ix0; iymin = iy0;
         ixmax = ix0 + iw; iymax = iy0 + ih;
 
@@ -331,14 +348,14 @@ wpd.graphicsWidget = (function () {
             iymax = originalHeight;
             zymax = zymax - zratio*(originalHeight - (iy0 + ih));
         }
-        idata = oriImageCtx.getImageData(parseInt(ixmin, 10), 
-                                         parseInt(iymin, 10), 
-                                         parseInt(ixmax-ixmin, 10), 
+        idata = oriImageCtx.getImageData(parseInt(ixmin, 10),
+                                         parseInt(iymin, 10),
+                                         parseInt(ixmax-ixmin, 10),
                                          parseInt(iymax-iymin, 10));
 
-        ddata = oriDataCtx.getImageData(parseInt(ixmin, 10), 
-                                         parseInt(iymin, 10), 
-                                         parseInt(ixmax-ixmin, 10), 
+        ddata = oriDataCtx.getImageData(parseInt(ixmin, 10),
+                                         parseInt(iymin, 10),
+                                         parseInt(ixmax-ixmin, 10),
                                          parseInt(iymax-iymin, 10));
 
         for(var index = 0; index < ddata.data.length; index+=4) {
@@ -354,9 +371,9 @@ wpd.graphicsWidget = (function () {
         xcorr = zratio*(parseInt(ixmin,10) - ixmin);
         ycorr = zratio*(parseInt(iymin,10) - iymin);
 
-        wpd.zoomView.setZoomImage(idata, parseInt(zxmin + xcorr, 10), 
-                                     parseInt(zymin + ycorr, 10), 
-                                     parseInt(zxmax - zxmin, 10), 
+        wpd.zoomView.setZoomImage(idata, parseInt(zxmin + xcorr, 10),
+                                     parseInt(zymin + ycorr, 10),
+                                     parseInt(zxmax - zxmin, 10),
                                      parseInt(zymax - zymin, 10));
     }
 
@@ -445,8 +462,8 @@ wpd.graphicsWidget = (function () {
         $topCanvas.addEventListener('dragover', function(evt) {
                 evt.preventDefault();
             }, true);
-        $topCanvas.addEventListener("drop", function(evt) { 
-                evt.preventDefault(); 
+        $topCanvas.addEventListener("drop", function(evt) {
+                evt.preventDefault();
                 dropHandler(evt);
             }, true);
 
@@ -472,17 +489,17 @@ wpd.graphicsWidget = (function () {
                 onKeyDown(ev);
             }
         }, true);
-        
+
         wpd.zoomView.initZoom();
-        
-        document.getElementById('fileLoadBox').addEventListener("change", loadNewFile); 
+
+        document.getElementById('fileLoadBox').addEventListener("change", loadNewFile);
 
         // Paste image from clipboard
         window.addEventListener('paste', function(event) {pasteHandler(event);}, false);
     }
 
     function loadImage(originalImage, afterImageLoaded) {
-        
+
         if($mainCanvas == null) {
             init();
         }
@@ -502,7 +519,7 @@ wpd.graphicsWidget = (function () {
         resetAllLayers();
         zoomFit();
         wpd.appData.plotLoaded(originalImageData);
-        
+
         wpd.busyNote.close();
 
         // TODO: move this logic outside the graphics widget!
@@ -527,7 +544,7 @@ wpd.graphicsWidget = (function () {
         originalImage.src = imgSrc;
     }
 
-    function loadImageFromData(idata, iwidth, iheight, doReset, keepZoom) {        
+    function loadImageFromData(idata, iwidth, iheight, doReset, keepZoom) {
         removeTool();
         removeRepainter();
         originalWidth = iwidth;
@@ -540,7 +557,7 @@ wpd.graphicsWidget = (function () {
         oriImageCtx.putImageData(idata, 0, 0);
         originalImageData = idata;
         resetAllLayers();
-        
+
         if(!keepZoom) {
             zoomFit();
         } else {
@@ -612,90 +629,111 @@ wpd.graphicsWidget = (function () {
         return originalImageData;
     }
 
+    //function setTool(tool) {
+    //    if(activeTool != null && activeTool.onRemove != undefined) {
+    //        activeTool.onRemove();
+    //    }
+    //    activeTool = tool;
+    //    if(activeTool != null && activeTool.onAttach != undefined) {
+    //        activeTool.onAttach();
+    //    }
+    //}
     function setTool(tool) {
-        if(activeTool != null && activeTool.onRemove != undefined) {
-            activeTool.onRemove();
+        if (getTool() != null && getTool().onRemove != undefined) {
+            getTool().onRemove();
         }
-        activeTool = tool;
-        if(activeTool != null && activeTool.onAttach != undefined) {
-            activeTool.onAttach();
+        toolStack.push(tool);
+        if (getTool() != null && getTool().onAttach != undefined) {
+            getTool().onAttach();
         }
     }
 
     function getTool() {
-        return activeTool;
+        var tool = toolStack.length > 0
+            ? toolStack[toolStack.length - 1]
+            : null;
+        return tool;
     }
 
+    //function removeTool() {
+    //    if(activeTool != null && activeTool.onRemove != undefined) {
+    //        activeTool.onRemove();
+    //    }
+    //    activeTool = null;
+    //}
     function removeTool() {
-        if(activeTool != null && activeTool.onRemove != undefined) {
-            activeTool.onRemove();
+        if (getTool() != null && getTool().onRemove != undefined) {
+            getTool().onRemove();
         }
-        activeTool = null;
+        toolStack.splice(-1, 1);
+        if (getTool() != null && getTool().onAttach != undefined) {
+            getTool().onAttach();
+        }
     }
 
     function onMouseMove(ev) {
-        if(activeTool != null && activeTool.onMouseMove != undefined) {
+        if (getTool() != null && getTool().onMouseMove != undefined) {
             var pos = posn(ev),
                 xpos = pos.x,
                 ypos = pos.y,
                 imagePos = imagePx(xpos, ypos);
-            activeTool.onMouseMove(ev, pos, imagePos);
+            getTool().onMouseMove(ev, pos, imagePos);
         }
     }
 
     function onMouseClick(ev) {
-        if(activeTool != null && activeTool.onMouseClick != undefined) {
+        if (getTool() != null && getTool().onMouseClick != undefined) {
             var pos = posn(ev),
                 xpos = pos.x,
                 ypos = pos.y,
                 imagePos = imagePx(xpos, ypos);
-            activeTool.onMouseClick(ev, pos, imagePos);
+            getTool().onMouseClick(ev, pos, imagePos);
         }
     }
 
     function onDocumentMouseUp(ev) {
-        if(activeTool != null && activeTool.onDocumentMouseUp != undefined) {
+        if (getTool() != null && getTool().onDocumentMouseUp != undefined) {
             var pos = posn(ev),
                 xpos = pos.x,
                 ypos = pos.y,
                 imagePos = imagePx(xpos, ypos);
-            activeTool.onDocumentMouseUp(ev, pos, imagePos);
+            getTool().onDocumentMouseUp(ev, pos, imagePos);
         }
     }
 
     function onMouseUp(ev) {
-        if(activeTool != null && activeTool.onMouseUp != undefined) {
+        if(getTool() != null && getTool().onMouseUp != undefined) {
             var pos = posn(ev),
                 xpos = pos.x,
                 ypos = pos.y,
                 imagePos = imagePx(xpos, ypos);
-            activeTool.onMouseUp(ev, pos, imagePos);
+            getTool().onMouseUp(ev, pos, imagePos);
         }
     }
 
     function onMouseDown(ev) {
-        if(activeTool != null && activeTool.onMouseDown != undefined) {
+        if(getTool() != null && getTool().onMouseDown != undefined) {
             var pos = posn(ev),
                 xpos = pos.x,
                 ypos = pos.y,
                 imagePos = imagePx(xpos, ypos);
-            activeTool.onMouseDown(ev, pos, imagePos);
+            getTool().onMouseDown(ev, pos, imagePos);
         }
     }
 
     function onMouseOut(ev) {
-        if(activeTool != null && activeTool.onMouseOut != undefined) {
+        if(getTool() != null && getTool().onMouseOut != undefined) {
             var pos = posn(ev),
                 xpos = pos.x,
                 ypos = pos.y,
                 imagePos = imagePx(xpos, ypos);
-            activeTool.onMouseOut(ev, pos, imagePos);
+            getTool().onMouseOut(ev, pos, imagePos);
         }
     }
 
     function onKeyDown(ev) {
-        if(activeTool != null && activeTool.onKeyDown != undefined) {
-            activeTool.onKeyDown(ev);
+        if(getTool() != null && getTool().onKeyDown != undefined) {
+            getTool().onKeyDown(ev);
         }
     }
 
@@ -705,6 +743,8 @@ wpd.graphicsWidget = (function () {
         zoomFit: zoomFit,
         zoom100perc: zoom100perc,
         toggleExtendedCrosshairBtn: toggleExtendedCrosshairBtn,
+        setExtendedCrosshair: setExtendedCrosshair,
+        setGridSettingsFactory: setGridSettingsFactory,
         setZoomRatio: setZoomRatio,
         getZoomRatio: getZoomRatio,
 

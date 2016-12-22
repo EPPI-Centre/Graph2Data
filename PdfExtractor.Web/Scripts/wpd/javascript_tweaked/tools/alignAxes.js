@@ -1,9 +1,9 @@
 /*
-	WebPlotDigitizer - http://arohatgi.info/WebPlotDigitizer
+    WebPlotDigitizer - http://arohatgi.info/WebPlotDigitizer
 
-	Copyright 2010-2016 Ankit Rohatgi <ankitrohatgi@hotmail.com>
+    Copyright 2010-2016 Ankit Rohatgi <ankitrohatgi@hotmail.com>
 
-	This file is part of WebPlotDigitizer.
+    This file is part of WebPlotDigitizer.
 
     WebPlotDigitizer is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -46,11 +46,11 @@ wpd.xyCalibration = (function () {
 
     function align() {
         var xmin = document.getElementById('xmin').value,
-	        xmax = document.getElementById('xmax').value,
-	        ymin = document.getElementById('ymin').value,
-	        ymax = document.getElementById('ymax').value,
-	        xlog = document.getElementById('xlog').checked,
-	        ylog = document.getElementById('ylog').checked,
+            xmax = document.getElementById('xmax').value,
+            ymin = document.getElementById('ymin').value,
+            ymax = document.getElementById('ymax').value,
+            xlog = document.getElementById('xlog').checked,
+            ylog = document.getElementById('ylog').checked,
             axes = new wpd.XYAxes(),
             plot,
             calib = wpd.alignAxes.getActiveCalib();
@@ -104,8 +104,8 @@ wpd.barCalibration = (function () {
 
     function align() {
         var p1 = document.getElementById('bar-axes-p1').value,
-	        p2 = document.getElementById('bar-axes-p2').value,
-	        isLogScale = document.getElementById('bar-axes-log-scale').checked,
+            p2 = document.getElementById('bar-axes-p2').value,
+            isLogScale = document.getElementById('bar-axes-log-scale').checked,
             axes = new wpd.BarAxes(),
             plot,
             calib = wpd.alignAxes.getActiveCalib();
@@ -157,12 +157,12 @@ wpd.polarCalibration = (function () {
 
     function align() {
         var r1 = parseFloat(document.getElementById('polar-r1').value),
-	        theta1 = parseFloat(document.getElementById('polar-theta1').value),
-	        r2 = parseFloat(document.getElementById('polar-r2').value),
-	        theta2 = parseFloat(document.getElementById('polar-theta2').value),
-	        degrees = document.getElementById('polar-degrees').checked,
-	        radians = document.getElementById('polar-radians').checked,
-	        orientation = document.getElementById('polar-clockwise').checked,
+            theta1 = parseFloat(document.getElementById('polar-theta1').value),
+            r2 = parseFloat(document.getElementById('polar-r2').value),
+            theta2 = parseFloat(document.getElementById('polar-theta2').value),
+            degrees = document.getElementById('polar-degrees').checked,
+            radians = document.getElementById('polar-radians').checked,
+            orientation = document.getElementById('polar-clockwise').checked,
             rlog = document.getElementById('polar-log-scale').checked,
             axes = new wpd.PolarAxes(),
             plot,
@@ -214,8 +214,8 @@ wpd.ternaryCalibration = (function () {
 
     function align() {
         var range1 = document.getElementById('range0to1').checked,
-	        range100 = document.getElementById('range0to100').checked,
-	        ternaryNormal = document.getElementById('ternarynormal').checked,
+            range100 = document.getElementById('range0to100').checked,
+            ternaryNormal = document.getElementById('ternarynormal').checked,
             axes = new wpd.TernaryAxes(),
             plot,
             calib = wpd.alignAxes.getActiveCalib();
@@ -393,7 +393,7 @@ wpd.AlignmentCornersRepainter = (function () {
                 if(cal.isPointSelected(i)) {
                     fillStyle = "rgba(0,200,0,1)";
                 } else {
-        		    fillStyle = "rgba(200,0,0,1)";
+                    fillStyle = "rgba(200,0,0,1)";
                 }
 
                 wpd.graphicsHelper.drawPoint(imagePx, fillStyle, cal.labels[i]);

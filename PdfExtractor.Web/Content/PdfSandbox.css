@@ -87,17 +87,17 @@ body:not(.wpd-visible) .jBox-wrapper {
 }
 
 .wpdContainer .extended-crosshair {
-    border: none; 
-    width: 20px; 
-    background-image: url('wpd/images/crosshair.png'); 
-    background-repeat: no-repeat; 
+    border: none;
+    width: 20px;
+    background-image: url('wpd/images/crosshair.png');
+    background-repeat: no-repeat;
     background-position: center;
 }
 
 
-#mean-variance-formContainer table td, 
+#mean-variance-formContainer table td,
 #mean-variance-formContainer table th,
-#mean-variance-nestedFormContainer table td, 
+#mean-variance-nestedFormContainer table td,
 #mean-variance-nestedFormContainer table th {
     border-collapse: collapse;
     border: 1px solid #666666;
@@ -148,9 +148,9 @@ body:not(.wpd-visible) .jBox-wrapper {
     cursor: pointer;
 }
 
-#mean-variance-formContainer table tbody tr.current-series td, 
+#mean-variance-formContainer table tbody tr.current-series td,
 #mean-variance-formContainer table tbody tr.current-series th,
-#mean-variance-nestedFormContainer table tbody tr.current-series td, 
+#mean-variance-nestedFormContainer table tbody tr.current-series td,
 #mean-variance-nestedFormContainer table tbody tr.current-series th {
     background-color: #ddd;
 }
@@ -183,11 +183,11 @@ table.cell-info td {
 }
 
 #mean-variance-nestedFormContainer input.count {
-    background-color: rgb(255, 211, 246);    
+    background-color: rgb(255, 211, 246);
     cursor: pointer;
 }
 #mean-variance-nestedFormContainer input.count.focused {
-    background-color: rgb(255, 146, 233);    
+    background-color: rgb(255, 146, 233);
 }
 
 
@@ -197,4 +197,10 @@ label[for] {
 
 input.tooltip-showing {
     border: 3px solid red !important;
+}
+
+#mini-control-widget input[type='checkbox'],
+#meanVarianceSidebar input[type='checkbox'] {
+    height: 0.8em;
+    width: 0.8em;
 }

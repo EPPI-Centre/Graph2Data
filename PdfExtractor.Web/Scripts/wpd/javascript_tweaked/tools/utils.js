@@ -1,9 +1,9 @@
 /*
-	WebPlotDigitizer - http://arohatgi.info/WebPlotDigitizer
+    WebPlotDigitizer - http://arohatgi.info/WebPlotDigitizer
 
-	Copyright 2010-2016 Ankit Rohatgi <ankitrohatgi@hotmail.com>
+    Copyright 2010-2016 Ankit Rohatgi <ankitrohatgi@hotmail.com>
 
-	This file is part of WebPlotDigitizer.
+    This file is part of WebPlotDigitizer.
 
     WebPlotDigitizer is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -85,10 +85,23 @@ wpd.utils = (function () {
         return info;
     }
 
+    function bindMemberFunctions(obj) {
+        for (var prop in obj) {
+            if (obj.hasOwnProperty(prop)) {
+                var val = obj[prop];
+                if (typeof val === 'function') {
+                    obj[prop] = val.bind(obj);
+                }
+            }
+        }
+    }
+
+
     return {
         notice: notice,
         getElemId: getElemId,
-        _$: _$
+        _$: _$,
+        bindMemberFunctions: bindMemberFunctions
     };
 
 })();
