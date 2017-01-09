@@ -298,11 +298,12 @@
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <Content Include="BMJ 2011 Olesen.pdf" />
     <Content Include="Scripts\Chart.bundle.js" />
     <Content Include="Scripts\debugger.js" />
     <Content Include="Content\wpd\images\perspective.odg" />
     <Content Include="App_Data\Settings.json" />
+    <None Include="Properties\PublishProfiles\Debug to N_ToDelete_PdfExtractorDeployTest.pubxml" />
+    <None Include="Properties\PublishProfiles\Release to N_ToDelete_PdfExtractorDeployTest.pubxml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jBox\jBox.css" />
     <Content Include="Scripts\jBox\jBox.js" />
