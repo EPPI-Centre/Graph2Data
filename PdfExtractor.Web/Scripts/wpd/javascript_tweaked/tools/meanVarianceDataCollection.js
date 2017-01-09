@@ -211,7 +211,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 x: 0,
                 y: 0
             },
-            _origin: {},
+            _origin: {x:-0.337, y: -0.337},
 
             getDimensions: function() {
                 return {
@@ -580,7 +580,6 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
         populateOutcomeMeasures();
         populateDataStructures();
-        populateGridSettings();
         configureSubTableSpecs();
 
         // TODO: Be clearer about which things should be done within OnAttach
@@ -1021,6 +1020,8 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     series.name = $edit.val();
                 }
             }, '.series-name');
+
+            populateGridSettings();
 
             function applyProfile(profile) {
                 $outcomeMeasureList

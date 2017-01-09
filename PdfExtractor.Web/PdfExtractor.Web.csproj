@@ -318,6 +318,7 @@
     <Content Include="Scripts\jBox\plugins\Notice\jBox.Notice.min.js" />
     <Content Include="Scripts\jBox\themes\ModalBorder.css" />
     <Content Include="Scripts\jBox\themes\NoticeBorder.css" />
+    <Content Include="Scripts\jBox\themes\NoticeFancy.css" />
     <Content Include="Scripts\jBox\themes\TooltipBorder.css" />
     <Content Include="Scripts\jBox\themes\TooltipDark.css" />
     <Content Include="Scripts\jquery-ui-1.12.1.only-spinner\jquery-ui.css" />
@@ -332,6 +333,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\plot.ly.1.19.2.min.js" />
+    <Content Include="Scripts\purl.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\selection-rectangles.js" />

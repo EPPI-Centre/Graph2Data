@@ -77,7 +77,7 @@ wpd.utils = (function () {
         if (elem.className) {
             info.push(".", elem.className);
         }
-        if (info.length == 1) {
+        if (info.length === 1) {
             info.push(elem.innerHtml);
         }
         info = info.join('');
