@@ -55,18 +55,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="google" content="notranslate">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
+    <!-- This page was served by -->
     <link rel="resource" type="application/l10n" href="~/Scripts/viewer-poc/web/locale/locale.properties">
     <script type="text/javascript">
         @{
-            //var blah = Url.Content("~/Scripts/viewer-poc/web/BMJ 2011 Olesen.pdf");
-            //var blah = Url.Content("~/Scripts/viewer-poc/web/Report_Data types_UI dev_2-converted to pdf.pdf");
-            //var blah = Url.Content("~/Scripts/viewer-poc/web/Report_Data types_UI dev_2_page-inserted-for-pdf-export.pdf");
-            var blah = Url.Content("~/Scripts/viewer-poc/web/Scatter plots.pdf");
-            var uri = new Uri(Request.Url.Scheme + System.Uri.SchemeDelimiter + Request.Url.Host + blah);
-            var fileUri = uri.AbsoluteUri;
+            var uri = new Uri(Request.Url.Scheme + Uri.SchemeDelimiter + Request.Url.Host + Url.Content(Model.PdfPath));
         }
-        DEFAULT_URL = "@fileUri";
+        DEFAULT_URL = "@uri.AbsoluteUri";
 
         //$(function() {
         //    document.addEventListener("pagesloaded", function (e) {
@@ -695,6 +690,10 @@
 
                 <!-- Mean & Variance data extraction -->
                 <div id="meanVarianceSidebar" class="sidebar">
+                    <p class="sidebar-title">
+                        Manual Mode <input type="button" value="Automatic Mode" style="width: 125px;" onclick="wpd.autoExtraction.start();">
+                    </p>
+                    <hr />
                     <p>
                         <input id="mean-variance-select-button" class="mean-variance-selection-mode createPoints" value="Add Point (A)" onclick="wpd.acquireMeanVarianceData.meanVarianceSelection();" type="button" style="width: 112px;">
                         <input id="mean-variance-adjust-button" class="mean-variance-selection-mode adjustPoints" value="Adjust Point (S)" onclick="wpd.acquireMeanVarianceData.adjustPoints();" type="button" style="width: 112px;">
@@ -763,7 +762,7 @@
 
                 <!-- automatic mode -->
                 <div id="auto-extraction-sidebar" class="sidebar">
-                    <p class="sidebar-title">Automatic Mode <input type="button" value="Manual Mode" style="width:110px;" onclick="wpd.acquireData.load();" /></p>
+                    <p class="sidebar-title">Automatic Mode <input type="button" value="Manual Mode" style="width:110px;" onclick="wpd.acquireMeanVarianceData.load();" /></p>
                     <hr />
                     <p>Dataset <select id="automatic-sidebar-dataset-list" onchange="wpd.acquireData.changeDataset(this);" style="width:160px;"></select></p>
                     <hr />

@@ -41,8 +41,9 @@ wpd.acquireMeanVarianceData = (function () {
             wpd.graphicsWidget.removeTool();
             wpd.graphicsWidget.setRepainter(new wpd.DataPointsRepainter());
 
-            tool = new wpd.acquireMeanVarianceData.MeanVarianceSelectionTool();
-            wpd.graphicsWidget.setTool(tool);
+            meanVarianceSelection();
+//            tool = new wpd.acquireMeanVarianceData.MeanVarianceSelectionTool();
+//            wpd.graphicsWidget.setTool(tool);
         }
     }
 
@@ -51,8 +52,8 @@ wpd.acquireMeanVarianceData = (function () {
     //}
 
     function meanVarianceSelection() {
-        // var tool = new wpd.acquireMeanVarianceData.MeanVarianceSelectionTool();
-        // wpd.graphicsWidget.setTool(tool);
+        var tool = new wpd.acquireMeanVarianceData.MeanVarianceSelectionTool();
+        wpd.graphicsWidget.setTool(tool);
         tool.setMode(tool.modes.createPoints);
     }
 
@@ -1925,6 +1926,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         };
 
         this.onRemove = function () {
+            hideAllDataPopups();
             wpd.dataSeriesManagement.removeNameChangedHandler(dataSeriesNameChangedHandler);
             $button.removeClass('pressed-button');
         };

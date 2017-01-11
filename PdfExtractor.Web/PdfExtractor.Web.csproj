@@ -302,7 +302,29 @@
     <Content Include="Scripts\debugger.js" />
     <Content Include="Content\wpd\images\perspective.odg" />
     <Content Include="App_Data\Settings.json" />
+    <Content Include="Content\docs\Input\An Algorithm for Identifying, Extracting and Converting Document Image Table Structures into LaTeX Format.pdf" />
+    <Content Include="Content\docs\Input\BMJ 2011 Olesen.pdf" />
+    <Content Include="Content\docs\Input\Eur Heart J 2012 LaHaye.pdf" />
+    <Content Include="Content\docs\Input\Graphs_from_Hugh\Bar chart 2.pdf" />
+    <Content Include="Content\docs\Input\Graphs_from_Hugh\Bar chart.pdf" />
+    <Content Include="Content\docs\Input\Graphs_from_Hugh\box plot.pdf" />
+    <Content Include="Content\docs\Input\Graphs_from_Hugh\From Hugh.docx" />
+    <Content Include="Content\docs\Input\Graphs_from_Hugh\MIxed mages.pdf" />
+    <Content Include="Content\docs\Input\Graphs_from_Hugh\pie chart.pdf" />
+    <Content Include="Content\docs\Input\Graphs_from_Hugh\ppv npv chart.pdf" />
+    <Content Include="Content\docs\Input\Graphs_from_Hugh\ROC curves.pdf" />
+    <Content Include="Content\docs\Input\Graphs_from_Hugh\ROC curves2.pdf" />
+    <Content Include="Content\docs\Input\Graphs_from_Hugh\scatter plot.pdf" />
+    <Content Include="Content\docs\Input\J Thromb Haemost 2011 Olesen.pdf" />
+    <Content Include="Content\docs\Input\Report_Data types_UI dev_2-converted to pdf.pdf" />
+    <Content Include="Content\docs\Input\Some text from LibreOffice Draw and Inkscape.pdf" />
+    <Content Include="Content\docs\Input\Some text from LibreOffice Draw.pdf" />
+    <Content Include="Content\docs\Input\stroke-and-systemic-embolism-prevention-nonvalvular-atrial-fibrillation-apixaban-bristolmyers-squibb-and-pfizer2.pdf" />
     <None Include="Properties\PublishProfiles\Debug to N_ToDelete_PdfExtractorDeployTest.pubxml" />
+    <None Include="Properties\PublishProfiles\PdfExtractor - FTP %282%29.pubxml" />
+    <None Include="Properties\PublishProfiles\PdfExtractor - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\PdfExtractor - Web Deploy %282%29.pubxml" />
+    <None Include="Properties\PublishProfiles\PdfExtractor - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\Release to N_ToDelete_PdfExtractorDeployTest.pubxml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jBox\jBox.css" />
@@ -509,7 +531,6 @@
       <LastGenOutput>wpd_combined_tweaked.js</LastGenOutput>
     </Content>
     <Content Include="Scripts\_references.js" />
-    <EmbeddedResource Include="solutionpath.txt" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

@@ -2594,7 +2594,7 @@ var pdfjsWebLibs = {
 					_normalizeDecimal: function TextLayerBuilder_Lee_normalizeDecimal (decimal, places) {
 						return parseFloat(parseFloat(decimal).toFixed(places));
 					},
-					
+
 					_normalizedFromPx: function TextLayerBuilder_Lee_normalizedFromPx (pos, places) {
 						var len = pos ? pos.length : 0;
 						if (len > 0 && pos.substring(len - 2) === "px") {
@@ -2621,16 +2621,16 @@ var pdfjsWebLibs = {
 						function getHeight() {
 							return self._normalizeDecimal($elem.height(), places);
 						}
-						var pos = { 
-							left: get ('left'), 
+						var pos = {
+							left: get ('left'),
 							top:  get ('top'),
 							width: getWidth (),
 							height: getHeight ()
 						};
-						
+
 						return pos;
 					},
-					
+
 					_getNormalizedFontInfo: function TextLayerBuilder_Lee_getNormalizedFontInfo(elem) {
 						var haveStyle = !!elem && !!elem.style;
 						var style = haveStyle ? elem.style : {};
@@ -2644,7 +2644,7 @@ var pdfjsWebLibs = {
 							fontWeight: fontWeight
 						};
 					},
-					
+
 					_buildSizeGroups: function TextLayerBuilder_Lee_buildSizeGroups () {
 						this._sizeGroups = {};
 						var self = this;
@@ -2659,7 +2659,7 @@ var pdfjsWebLibs = {
 							group.push(div);
 						});
 					},
-					
+
 					_getElemsInSameSizeGroupAs: function TextLayerBuilder_Lee_getElemsInSameSizeGroupAs (elem) {
 						var de = elem.get(0);
 						var fi = this._getNormalizedFontInfo(de);
@@ -2671,10 +2671,10 @@ var pdfjsWebLibs = {
 								group.splice (idx, 1);
 							}
 						}
-						
+
 						return group;
 					},
-					
+
 					_elemToObj: function TextLayerBuilder_Lee_elemToObj (elem) {
 						var pos = this._getNormalizedPosition(elem);
 						var obj = {
@@ -2686,7 +2686,7 @@ var pdfjsWebLibs = {
 						};
 						return obj;
 					},
-					
+
 					_populateSpatialHash: function TextLayerBuilder_Lee_populateSpatialHash () {
 						this._spatialHash.clear();
 						var self = this;
@@ -2698,12 +2698,12 @@ var pdfjsWebLibs = {
 						var info = this._spatialHash.range;
 						console.log ("powers: (" + this._spatialHashPowerX + ", " + this._spatialHashPowerY + ") -> " + bucketCount + " buckets ][ info: " + JSON.stringify(info))
 					},
-					
-					
+
+
 					// _buildVerticalOrdering: function TextLayerBuilder_Lee_buildVerticalOrdering () {
 						// this._verticalOrdering = [];
 						// var self = this;
-						
+
 						// $.each(this.textDivs, function(idx, div) {
 							// self._verticalOrdering.push (div);
 						// });
@@ -2717,7 +2717,7 @@ var pdfjsWebLibs = {
 					_getNearbyElems: function TextLayerBuilder_Lee_getNearbyElems (elem, row, col) {
 						var obj = this._elemToObj(elem);
 						var nearby = [];
-						
+
 						if (row && col) {
 							nearby = nearby.concat (this._spatialHash.retrieveAdjacent ("*,*,*,*", obj));
 						}
@@ -2727,7 +2727,7 @@ var pdfjsWebLibs = {
 						else if (row) {
 							nearby = nearby.concat (this._spatialHash.retrieveAdjacent ("0,*,*,0", obj));
 						}
-						
+
 						return nearby;
 					},
 
@@ -2745,7 +2745,7 @@ var pdfjsWebLibs = {
 							row.push(div);
 						});
 					},
-					
+
 					_getElemsInSameRowAs: function TextLayerBuilder_Lee_getElemsInSameRowAs (elem) {
 						var de = elem;
 						var pos = this._getNormalizedPosition(de);
@@ -2757,10 +2757,10 @@ var pdfjsWebLibs = {
 								row.splice (idx, 1);
 							}
 						}
-						
+
 						return row;
 					},
-					
+
 					_dumpElem: function TextLayerBuilder_Lee_dumpElem(elem, onlyReturn) {
 						var pos = this._getNormalizedPosition(elem);
 						var fi = this._getNormalizedFontInfo(elem);
@@ -2769,14 +2769,14 @@ var pdfjsWebLibs = {
 						var style = haveStyle ? elem.style : {};
 						var fontSize = haveStyle ? style.fontSize : "";
 						var fontFamily = haveStyle ? style.fontFamily : "";
-						var msg = 
-							"=> (" 
-								+ pos.left 
-								+ ", " 
-								+ pos.top 
-							+ ") - " 
-							+ fk 
-							+ " - " 
+						var msg =
+							"=> ("
+								+ pos.left
+								+ ", "
+								+ pos.top
+							+ ") - "
+							+ fk
+							+ " - "
 							+ elem.textContent
 						;
 						if (!onlyReturn) {
@@ -2784,7 +2784,7 @@ var pdfjsWebLibs = {
 						}
 						return msg;
 					},
-					
+
 					_activateOverlays: function TextLayerBuilder_Lee_activateOverlays() {
 						if (this._overlays_activated) {
 							return;
@@ -2796,25 +2796,25 @@ var pdfjsWebLibs = {
 						this._buildRowMap();
 						//this._buildVerticalOrdering();
 						this._populateSpatialHash();
-						
+
 						$(this.textLayerDiv).on({
 							mouseenter: function (e) {
 								var shift = e.shiftKey;
 								var ctrl = e.ctrlKey;
 								var alt = e.altKey;
-								
+
 								var elem = $(this);
 								if (shift) {
 									self._dumpElem (this);
 								}
 								elem.addClass ('hovered');
-								
+
 								function shiftLog(msg) {
 									if (shift) {
 										console.log (msg);
 									}
 								}
-								
+
 								if (alt) {
 									var row = self._getElemsInSameRowAs (elem.get(0));
 									if (row) {
@@ -2825,7 +2825,7 @@ var pdfjsWebLibs = {
 										});
 									}
 								}
-								
+
 								if (ctrl) {
 									var nearby = self._getNearbyElems (elem.get(0), shift, shift && alt);
 									if (nearby) {
@@ -2837,7 +2837,7 @@ var pdfjsWebLibs = {
 										});
 									}
 								}
-								
+
 								// var group = self._getElemsInSameSizeGroupAs (elem);
 								// if (group) {
 									// //console.log ("has sizeGroup-children...");
@@ -2855,14 +2855,14 @@ var pdfjsWebLibs = {
 
 								var elem = $(this);
 								elem.removeClass ('hovered');
-								
+
 								var row = self._getElemsInSameRowAs (elem.get(0));
 								if (row) {
 									$.each (row, function (idx, el) {
 										$(el).removeClass ('same-row');
 									});
 								}
-								
+
 								var nearby = self._getNearbyElems (elem.get(0), shift, shift && alt);
 								if (nearby) {
 									$.each (nearby, function (idx, obj) {
@@ -7397,7 +7397,7 @@ var pdfjsWebLibs = {
 			function configure(PDFJS) {
 				PDFJS.imageResourcesPath = './images/';
 				//PDFJS.workerSrc = '../build/pdf.worker.js';
-				PDFJS.workerSrc = 'http://localhost/PdfExtractor/Scripts/viewer-poc/web/pdf.worker.js';
+				PDFJS.workerSrc = '/Scripts/viewer-poc/web/pdf.worker.js';
 				PDFJS.cMapUrl = '../web/cmaps/';
 				PDFJS.cMapPacked = true;
 			}
