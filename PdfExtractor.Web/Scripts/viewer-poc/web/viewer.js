@@ -7397,7 +7397,7 @@ var pdfjsWebLibs = {
 			function configure(PDFJS) {
 				PDFJS.imageResourcesPath = './images/';
 				//PDFJS.workerSrc = '../build/pdf.worker.js';
-				PDFJS.workerSrc = '/Scripts/viewer-poc/web/pdf.worker.js';
+				PDFJS.workerSrc = window.PDFViewerApplication_wpdConfig.siteBaseUri + '/Scripts/viewer-poc/web/pdf.worker.js';
 				PDFJS.cMapUrl = '../web/cmaps/';
 				PDFJS.cMapPacked = true;
 			}
@@ -7445,7 +7445,7 @@ var pdfjsWebLibs = {
 
 				// called once when the document is loaded
 				initialize : function pdfViewInitialize(appConfig) {
-					configure(pdfjsLib.PDFJS);
+				    configure(pdfjsLib.PDFJS, appConfig);
 					this.appConfig = appConfig;
 
 					var pdfRenderingQueue = new PDFRenderingQueue();

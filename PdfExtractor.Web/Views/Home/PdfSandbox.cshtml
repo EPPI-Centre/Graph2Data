@@ -84,18 +84,22 @@
                 // body.addClass('wpd-visible');
                 @{
                     var contentBase = Url.Content("~/Content/wpd/");
+                    var siteBase = Url.Content("~");
+
                     var contentBaseUri = new Uri(Request.Url.Scheme + System.Uri.SchemeDelimiter + Request.Url.Host + contentBase);
+                    var siteBaseUri = new Uri(Request.Url.Scheme + System.Uri.SchemeDelimiter + Request.Url.Host + siteBase);
                 }
 
                 var wpdConfig = {
                     contentBaseUri: "@contentBaseUri",
+                    siteBaseUri: "@siteBaseUri",
                     loadingCurtainSelector: ".wpdContainer > .loadingCurtain",
                     sidebarContainerSelector: ".wpdContainer .sidebarContainer",
                     mainContainerSelector: ".wpdContainer .mainContainer",
                     appContainerElem: $('.wpdContainer')[0],
                     focusedSelection: null,
                     wpdPlotMemento: null,
-                    userSettings: userSettings
+                    userSettings: userSettings,
                 };
                 wpdConfig.show = function () {
                     body.addClass('wpd-visible');
