@@ -10,9 +10,6 @@ namespace PdfExtractor.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private string _solutionFolder;
-        private string _inputDocsPath;
-
         private readonly string[] _pdfPaths = new[] {
             // 0
             "An Algorithm for Identifying, Extracting and Converting Document Image Table Structures into LaTeX Format.pdf",
@@ -94,7 +91,7 @@ namespace PdfExtractor.Web.Controllers
         {
             var filePath = HttpContext.Server.MapPath(Path.Combine(
                 "~/Content/Docs/Input",
-                _pdfPaths[17]
+                _pdfPaths[12]
             ));
             //var fileStream = System.IO.File.OpenRead(filePath);
             //return new FileStreamResult(fileStream, "application/pdf");

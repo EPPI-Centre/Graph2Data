@@ -7445,7 +7445,7 @@ var pdfjsWebLibs = {
 
 				// called once when the document is loaded
 				initialize : function pdfViewInitialize(appConfig) {
-				    configure(pdfjsLib.PDFJS, appConfig);
+				    configure(pdfjsLib.PDFJS);
 					this.appConfig = appConfig;
 
 					var pdfRenderingQueue = new PDFRenderingQueue();

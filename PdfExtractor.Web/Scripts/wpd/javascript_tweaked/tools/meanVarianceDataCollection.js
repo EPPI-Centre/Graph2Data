@@ -52,7 +52,7 @@ wpd.acquireMeanVarianceData = (function () {
     //}
 
     function meanVarianceSelection() {
-        var tool = new wpd.acquireMeanVarianceData.MeanVarianceSelectionTool();
+        tool = new wpd.acquireMeanVarianceData.MeanVarianceSelectionTool();
         wpd.graphicsWidget.setTool(tool);
         tool.setMode(tool.modes.createPoints);
     }
@@ -281,7 +281,8 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             //};
 
         var dataPopupTitle = "Data extraction", nestedDataPopupTitle = "Subject&nbsp;Data&nbsp;Points";
-        var dataPopup = null, nestedDataPopup = null;
+        var dataPopup = $('.jBox-wrapper.jBox-Modal.dataPopup').data('jBox');
+        var nestedDataPopup = $('.jBox-wrapper.jBox-Modal.nestedDataPopup').data('jBox');
         var dataPopupVisible = null, nestedDataPopupVisible = null;
 
         function getIncludeIndividuals() {
@@ -289,20 +290,24 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         }
 
         function hideAllDataPopups() {
-            $.each([
-                dataPopup,
-                nestedDataPopup
-            ], function (idx, pu) {
-                if (pu) {
-                    pu.close();
-                }
+            $('.jBox-wrapper.jBox-Modal').each (function () {
+                $(this).data('jBox').destroy();
             });
-        }
+    //$.each([
+    //    dataPopup,
+    //    nestedDataPopup
+    //], function (idx, pu) {
+    //    if (pu) {
+    //        pu.close();
+    //    }
+    //});
+}
 
         function showDataPopup() {
          // if (dataPopup != null) {
             if (!dataPopup) {
                 dataPopup = new jBox('Modal', {
+                    addClass: 'dataPopup',
                     content: $formContainer,
                     title: dataPopupTitle,
                     closeOnEsc: true,
@@ -320,15 +325,18 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                         if (nestedDataPopupVisible) {
                             hideNestedDataPopup();
                         }
+                        if (dataPopupVisible) {
+                            var pos = this.wrapper.position();
+                            wpd._config.userSettings.documents[0].dataEntryPopupPosition = {
+                                x: pos.left,
+                                y: pos.top
+                            };
+                            wpd._config.flushSettings(wpd._config.userSettings);
+                        }
                         dataPopupVisible = false;
                         dataPopup = null;
+
                         $formContainerHost.append($formContainer).removeClass('detached');
-                        var pos = this.wrapper.position();
-                        wpd._config.userSettings.documents[0].dataEntryPopupPosition = {
-                            x: pos.left,
-                            y: pos.top
-                        };
-                        wpd._config.flushSettings(wpd._config.userSettings);
                     },
                     onPosition: function () {
                         // console.log("onPosition!");
@@ -352,6 +360,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
             if (!nestedDataPopup) {
                 nestedDataPopup = new jBox('Modal', {
+                    addClass: 'nestedDataPopup',
                     content: $nestedFormContainer,
                     title: nestedDataPopupTitle,
                     closeOnEsc: true,
@@ -365,16 +374,20 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                         nestedDataPopupVisible = true;
                     },
                     onClose: function () {
+                        if (nestedDataPopup) {
+                            var pos = this.wrapper.position();
+                            wpd._config.userSettings.documents[0].nestedDataEntryPopupPosition = {
+                                x: pos.left,
+                                y: pos.top
+                            };
+                            wpd._config.flushSettings(wpd._config.userSettings);
+                        }
+
                         nestedDataPopup = null;
                         nestedDataPopupVisible = false;
                         setActiveNestedCell(null);
+
                         $formContainerHost.append($nestedFormContainer);
-                        var pos = this.wrapper.position();
-                        wpd._config.userSettings.documents[0].nestedDataEntryPopupPosition = {
-                            x: pos.left,
-                            y: pos.top
-                        };
-                        wpd._config.flushSettings(wpd._config.userSettings);
                     },
                     onPosition: function () {
                         // console.log("onPosition!");
@@ -1924,9 +1937,31 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     break;
             }
         };
+        this.removeEventHandlers = function() {
+            $.each([
+                $detachFormContainerTrigger,
+                $(wpd._config.appContainerElem),
+                $outcomeMeasureList,
+                $dataStructureList,
+                $includeIndividuals,
+                $dataPointCountEdit,
+                $dataSeriesCountEdit,
+                $snapToGridX,
+                $snapToGridY,
+                $gridEditX,
+                $gridEditY,
+                $locked,
+                $nestedFormContainer,
+                $formContainer
+            ],
+            function(idx, $elem) {
+                $elem.off();
+            });
+        };
 
         this.onRemove = function () {
             hideAllDataPopups();
+            this.removeEventHandlers();
             wpd.dataSeriesManagement.removeNameChangedHandler(dataSeriesNameChangedHandler);
             $button.removeClass('pressed-button');
         };
