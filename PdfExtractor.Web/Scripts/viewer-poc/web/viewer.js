@@ -17,11 +17,6 @@
 'use strict';
 
 
-//var DEFAULT_URL = 'compressed.tracemonkey-pldi-09.pdf';
-//var DEFAULT_URL = 'J Thromb Haemost 2011 Olesen.pdf';
-//var DEFAULT_URL = 'Eur Heart J 2012 LaHaye.pdf';
-//var DEFAULT_URL = 'BMJ 2011 Olesen.pdf';
-
 var pdfjsWebLibs = {
 	pdfjsWebPDFJS : window.pdfjsDistBuildPdf
 };
@@ -8430,7 +8425,7 @@ var pdfjsWebLibs = {
 			function webViewerInitialized() {
 				var queryString = document.location.search.substring(1);
 				var params = parseQueryString(queryString);
-			    console.log("consuming DEFAULT_URL: " + DEFAULT_URL);
+			 // console.log("consuming DEFAULT_URL: " + DEFAULT_URL);
 			    var file = 'file' in params ? params.file : DEFAULT_URL;
 			    console.log("file: '" + file + "'");
 				validateFileURL(file);

@@ -296,8 +296,11 @@ wpd.graphicsWidget = (function () {
             qpos = { x: xpos, y: ypos },
             imagePos = imagePx(xpos, ypos);
 
-        if(extendedCrosshair) {
-            gridSettingsFactory().quantize(qpos);
+        if (extendedCrosshair) {
+            if (gridSettingsFactory) {
+                // i.e. we're not calibrating an axis
+                gridSettingsFactory().quantize(qpos);
+            }
             $hoverCanvas.width = $hoverCanvas.width;
             hoverCtx.strokeStyle = "rgba(0,0,0, 0.5)";
             hoverCtx.beginPath();
