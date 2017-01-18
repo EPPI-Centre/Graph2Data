@@ -179,24 +179,33 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
     var Tool = function () {
         var self = this;
         var plotData = wpd.appData.getPlotData();
-        var $button = $('#mean-variance-select-button');
-        var $locked = $('#mean-variance-dataSeriesLocked');
+        var $dom = {
+            $button: $('#mean-variance-select-button'),
+            $locked: $('#mean-variance-dataSeriesLocked'),
 
-        var $outcomeMeasureList = $('#outcome-measure');
-        var $dataStructureList = $('#mean-variance-data-structure');
-        var $includeIndividuals = $('#include-individuals');
+            $useTable: $('#use-table'),
+            $tableControls: $('#table-controls'),
+            $freeControls: $('#free-controls'),
+            $areaUnderCurve: $('#area-under-curve'),
+            $showTrapezoids: $('#show-trapezoids'),
+            $outcomeMeasureList: $('#outcome-measure'),
+            $dataStructureList: $('#mean-variance-data-structure'),
+            $includeIndividuals: $('#include-individuals'),
 
-        var $dataPointCountEditWrapper = $('#mean-variance-dataPointCount-wrapper');
-        var $dataPointCountEdit = $('#mean-variance-dataPointCount');
-        var $dataSeriesCountEdit = $('#mean-variance-dataSeriesCount');
-        var $formContainerHost = $('#mean-variance-formContainerHost');
-        var $formContainer = $('#mean-variance-formContainer');
-        var $detachFormContainerTrigger = $('#mean-variance-formContainerDetachTrigger');
-        var $nestedFormContainer = $('#mean-variance-nestedFormContainer');
-        var $snapToGridX = $('#snap-to-grid-x');
-        var $snapToGridY = $('#snap-to-grid-y');
-        var $gridEditX = $('#grid-edit-x');
-        var $gridEditY = $('#grid-edit-y');
+            $meanVarianceSidebarDatasetList: $('#meanVarianceSidebar-dataset-list'),
+            $automaticSidebarDatasetList: $('#automatic-sidebar-dataset-list'),
+            $dataPointCountEditWrapper: $('#mean-variance-dataPointCount-wrapper'),
+            $dataPointCountEdit: $('#mean-variance-dataPointCount'),
+            $dataSeriesCountEdit: $('#mean-variance-dataSeriesCount'),
+            $formContainerHost: $('#mean-variance-formContainerHost'),
+            $formContainer: $('#mean-variance-formContainer'),
+            $detachFormContainerTrigger: $('#mean-variance-formContainerDetachTrigger'),
+            $nestedFormContainer: $('#mean-variance-nestedFormContainer'),
+            $snapToGridX: $('#snap-to-grid-x'),
+            $snapToGridY: $('#snap-to-grid-y'),
+            $gridEditX: $('#grid-edit-x'),
+            $gridEditY: $('#grid-edit-y')
+        };
 
         var dataStructures = wpd._config.profileSettings.dataStructures;
         var gridSettings = {
@@ -205,14 +214,14 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 y: false
             },
             _dimensions: {
-                x: 100,
-                y: 100
+                x: 1,
+                y: 1
             },
             _pixelDimensions: {
                 x: 0,
                 y: 0
             },
-            _origin: {x:-0.337, y: -0.337},
+            _origin: { x: 0, y: 0 },
 
             getDimensions: function() {
                 return {
@@ -273,6 +282,8 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             var
          // outcomeMeasures = wpd._config.profileSettings.outcomeMeasures,
             subTableSpecs,
+            useTable,
+            showTrapezoids,
             curOutcomeMeasure,
             nestedSeries = null;
 
@@ -285,8 +296,14 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         var nestedDataPopup = $('.jBox-wrapper.jBox-Modal.nestedDataPopup').data('jBox');
         var dataPopupVisible = null, nestedDataPopupVisible = null;
 
+        function getUseTable() {
+            return $dom.$useTable.is(":checked");
+        }
+        function getShowTrapezoids() {
+            return $dom.$showTrapezoids.is(":checked");
+        }
         function getIncludeIndividuals() {
-            return $includeIndividuals.is(":checked");
+            return $dom.$includeIndividuals.is(":checked");
         }
 
         function hideAllDataPopups() {
@@ -304,51 +321,53 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 }
 
         function showDataPopup() {
-         // if (dataPopup != null) {
-            if (!dataPopup) {
-                dataPopup = new jBox('Modal', {
-                    addClass: 'dataPopup',
-                    content: $formContainer,
-                    title: dataPopupTitle,
-                    closeOnEsc: true,
-                    closeButton: 'box',
-                    closeOnClick: 'overlay',
-                    draggable: "title",
-                    overlay: false,
-                    pointer: true,
-                    position: wpd._config.userSettings.documents[0].dataEntryPopupPosition,
-                    onOpen: function () {
-                        $formContainerHost.addClass('detached');
-                        dataPopupVisible = true;
-                    },
-                    onClose: function () {
-                        if (nestedDataPopupVisible) {
-                            hideNestedDataPopup();
-                        }
-                        if (dataPopupVisible) {
-                            var pos = this.wrapper.position();
-                            wpd._config.userSettings.documents[0].dataEntryPopupPosition = {
-                                x: pos.left,
-                                y: pos.top
-                            };
-                            wpd._config.flushSettings(wpd._config.userSettings);
-                        }
-                        dataPopupVisible = false;
-                        dataPopup = null;
+            if (useTable) {
+                if (!dataPopup) {
+                    dataPopup = new jBox('Modal',
+                    {
+                        addClass: 'dataPopup',
+                        content: $dom.$formContainer,
+                        title: dataPopupTitle,
+                        closeOnEsc: true,
+                        closeButton: 'box',
+                        closeOnClick: 'overlay',
+                        draggable: "title",
+                        overlay: false,
+                        pointer: true,
+                        position: wpd._config.userSettings.documents[0].dataEntryPopupPosition,
+                        onOpen: function() {
+                            $dom.$formContainerHost.addClass('detached');
+                            dataPopupVisible = true;
+                        },
+                        onClose: function() {
+                            if (nestedDataPopupVisible) {
+                                hideNestedDataPopup();
+                            }
+                            if (dataPopupVisible) {
+                                var pos = this.wrapper.position();
+                                wpd._config.userSettings.documents[0].dataEntryPopupPosition = {
+                                    x: pos.left,
+                                    y: pos.top
+                                };
+                                wpd._config.flushSettings(wpd._config.userSettings);
+                            }
+                            dataPopupVisible = false;
+                            dataPopup = null;
 
-                        $formContainerHost.append($formContainer).removeClass('detached');
-                    },
-                    onPosition: function () {
-                        // console.log("onPosition!");
-                    },
-                    onDragEnd: function () {
-                        // console.log("onDragEnd!");
-                    },
-                    maxHeight: 250,
-                    maxWidth: 800
-                });
+                            $dom.$formContainerHost.append($dom.$formContainer).removeClass('detached');
+                        },
+                        onPosition: function() {
+                            // console.log("onPosition!");
+                        },
+                        onDragEnd: function() {
+                            // console.log("onDragEnd!");
+                        },
+                        maxHeight: 250,
+                        maxWidth: 800
+                    });
+                }
+                dataPopup.open();
             }
-            dataPopup.open();
         }
         function focusNextAvailableValueCell() {
             var $available = self.findNextAvaialbleNestedValueCell();
@@ -361,7 +380,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             if (!nestedDataPopup) {
                 nestedDataPopup = new jBox('Modal', {
                     addClass: 'nestedDataPopup',
-                    content: $nestedFormContainer,
+                    content: $dom.$nestedFormContainer,
                     title: nestedDataPopupTitle,
                     closeOnEsc: true,
                     closeButton: 'box',
@@ -387,7 +406,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                         nestedDataPopupVisible = false;
                         setActiveNestedCell(null);
 
-                        $formContainerHost.append($nestedFormContainer);
+                        $dom.$formContainerHost.append($dom.$nestedFormContainer);
                     },
                     onPosition: function () {
                         // console.log("onPosition!");
@@ -483,7 +502,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
         var dataPointCount, dataSeriesCount;
 
-        $detachFormContainerTrigger.on({
+        $dom.$detachFormContainerTrigger.on({
             click: function () {
                 showDataPopup();
                 var activeCell = getActiveCell();
@@ -538,10 +557,10 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         }
 
         function populateOutcomeMeasures() {
-            $outcomeMeasureList.html("");
+            $dom.$outcomeMeasureList.html("");
 
             wpd._config.profileSettings.forEachOutcomeMeasure(function (index, om) {
-                $outcomeMeasureList.append([
+                $dom.$outcomeMeasureList.append([
                     "<option id='",
                     om.id,
                     "'>",
@@ -552,10 +571,10 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         }
 
         function populateDataStructures() {
-            $dataStructureList.html("");
+            $dom.$dataStructureList.html("");
 
             wpd._config.profileSettings.forEachDataStructure(function(index, ds) {
-                $dataStructureList.append([
+                $dom.$dataStructureList.append([
                     "<option id='",
                     ds.id,
                     "'>",
@@ -565,11 +584,14 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             });
         }
 
-        function showCheckboxSetting($cb, isChecked) {
+        function showCheckboxSetting($cb, isChecked, triggerChange) {
             if (isChecked) {
                 $cb.attr('checked', 'checked');
             } else {
                 $cb.removeAttr('checked');
+            }
+            if (triggerChange) {
+                $cb.trigger('change');
             }
         }
         function showEditSetting($edit, value) {
@@ -583,11 +605,11 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         }
 
         function populateGridSettings() {
-            showCheckboxSetting($snapToGridX, gridSettings.snap.x);
-            showCheckboxSetting($snapToGridY, gridSettings.snap.y);
+            showCheckboxSetting($dom.$snapToGridX, gridSettings.snap.x);
+            showCheckboxSetting($dom.$snapToGridY, gridSettings.snap.y);
             var dim = gridSettings.getDimensions();
-            showEditSetting($gridEditX, dim.x);
-            showEditSetting($gridEditY, dim.y);
+            showEditSetting($dom.$gridEditX, dim.x);
+            showEditSetting($dom.$gridEditY, dim.y);
 
             forceExtendedCrosshairAsRequired();
         }
@@ -597,11 +619,11 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         configureSubTableSpecs();
 
         // TODO: Be clearer about which things should be done within OnAttach
-        $outcomeMeasureList.change();
+        $dom.$outcomeMeasureList.change();
 
         this.getOutcomeMeasure = function () {
             var outcomeMeasure = null;
-            var option = $outcomeMeasureList.find(':selected')[0];
+            var option = $dom.$outcomeMeasureList.find(':selected')[0];
 
             wpd._config.profileSettings.forEachOutcomeMeasure(function (index, om) {
                 if (option.id === om.id) {
@@ -615,7 +637,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
         this.getDataStructure = function () {
             var dso = null;
-            var option = $dataStructureList.find(':selected')[0];
+            var option = $dom.$dataStructureList.find(':selected')[0];
             var includeIndividuals = getIncludeIndividuals();
 
             wpd._config.profileSettings.forEachDataStructure(function (index, ds) {
@@ -835,31 +857,35 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
             this.attachedToDom = true;
             wpd.dataSeriesManagement.addNameChangeHandler(dataSeriesNameChangedHandler);
-            $button.addClass('pressed-button');
+            $dom.$button.addClass('pressed-button');
             wpd.graphicsWidget.setRepainter(new wpd.DataPointsRepainter());
 
-            $outcomeMeasureList.on('change', outcomeMeasureChanged);
-            $dataStructureList.on('change', dataStructureChanged);
-            $includeIndividuals.on('change', includeIndividualsChanged);
+            $dom.$meanVarianceSidebarDatasetList.on('change', datasetChanged);
+            $dom.$automaticSidebarDatasetList.on('change', datasetChanged);
+            $dom.$useTable.on('change', useTableChanged);
+            $dom.$showTrapezoids.on('change', showTrapezoidsChanged);
+            $dom.$outcomeMeasureList.on('change', outcomeMeasureChanged);
+            $dom.$dataStructureList.on('change', dataStructureChanged);
+            $dom.$includeIndividuals.on('change', includeIndividualsChanged);
 
-            $dataPointCountEdit.on('change', dataPointCountChanged);
-            $dataSeriesCountEdit.on('change', dataSeriesCountChanged);
+            $dom.$dataPointCountEdit.on('change', dataPointCountChanged);
+            $dom.$dataSeriesCountEdit.on('change', dataSeriesCountChanged);
 
-            $snapToGridX.on('change', snapToGridChanged);
-            $snapToGridY.on('change', snapToGridChanged);
-            $gridEditX.on('change', gridDimensionsChanged);
-            $gridEditY.on('change', gridDimensionsChanged);
+            $dom.$snapToGridX.on('change', snapToGridChanged);
+            $dom.$snapToGridY.on('change', snapToGridChanged);
+            $dom.$gridEditX.on('change', gridDimensionsChanged);
+            $dom.$gridEditY.on('change', gridDimensionsChanged);
 
 
             var lockable = [
-                $outcomeMeasureList,
-                $dataStructureList,
-                $includeIndividuals,
-                $dataPointCountEdit,
-                $dataSeriesCountEdit
+                $dom.$outcomeMeasureList,
+                $dom.$dataStructureList,
+                $dom.$includeIndividuals,
+                $dom.$dataPointCountEdit,
+                $dom.$dataSeriesCountEdit
             ];
 
-            $locked.on({
+            $dom.$locked.on({
                 change: function (e) {
                     if ($(this).is(':checked')) {
                         $.each(lockable, function(idx, $elem) {
@@ -902,7 +928,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                         if (info.is.subjectDataPoints) {
                             self.setModifierMode(self.modes.selectSubjectDataPoints);
                             self.buildNestedTable();
-                            $nestedFormContainer.removeClass('hidden');
+                            $dom.$nestedFormContainer.removeClass('hidden');
                             if (dataPopupVisible && !nestedDataPopupVisible) {
                                 showNestedDataPopup();
                             }
@@ -913,7 +939,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                                 self.clearModifierMode();
                             }
                             hideNestedDataPopup();
-                            $nestedFormContainer.addClass('hidden');
+                            $dom.$nestedFormContainer.addClass('hidden');
 
                             var dataSeries = plotData.getActiveDataSeries();
                             dataSeries.unselectAll();
@@ -1022,10 +1048,10 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             nestedConfig.spinchange = nestedConfig.change;
             nestedConfig.keydown = config.keydown;
 
-            $nestedFormContainer.on(nestedConfig, '.value,.count');
-            $formContainer.on(config, '.series-name,.mean,.variance,.subject-count,.subject-data-points');
+            $dom.$nestedFormContainer.on(nestedConfig, '.value,.count');
+            $dom.$formContainer.on(config, '.series-name,.mean,.variance,.subject-count,.subject-data-points');
 
-            $formContainer.on({
+            $dom.$formContainer.on({
                 change: function (e) {
                     var $edit = $(this);
                     var seriesIndex = $edit.attr('data-series');
@@ -1035,34 +1061,32 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 }
             }, '.series-name');
 
-            populateGridSettings();
-
             function applyProfile(profile) {
-                $outcomeMeasureList
+                gridSettings.snap = profile.gridSettings.snap;
+                gridSettings._dimensions = profile.gridSettings.dimensions;
+
+                showCheckboxSetting($dom.$useTable, profile.useTable, true);
+
+                if (!useTable) {
+                    $dom.$detachFormContainerTrigger.addClass('hidden');
+                }
+                $dom.$outcomeMeasureList
                     .find('option#' + profile.outcomeMeasureId)
                     .attr('selected', 'selected')
                     .change();
 
-                $dataStructureList
+                $dom.$dataStructureList
                     .find('option#' + profile.dataStructureId)
                     .attr('selected', 'selected')
                     .change();
 
-                if (profile.includeIndividuals) {
-                    $includeIndividuals
-                        .attr('checked', 'checked')
-                        .trigger('change');
-                } else {
-                    $includeIndividuals
-                        .removeAttr('checked')
-                        .trigger('change');
-                }
+                showCheckboxSetting($dom.$includeIndividuals, profile.includeIndividuals, true);
 
-                $dataSeriesCountEdit
+                $dom.$dataSeriesCountEdit
                     .val(profile.dataSeriesCount)
                     .change();
 
-                $dataPointCountEdit
+                $dom.$dataPointCountEdit
                     .val(profile.dataPointCount)
                     .change();
 
@@ -1070,6 +1094,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             }
 
             applyProfile(wpd._config.profileSettings.getProfile());
+            populateGridSettings();
 
             showDataPopup();
         };
@@ -1146,7 +1171,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     if (!stsf.isManualEntry) {
                         if (di >= pointCount) {
                             if (p === (iterationCount - 1)) {
-                                var valueEdits = $nestedFormContainer.find("." + stsf.css);
+                                var valueEdits = $dom.$nestedFormContainer.find("." + stsf.css);
                                 var tabIndices = valueEdits.map(function() {
                                     return $(this).attr('tabindex');
                                 });
@@ -1243,11 +1268,11 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
             html = html.join('');
 
-            $nestedFormContainer.html(html);
-            $nestedFormContainer.find('.count').spinner({ min: 1 });
+            $dom.$nestedFormContainer.html(html);
+            $dom.$nestedFormContainer.find('.count').spinner({ min: 1 });
 
             // Clear out data for all cells
-            var cells = $nestedFormContainer.find('td.value');
+            var cells = $dom.$nestedFormContainer.find('td.value');
             cells.removeData('dataInfo');
 
             var stsIndex = 0;
@@ -1274,7 +1299,12 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         //
 
         this.buildTable = function () {
-            if ($locked.is('checked')) {
+            if (!useTable) {
+                hideAllDataPopups();
+                $dom.$formContainer.html('');
+                return;
+            }
+            if ($dom.$locked.is('checked')) {
                 alert("Please uncheck the locked checkbox to change the numbers of series and/or points.");
             }
 
@@ -1470,7 +1500,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             );
             html = html.join('');
             var $table = $(html);
-            $formContainer.html($table);
+            $dom.$formContainer.html($table);
 
             if (dataPopup) {
                 dataPopup._setTitleWidth();
@@ -1541,25 +1571,50 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 zIndex: 20000,
                 maxWidth: 300
             };
-            $formContainer
+            $dom.$formContainer
                 .find('.series-name,.subject-count,.mean,.variance,.subject-data-points')
                 .jBox('Tooltip', editTooltipConfig);
 
-            $nestedFormContainer
+            $dom.$nestedFormContainer
                 .find('.value,.count')
                 .jBox('Tooltip', editTooltipConfig);
         }
 
+        function updateUiToReflectShowTableStatus() {
+            if (useTable) {
+                $dom.$tableControls.removeClass('hidden');
+                $dom.$freeControls.addClass('hidden');
+            } else {
+                $dom.$tableControls.addClass('hidden');
+                $dom.$freeControls.removeClass('hidden');
+            }
+        }
         function showDataPointCounterIfNeeded() {
             if (curOutcomeMeasure.hasFields || getIncludeIndividuals()) {
-                $dataPointCountEditWrapper.addClass('hidden');
+                $dom.$dataPointCountEditWrapper.addClass('hidden');
             } else {
-                $dataPointCountEditWrapper.removeClass('hidden');
+                $dom.$dataPointCountEditWrapper.removeClass('hidden');
             }
         }
 
         function updateOutcomeMeasureFieldMetaData() {
             wpd.appData.getPlotData().setMeasureFieldMetaData(curOutcomeMeasure.fields);
+        }
+
+        function datasetChanged() {
+            wpd.acquireData.changeDataset(this);
+        }
+        function useTableChanged(ev) {
+            useTable = getUseTable();
+            updateUiToReflectShowTableStatus();
+            self.buildTable();
+        }
+        function showTrapezoidsChanged(ev) {
+            var painter = wpd.graphicsWidget.getRepainter();
+
+            showTrapezoids = getShowTrapezoids();
+            painter.setShowArea(showTrapezoids);
+            wpd.graphicsWidget.forceHandlerRepaint();
         }
         function outcomeMeasureChanged(ev) {
             curOutcomeMeasure = self.getOutcomeMeasure();
@@ -1567,9 +1622,9 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
             showDataPointCounterIfNeeded();
             //if (curOutcomeMeasure.hasFields) {
-            //    $dataPointCountEditWrapper.addClass('hidden');
+            //    $dom.$dataPointCountEditWrapper.addClass('hidden');
             //} else {
-            //    $dataPointCountEditWrapper.removeClass('hidden');
+            //    $dom.$dataPointCountEditWrapper.removeClass('hidden');
             //}
             self.buildTable();
         }
@@ -1583,19 +1638,19 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         }
 
         function dataPointCountChanged(ev) {
-            dataPointCount = parseInt($dataPointCountEdit.val(), 10);
+            dataPointCount = parseInt($dom.$dataPointCountEdit.val(), 10);
             self.buildTable();
         };
         function snapToGridChanged(ev) {
-            gridSettings.snap.x = $snapToGridX.is(':checked');
-            gridSettings.snap.y = $snapToGridY.is(':checked');
+            gridSettings.snap.x = $dom.$snapToGridX.is(':checked');
+            gridSettings.snap.y = $dom.$snapToGridY.is(':checked');
 
             forceExtendedCrosshairAsRequired();
         }
         function gridDimensionsChanged(ev) {
             gridSettings.setDimensions({
-                x: parseInt($gridEditX.val(), 10),
-                y: parseInt($gridEditY.val(), 10)
+                x: parseInt($dom.$gridEditX.val(), 10),
+                y: parseInt($dom.$gridEditY.val(), 10)
             });
 
             var dim = gridSettings.getDimensions();
@@ -1611,7 +1666,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             ].join(''));
         }
         function dataSeriesCountChanged(ev) {
-            dataSeriesCount = parseInt($dataSeriesCountEdit.val(), 10);
+            dataSeriesCount = parseInt($dom.$dataSeriesCountEdit.val(), 10);
             plotData.ensureSeriesCount(dataSeriesCount); //, dataPointCount);
 
             updateOutcomeMeasureFieldMetaData();
@@ -1812,29 +1867,118 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         }
 
         function lock() {
-            $locked
+            $dom.$locked
                 .attr('checked', 'checked')
                 .trigger('change');
         }
 
-        function createPointsMouseClick(ev, pos, imagePos) {
-            var mi = getModeInfo();
-            var aci = getActiveCellInfo();
+        function annotateData(series) {
+            var axes = plotData.axes,
+                dataPt,
+                transformedDataPt,
+                data = [];
 
-            if (aci.activeCell === null || (mi.subjectDataPointsMode && aci.activeNestedCell === null)) { // && activeNestedCell === null) {
-                alert(["please select a ",
-                    mi.headerMode
-                        ? "header"
-                        : mi.subjectDataPointsMode
-                            ? "subject data point"
-                            : "data",
-                    " cell before attempting to add a point!"
-                ].join(''));
+            for (var i = 0; i < series.getCount() ; i++) {
+                dataPt = wpd.utils.deepClone (series.getPixel(i));
+                transformedDataPt = axes.pixelToData(dataPt.x, dataPt.y);
 
-                return;
+                data.push({ origIndex: i, origData: dataPt, transformedDataPt: transformedDataPt});
             }
 
-            var info = getInfo(aci.cell);
+            return data;
+        }
+
+        function calculateAreaUnderCurveForSeries(series) {
+            var i,
+                area = 0,
+                trapezoidArea,
+                count = series.getPixelCount(),
+                sortedData = [];
+
+            if (count > 1) {
+                // get all points in data-space
+                var data = annotateData(series);
+                var origin = plotData.getPixelPoint({ x: 0, y: 0 });
+                origin = plotData.axes.pixelToData(origin.x, origin.y);
+
+                // order them by x
+                data.sort(function(a, b) {
+                    return a.transformedDataPt[0] - b.transformedDataPt[0];
+                });
+
+                for (i = 0; i < data.length; i++) {
+                    sortedData.push(data[i].origData);
+                }
+
+                // calculate the total area of the trapezoids created by two adjacent points and their projection onto the y=0 axis
+                var left = data[0].transformedDataPt, right;
+                for (i = 1; i < count; i++) {
+                    right = data[i].transformedDataPt;
+
+                    // area of trapezoid: base times average height
+                    var width = right[0] - left[0];
+                    var leftHeight = Math.abs(left[1] - origin[1]);
+                    var rightHeight = Math.abs(right[1] - origin[1]);
+                    var averageHeight = (rightHeight + leftHeight) / 2;
+                    trapezoidArea = width * averageHeight;
+                    area += trapezoidArea;
+
+                    left = right;
+                }
+            }
+
+            return { area: area, sortedPoints: sortedData };
+        }
+
+        function showAreaUnderCurve() {
+            var series = wpd.appData.getPlotData().getActiveDataSeries();
+            var areaAndSortedPoints = calculateAreaUnderCurveForSeries(series);
+            var area = areaAndSortedPoints.area;
+            var sortedPoints = areaAndSortedPoints.sortedPoints;
+
+            // Update the series with identical data (i.e. without introducing any rounding errors) sorted by x
+            for (var i = 0; i < sortedPoints.length; i++) {
+                var sp = sortedPoints[i];
+                series.setPixelAt(i, sp.x, sp.y);
+            }
+
+            // Paint the area
+         // var painter = wpd.graphicsWidget.getRepainter();
+         // painter.setShowArea(true);
+         // wpd.graphicsWidget.forceHandlerRepaint();
+         // painter.setShowArea(false);
+
+            $dom.$areaUnderCurve.html(
+                "Area under curve: " + area
+            );
+        }
+
+        function createPointsMouseClick(ev, pos, imagePos) {
+            var mi = getModeInfo(),
+                aci,
+                info,
+                dataIndex,
+                metaData;
+
+            if (useTable) {
+                aci = getActiveCellInfo();
+
+                if (aci.activeCell === null || (mi.subjectDataPointsMode && aci.activeNestedCell === null)) { // && activeNestedCell === null) {
+                    // TODO: Select the first cell in the grid rather than showing an alert!
+                    alert(["please select a ",
+                        mi.headerMode
+                            ? "header"
+                            : mi.subjectDataPointsMode
+                                ? "subject data point"
+                                : "data",
+                        " cell before attempting to add a point!"
+                    ].join(''));
+
+                    return;
+                }
+                info = getInfo(aci.cell);
+            }
+
 
             var asi = self.getActiveSeriesInfo(), pointLabel = null;
 
@@ -1848,40 +1992,55 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             //}
 
             // if (blah && confirm ("This group already data - would you like to override it?"))) {}
-            if (info.is.groupName || !aci.activeCell.val()) {
-                var metaData = { meanVarianceInfo: info };
+            if (useTable) {
+                if (info.is.groupName || !aci.activeCell.val()) {
+                    metaData = { meanVarianceInfo: info };
 
-                //if (plotData.axes.dataPointsHaveLabels) {
-                //    metaData.label = pointLabel;
-                //}
+                    imagePos = wpd.graphicsWidget.screenPx(imagePos.x, imagePos.y);
+                    gridSettings.quantize(imagePos);
+                    imagePos = wpd.graphicsWidget.imagePx(imagePos.x, imagePos.y);
+
+                    dataIndex = asi.series.addPixel(imagePos.x, imagePos.y, metaData);
+
+                    //wpd.graphicsHelper.drawPoint(imagePos, "rgb(200,0,0)", pointLabel);
+                    wpd.graphicsWidget.forceHandlerRepaint(); // draw points from the painter only
+
+                    var dataPointView = getCellValue(imagePos, info, plotData, asi.series);
+
+                    lock();
+                    aci.cell.val(dataPointView);
+
+                    aci.cell.data('dataInfo',
+                    {
+                        dataIndex: dataIndex
+                    });
+                    var curTabIndex = aci.cell.prop('tabindex');
+                    var nextTabIndex = curTabIndex + 1;
+
+                    self.buildNestedTable();
+                    var $next = $("[tabindex='" + nextTabIndex + "']");
+                    selectCell($next);
+                } else {
+                    // TODO: Change to a confirm and add the point if 'Yes'
+                    alert("This cell already has data!");
+                }
+            } else {
+                metaData = { };
 
                 imagePos = wpd.graphicsWidget.screenPx(imagePos.x, imagePos.y);
                 gridSettings.quantize(imagePos);
                 imagePos = wpd.graphicsWidget.imagePx(imagePos.x, imagePos.y);
 
-                var dataIndex = asi.series.addPixel(imagePos.x, imagePos.y, metaData);
+                dataIndex = asi.series.addPixel(imagePos.x, imagePos.y, metaData);
+
+                if (!useTable) {
+                    showAreaUnderCurve();
+                }
 
                 //wpd.graphicsHelper.drawPoint(imagePos, "rgb(200,0,0)", pointLabel);
                 wpd.graphicsWidget.forceHandlerRepaint(); // draw points from the painter only
 
-                var dataPointView = getCellValue(imagePos, info, plotData, asi.series);
-
                 lock();
-                aci.cell.val(dataPointView);
-
-                aci.cell.data('dataInfo',
-                {
-                    dataIndex: dataIndex
-                });
-                var curTabIndex = aci.cell.prop('tabindex');
-                var nextTabIndex = curTabIndex + 1;
-
-                self.buildNestedTable();
-                var $next = $("[tabindex='" + nextTabIndex + "']");
-                selectCell ($next);
-            } else {
-                // TODO: Change to a confirm and add the point if 'Yes'
-                alert("This cell already has data!");
             }
 
             wpd.graphicsWidget.updateZoomOnEvent(ev);
@@ -1898,27 +2057,41 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             dataSeries.unselectAll();
             dataSeries.selectNearestPixel(imagePos.x, imagePos.y);
 
-            var cell = getCellCorrespondingToSelectedPoint(dataSeries);
-            selectCell(cell);
+            if (useTable) {
+                var cell = getCellCorrespondingToSelectedPoint(dataSeries);
+                var cell = getCellCorrespondingToSelectedPoint(dataSeries);
+                selectCell(cell);
+            }
 
             wpd.graphicsWidget.forceHandlerRepaint();
             wpd.graphicsWidget.updateZoomOnEvent(ev);
         }
         function deletePointsMouseClick(ev, pos, imagePos) {
             var activeDataSeries = plotData.getActiveDataSeries();
-            var activeCell = getActiveCell();
 
             var pixelIndex = activeDataSeries.findNearestPixel(imagePos.x, imagePos.y);
             if (pixelIndex >= 0) {
                 activeDataSeries.unselectAll();
                 activeDataSeries.selectPixel(pixelIndex);
-                var cell = getCellCorrespondingToSelectedPoint(activeDataSeries);
-                selectCell(cell);
 
-                activeCell.val('');
+                if (useTable) {
+                    var activeCell = getActiveCell();
+
+                    var cell = getCellCorrespondingToSelectedPoint(activeDataSeries);
+                    selectCell(cell);
+
+                    activeCell.val('');
+
+                }
 
                 activeDataSeries.removePixelAtIndex(pixelIndex);
                 wpd.graphicsWidget.resetData();
+
+
+                if (!useTable) {
+                    showAreaUnderCurve();
+                }
+
                 wpd.graphicsWidget.forceHandlerRepaint();
                 wpd.graphicsWidget.updateZoomOnEvent(ev);
                 wpd.dataPointCounter.setCount();
@@ -1937,33 +2110,19 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     break;
             }
         };
-        this.removeEventHandlers = function() {
-            $.each([
-                $detachFormContainerTrigger,
-                $(wpd._config.appContainerElem),
-                $outcomeMeasureList,
-                $dataStructureList,
-                $includeIndividuals,
-                $dataPointCountEdit,
-                $dataSeriesCountEdit,
-                $snapToGridX,
-                $snapToGridY,
-                $gridEditX,
-                $gridEditY,
-                $locked,
-                $nestedFormContainer,
-                $formContainer
-            ],
-            function(idx, $elem) {
-                $elem.off();
-            });
+        this.removeEventHandlers = function () {
+            for (var $elem in $dom) {
+                if ($dom.hasOwnProperty($elem)) {
+                    $dom[$elem].off();
+                }
+            }
         };
 
         this.onRemove = function () {
             hideAllDataPopups();
             this.removeEventHandlers();
             wpd.dataSeriesManagement.removeNameChangedHandler(dataSeriesNameChangedHandler);
-            $button.removeClass('pressed-button');
+            $dom.$button.removeClass('pressed-button');
         };
 
         function createPointsKeyDown(ev) {
@@ -1999,6 +2158,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             wpd.graphicsWidget.resetData();
             wpd.graphicsWidget.forceHandlerRepaint();
             wpd.graphicsWidget.updateZoomToImagePosn(lastPt.x, lastPt.y);
+
             ev.preventDefault();
         }
 
@@ -2018,12 +2178,24 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             var pointPx = selPoint.x,
                 pointPy = selPoint.y,
                 stepSize = ev.shiftKey === true ? 5 / wpd.graphicsWidget.getZoomRatio() : 0.5 / wpd.graphicsWidget.getZoomRatio(),
-                aci = getActiveCellInfo(),
-                activeCell = aci.cell,
+                aci,
+                activeCell,
                 cell;
 
-            cell = getCellCorrespondingToSelectedPoint(activeDataSeries);
-            selectCell(cell);
+            if (useTable) {
+                aci = getActiveCellInfo();
+                activeCell = aci.cell;
+
+                cell = getCellCorrespondingToSelectedPoint(activeDataSeries);
+                selectCell(cell);
+            }
+
+            function reselectCell() {
+                if (useTable) {
+                    cell = getCellCorrespondingToSelectedPoint(activeDataSeries);
+                    selectCell(cell);
+                }
+            }
 
             if (wpd.keyCodes.isUp(ev.keyCode)) {
                 pointPy = pointPy - stepSize;
@@ -2037,8 +2209,8 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 activeDataSeries.selectPreviousPixel();
                 selIndex = activeDataSeries.getSelectedPixels()[0];
                 selPoint = activeDataSeries.getPixel(selIndex);
-                cell = getCellCorrespondingToSelectedPoint(activeDataSeries);
-                selectCell(cell);
+
+                reselectCell();
 
                 pointPx = selPoint.x;
                 pointPy = selPoint.y;
@@ -2046,8 +2218,8 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 activeDataSeries.selectNextPixel();
                 selIndex = activeDataSeries.getSelectedPixels()[0];
                 selPoint = activeDataSeries.getPixel(selIndex);
-                cell = getCellCorrespondingToSelectedPoint(activeDataSeries);
-                selectCell(cell);
+
+                reselectCell();
 
                 pointPx = selPoint.x;
                 pointPy = selPoint.y;
@@ -2069,8 +2241,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     pointPx = selPoint.x;
                     pointPy = selPoint.y;
                 }
-                cell = getCellCorrespondingToSelectedPoint(activeDataSeries);
-                selectCell(cell);
+                reselectCell();
 
                 wpd.graphicsWidget.resetData();
                 wpd.graphicsWidget.forceHandlerRepaint();
@@ -2084,14 +2255,18 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             }
 
             activeDataSeries.setPixelAt(selIndex, pointPx, pointPy);
+
+            if (!useTable) {
+                showAreaUnderCurve();
+            }
+
             wpd.graphicsWidget.forceHandlerRepaint();
             wpd.graphicsWidget.updateZoomToImagePosn(pointPx, pointPy);
             ev.preventDefault();
             ev.stopPropagation();
 
-
             // Update table
-            if (activeCell) {
+            if (useTable && activeCell) {
                 var info = getInfo(activeCell);
 
                 var plotData = wpd.appData.getPlotData();
@@ -2117,6 +2292,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         function deletePointsKeyDown(ev) {
 
         }
+
         this.onKeyDown = function (ev) {
             if (wpd.acquireMeanVarianceData.isToolSwitchKey(ev.keyCode)) {
                 wpd.acquireMeanVarianceData.switchToolOnKeyPress(String.fromCharCode(ev.keyCode).toLowerCase());
@@ -2148,41 +2324,10 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
     return Tool;
 })();
 
-/*wpd.acquireMeanVarianceData.DeleteDataPointTool = (function () {
-    var Tool = function () {
-        var ctx = wpd.graphicsWidget.getAllContexts(),
-            plotData = wpd.appData.getPlotData(),
-            $button = $('#mean-variance-delete-point-button');
-
-        this.onAttach = function () {
-            $button.addClass('pressed-button');
-            wpd.graphicsWidget.setRepainter(new wpd.DataPointsRepainter());
-        };
-
-        this.onMouseClick = function(ev, pos, imagePos) {
-            //var activeDataSeries = plotData.getActiveDataSeries();
-            //activeDataSeries.removeNearestPixel(imagePos.x, imagePos.y);
-            //wpd.graphicsWidget.resetData();
-            //wpd.graphicsWidget.forceHandlerRepaint();
-            //wpd.graphicsWidget.updateZoomOnEvent(ev);
-            //wpd.dataPointCounter.setCount();
-        };
-
-        this.onKeyDown = function (ev) {
-            if(wpd.acquireMeanVarianceData.isToolSwitchKey(ev.keyCode)) {
-                wpd.acquireMeanVarianceData.switchToolOnKeyPress(String.fromCharCode(ev.keyCode).toLowerCase());
-            }
-        };
-
-        this.onRemove = function () {
-            $button.removeClass('pressed-button');
-        };
-    };
-    return Tool;
-})();*/
-
 wpd.DataPointsRepainter = (function () {
     var Painter = function () {
+
+        var showArea = false;
 
         function doDraw(series) {
             var plotData = wpd.appData.getPlotData();
@@ -2195,17 +2340,43 @@ wpd.DataPointsRepainter = (function () {
                 isSelected,
                 hasLabels = false,
                 pointLabel,
-                blue = "rgb(0, 0, 255)",
+                blue = "rgb(0,0,255)",
                 red = "rgb(255,0,0)",
                 black = "rgb(0,0,0)",
                 white = "rgb(255,255,255)",
-                orange = "rgb(255,255,0)";
+                orange = "rgb(255,255,0)",
+                areaColours = [
+                    blue,
+                    red,
+                    black,
+                    white,
+                    orange
+                ],
+                areaColourCount = areaColours.length,
+                count = series.getCount();
 
             //if (plotData.axes.dataPointsHaveLabels) { // && mkeys != null && mkeys[0] === 'Label') {
             //    hasLabels = true;
             //}
 
-            for (dindex = 0; dindex < series.getCount() ; dindex++) {
+            if (showArea) {
+                var origin = plotData.getPixelPoint({ x: 0, y: 0 });
+                var left = series.getPixel(0), right;
+                for (dindex = 1; dindex < count; dindex++) {
+                    right = series.getPixel(dindex);
+
+                    wpd.graphicsHelper.drawTrapezoid([
+                        left,
+                        right,
+                        { x: right.x, y: origin.y },
+                        { x: left.x, y: origin.y }
+                    ], areaColours[dindex % areaColourCount]);
+
+                    left = right;
+                }
+            }
+
+            for (dindex = 0; dindex < count ; dindex++) {
                 imagePos = series.getPixel(dindex);
                 isSelected = series.getSelectedPixels().indexOf(dindex) >= 0;
                 var info = series.getPixelMetaDataByKey(imagePos, 'meanVarianceInfo');
@@ -2258,6 +2429,7 @@ wpd.DataPointsRepainter = (function () {
                 }
             }
         }
+
         var drawPoints = function () {
             var tool = wpd.graphicsWidget.getTool ? wpd.graphicsWidget.getTool() : null;
             var asi = tool && tool.getActiveSeriesInfo ? tool.getActiveSeriesInfo() : null;
@@ -2288,6 +2460,10 @@ wpd.DataPointsRepainter = (function () {
         this.onForcedRedraw = function () {
             wpd.graphicsWidget.resetData();
             drawPoints();
+        };
+
+        this.setShowArea = function(show) {
+            showArea = show;
         };
     };
     return Painter;

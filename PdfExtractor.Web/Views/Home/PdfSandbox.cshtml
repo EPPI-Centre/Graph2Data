@@ -698,6 +698,8 @@
                         Manual Mode <input type="button" value="Automatic Mode" style="width: 125px;" onclick="wpd.autoExtraction.start();">
                     </p>
                     <hr />
+                    <p>Dataset <select id="meanVarianceSidebar-dataset-list" style="width:160px;"></select></p>
+                    <hr />
                     <p>
                         <input id="mean-variance-select-button" class="mean-variance-selection-mode createPoints" value="Add Point (A)" onclick="wpd.acquireMeanVarianceData.meanVarianceSelection();" type="button" style="width: 112px;">
                         <input id="mean-variance-adjust-button" class="mean-variance-selection-mode adjustPoints" value="Adjust Point (S)" onclick="wpd.acquireMeanVarianceData.adjustPoints();" type="button" style="width: 112px;">
@@ -716,43 +718,59 @@
                     </p>
                     <div class="vertical-spacer"></div>
                     <p>
-                        <b>Outcome measure</b>
-                        <select id="outcome-measure"></select>
-                    </p>
-                    <div class="vertical-spacer"></div>
-                    <p>
-                        <b>Data structure</b>
-                        <select id="mean-variance-data-structure"></select>
-                        <label for="include-individuals">
-                            <input type="checkbox" id="include-individuals" />
-                            Include individuals
+                        <label for="use-table">
+                            <input type="checkbox" id="use-table"/>
+                            Use table
                         </label>
                     </p>
-                    <div class="vertical-spacer"></div>
-                    <p>
-                        # Data series
-                        <input type="text" size="3" id="mean-variance-dataSeriesCount" />
-                    </p>
-                    <div class="vertical-spacer"></div>
-                    <p id="mean-variance-dataPointCount-wrapper">
-                        # Data points
-                        <input type="text" size="3" id="mean-variance-dataPointCount" />
-                    </p>
-                    <div class="vertical-spacer"></div>
-                    <p>
-                        <label for="mean-variance-dataSeriesLocked">
-                            <input type="checkbox" id="mean-variance-dataSeriesLocked" />
-                            Locked
+                    <div id="free-controls">
+                        <span id="area-under-curve"></span>
+                        <label for="show-trapezoids">
+                            <input type="checkbox" id="show-trapezoids" />
+                            Show trapezoids
                         </label>
-                    </p>
-                    <div class="vertical-spacer"></div>
-                    <p>
-                        <div id="mean-variance-formContainerHost">
-                            <div id="mean-variance-formContainerDetachTrigger">Detach</div>
-                            <div id="mean-variance-formContainer" class='table-container'></div>
-                            <div id="mean-variance-nestedFormContainer" class='table-container'></div>
-                        </div>
-                    </p>
+                    </div>
+                    <div id="table-controls">
+                        <div class="vertical-spacer"></div>
+                        <p>
+                            <b>Outcome measure</b>
+                            <select id="outcome-measure"></select>
+                        </p>
+                        <div class="vertical-spacer"></div>
+                        <p>
+                            <b>Data structure</b>
+                            <select id="mean-variance-data-structure"></select>
+                            <label for="include-individuals">
+                                <input type="checkbox" id="include-individuals" />
+                                Include individuals
+                            </label>
+                        </p>
+                        <div class="vertical-spacer"></div>
+                        <p>
+                            # Data series
+                            <input type="text" size="3" id="mean-variance-dataSeriesCount" />
+                        </p>
+                        <div class="vertical-spacer"></div>
+                        <p id="mean-variance-dataPointCount-wrapper">
+                            # Data points
+                            <input type="text" size="3" id="mean-variance-dataPointCount" />
+                        </p>
+                        <div class="vertical-spacer"></div>
+                        <p>
+                            <label for="mean-variance-dataSeriesLocked">
+                                <input type="checkbox" id="mean-variance-dataSeriesLocked" />
+                                Locked
+                            </label>
+                        </p>
+                        <div class="vertical-spacer"></div>
+                        <p>
+                            <div id="mean-variance-formContainerHost">
+                                <div id="mean-variance-formContainerDetachTrigger">Detach</div>
+                                <div id="mean-variance-formContainer" class='table-container'></div>
+                                <div id="mean-variance-nestedFormContainer" class='table-container'></div>
+                            </div>
+                        </p>
+                    </div>
                 </div>
 
                 <!-- edit image -->

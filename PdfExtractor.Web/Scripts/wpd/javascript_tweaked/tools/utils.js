@@ -96,12 +96,17 @@ wpd.utils = (function () {
         }
     }
 
+    function deepClone(obj) {
+        return JSON.parse(JSON.stringify(obj));
+    }
+
 
     return {
         notice: notice,
         getElemId: getElemId,
         _$: _$,
-        bindMemberFunctions: bindMemberFunctions
+        bindMemberFunctions: bindMemberFunctions,
+        deepClone: deepClone
     };
 
 })();

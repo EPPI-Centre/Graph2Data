@@ -64,13 +64,35 @@ wpd.initApp = function (config) {// This is run when the page loads.
             profile.choose();
         },
 
+        defaultGridSettings: {
+            snap: {
+                x: false,
+                y: false
+            },
+            dimensions: {
+                x: 1,
+                y: 1
+            }
+        },
+
         configureProfiles: function() {
             var self = this;
 
             this.profiles = [{
+                id: 'free-points-capture',
+                name: "Free points-capture",
+                plotTypeId: 'r_xy',
+                useTable: false,
+                outcomeMeasureId: 'simple-table-capture',
+                dataStructureId: 'mean-only',
+                includeIndividuals: false,
+                dataSeriesCount: 1,
+                dataPointCount: 200
+            }, {
                 id: 'quantize-test-2D',
                 name: "Quantize Testing (2D)",
                 plotTypeId: 'r_xy',
+                useTable: true,
                 outcomeMeasureId: 'simple-table-capture',
                 dataStructureId: 'mean-only',
                 includeIndividuals: false,
@@ -80,6 +102,7 @@ wpd.initApp = function (config) {// This is run when the page loads.
                 id: 'quantize-test-1D',
                 name: "Quantize Testing (1D)",
                 plotTypeId: 'r_bar',
+                useTable: true,
                 outcomeMeasureId: 'simple-table-capture',
                 dataStructureId: 'mean-only',
                 includeIndividuals: false,
@@ -89,6 +112,7 @@ wpd.initApp = function (config) {// This is run when the page loads.
                 id: 'scatter-plot-xy',
                 name: "Scatter plot (XY)",
                 plotTypeId: 'r_xy',
+                useTable: true,
                 outcomeMeasureId: 'simple-table-capture',
                 dataStructureId: 'mean-only',
                 includeIndividuals: true,
@@ -98,6 +122,7 @@ wpd.initApp = function (config) {// This is run when the page loads.
                 id: 'scatter-plot-1d',
                 name: "Scatter plot (1D)",
                 plotTypeId: 'r_bar',
+                useTable: true,
                 outcomeMeasureId: 'simple-table-capture',
                 dataStructureId: 'mean-only',
                 includeIndividuals: true,
@@ -139,6 +164,7 @@ wpd.initApp = function (config) {// This is run when the page loads.
                                     name: name,
                                     plotTypeId: pt.id,
                                     outcomeMeasureId: om.id,
+                                    useTable: true,
                                     dataStructureId: ds.id,
                                     includeIndividuals: ii,
                                     dataSeriesCount: 4,
@@ -181,6 +207,7 @@ wpd.initApp = function (config) {// This is run when the page loads.
 
             this.forEachProfile(function(i, profile) {
                 profile.id = "profile_" + profile.id;
+                profile.gridSettings = wpd._config.profileSettings.defaultGridSettings;
                 profile.note = buildNote(profile);
                 profile.choose = function () {
                     wpd.popup.close('chooseProfile');

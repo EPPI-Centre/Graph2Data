@@ -25,6 +25,24 @@ var wpd = wpd || {};
 
 wpd.graphicsHelper = (function () {
 
+    function drawTrapezoid(imageVertices, fillStyle) {
+        var ctx = wpd.graphicsWidget.getAllContexts(),
+            context = ctx.dataCtx,
+            screenVertices = $.map(imageVertices, function (iv) {
+                return wpd.graphicsWidget.screenPx(iv.x, iv.y);
+            });
+
+        context.beginPath();
+        context.fillStyle = fillStyle;
+        context.moveTo(screenVertices[0].x, screenVertices[0].y);
+        for (var i = 1; i < imageVertices.length; i++) {
+            context.lineTo(screenVertices[i].x, screenVertices[i].y);
+        }
+        context.lineTo(screenVertices[0].x, screenVertices[0].y);
+     // context.closePath();
+        context.fill();
+    }
+
     // imagePx - relative to original image
     // fillStyle - e.g. "rgb(200,0,0)"
     // label - e.g. "Bar 0"
@@ -109,7 +127,8 @@ wpd.graphicsHelper = (function () {
     }
 
     return {
-        drawPoint : drawPoint
+        drawPoint : drawPoint,
+        drawTrapezoid: drawTrapezoid
     };
 
 })();
