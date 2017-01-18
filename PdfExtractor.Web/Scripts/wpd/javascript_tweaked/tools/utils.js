@@ -100,13 +100,34 @@ wpd.utils = (function () {
         return JSON.parse(JSON.stringify(obj));
     }
 
+    function populateDatasetControl(datasetList) {
+        datasetList = _$(datasetList);
+        var plotData = wpd.appData.getPlotData(),
+            currentDataset = plotData.getActiveDataSeries(), // just to create a dataset if there is none.
+            currentIndex = plotData.getActiveDataSeriesIndex(),
+            listHtml = [],
+            i;
+
+        for (i = 0; i < plotData.dataSeriesColl.length; i++) {
+            listHtml.push(
+                '<option',
+                i === currentIndex ? " selected" : "",
+                '>',
+                plotData.dataSeriesColl[i].name,
+                '</option>'
+            );
+        }
+        datasetList.innerHTML = listHtml.join('');
+        //datasetList.selectedIndex = currentIndex;
+    }
 
     return {
         notice: notice,
         getElemId: getElemId,
         _$: _$,
         bindMemberFunctions: bindMemberFunctions,
-        deepClone: deepClone
+        deepClone: deepClone,
+        populateDatasetControl: populateDatasetControl
     };
 
 })();

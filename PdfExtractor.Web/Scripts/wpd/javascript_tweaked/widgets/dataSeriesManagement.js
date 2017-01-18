@@ -26,25 +26,33 @@ var wpd = wpd || {};
 wpd.dataSeriesManagement = (function () {
 
     var nameIndex = 1;
-    
+
     function updateSeriesList() {
     }
 
-    var _nameChangedHandlers = [];
+    var dataSeriesChangedHandlers = [];
 
-    function nameChangedHandlerIndex(handler) {
-        return $.inArray(handler, _nameChangedHandlers);
+    function fireHandlers(handlers, eventObj) {
+        $.each(handlers, function (idx, handler) {
+            handler(eventObj);
+        });
     }
-    function addNameChangeHandler(handler) {
-        if (nameChangedHandlerIndex(handler) === -1) {
-            _nameChangedHandlers.push(handler);
+    function fireDataSeriesChanged(eventObj) {
+        fireHandlers(dataSeriesChangedHandlers, eventObj);
+    }
+
+    function dataSeriesChangedHandlerIndex(handler) {
+        return $.inArray(handler, dataSeriesChangedHandlers);
+    }
+    function addDataSeriesChangeHandler(handler) {
+        if (dataSeriesChangedHandlerIndex(handler) === -1) {
+            dataSeriesChangedHandlers.push(handler);
         }
     }
-
-    function removeNameChangedHandler(handler) {
-        var index = nameChangedHandlerIndex(handler);
+    function removeDataSeriesChangeHandler(handler) {
+        var index = dataSeriesChangedHandlerIndex(handler);
         if (index !== -1) {
-            _nameChangedHandlers.splice(index, 1);
+            dataSeriesChangedHandlers.splice(index, 1);
         }
     }
 
@@ -79,11 +87,16 @@ wpd.dataSeriesManagement = (function () {
         var plotData = wpd.appData.getPlotData(),
             seriesName = 'Dataset ' + nameIndex,
             index = plotData.dataSeriesColl.length;
-        
+
         close();
         plotData.dataSeriesColl[index] = new wpd.DataSeries();
         plotData.dataSeriesColl[index].name = seriesName;
         plotData.setActiveDataSeriesIndex(index);
+        fireDataSeriesChanged({
+            seriesIndex: index,
+            activeSeries: index,
+            action: "seriesAdded"
+        });
         updateApp();
         nameIndex++;
         manage();
@@ -102,8 +115,14 @@ wpd.dataSeriesManagement = (function () {
             // delete the dataset
             var plotData = wpd.appData.getPlotData(),
                 index = plotData.getActiveDataSeriesIndex();
-            plotData.dataSeriesColl.splice(index,1);
-            plotData.setActiveDataSeriesIndex(0);
+            plotData.dataSeriesColl.splice(index, 1);
+            var newActiveSeriesIndex = 0;
+            plotData.setActiveDataSeriesIndex(newActiveSeriesIndex);
+            fireDataSeriesChanged({
+                seriesIndex: index,
+                activeSeries: newActiveSeriesIndex,
+                action: "seriesRemoved"
+            });
             manage();
         }, function() {
             // 'cancel'
@@ -122,13 +141,20 @@ wpd.dataSeriesManagement = (function () {
 
         close();
         plotData.setActiveDataSeriesIndex($list.selectedIndex);
+
+        fireDataSeriesChanged({
+            seriesIndex: $list.selectedIndex,
+            activeSeries: $list.selectedIndex,
+            action: "selectedSeriesChanged"
+        });
+
         updateApp();
         manage();
     }
 
     function updateApp() {
         wpd.graphicsWidget.forceHandlerRepaint();
-        wpd.autoExtraction.updateDatasetControl();
+     // wpd.autoExtraction.updateDatasetControl();
         wpd.acquireData.updateDatasetControl();
         wpd.dataPointCounter.setCount();
     }
@@ -139,10 +165,11 @@ wpd.dataSeriesManagement = (function () {
         close();
         activeSeries.name = $name.value;
         var seriesIndex = $('#manage-data-series-list')[0].selectedIndex;
-        $.each(_nameChangedHandlers,
-            function (idx, handler) {
-                handler(seriesIndex, activeSeries);
-            });
+        fireDataSeriesChanged({
+            seriesIndex: seriesIndex,
+            activeSeries: activeSeries,
+            action: "renamed"
+        });
         updateApp(); // overkill, but not too bad.
         manage();
     }
@@ -158,7 +185,7 @@ wpd.dataSeriesManagement = (function () {
         viewData: viewData,
         changeSelectedSeries: changeSelectedSeries,
         editSeriesName: editSeriesName,
-        addNameChangeHandler: addNameChangeHandler,
-        removeNameChangedHandler: removeNameChangedHandler
+        addDataSeriesChangeHandler: addDataSeriesChangeHandler,
+        removeDataSeriesChangeHandler: removeDataSeriesChangeHandler
     };
 })();

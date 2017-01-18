@@ -72,7 +72,7 @@ wpd.acquireMeanVarianceData = (function () {
         wpd.appData.getPlotData().getActiveDataSeries().clearAll();
      // wpd.graphicsWidget.removeTool();
         wpd.graphicsWidget.resetData();
-     // wpd.dataPointCounter.setCount();
+        wpd.dataPointCounter.setCount();
      // wpd.graphicsWidget.removeRepainter();
         tool.buildTable();
     }
@@ -100,7 +100,7 @@ wpd.acquireMeanVarianceData = (function () {
 
     function showSidebar() {
         wpd.sidebar.show('meanVarianceSidebar');
-        updateDatasetControl();
+     // updateDatasetControl();
         updateControlVisibility();
         wpd.dataPointCounter.setCount();
     }
@@ -115,26 +115,27 @@ wpd.acquireMeanVarianceData = (function () {
         }
     }
 
-    function updateDatasetControl() {
-        var plotData = wpd.appData.getPlotData(),
-            currentDataset = plotData.getActiveDataSeries(), // just to create a dataset if there is none.
-            currentIndex = plotData.getActiveDataSeriesIndex(),
-            $datasetList = document.getElementById('manual-sidebar-dataset-list'),
-            listHTML = '',
-            i;
-        for (i = 0; i < plotData.dataSeriesColl.length; i++) {
-            listHTML += '<option>' + plotData.dataSeriesColl[i].name + '</option>';
-        }
-        $datasetList.innerHTML = listHTML;
-        $datasetList.selectedIndex = currentIndex;
-    }
+    //function updateDatasetControl() {
+    //    var plotData = wpd.appData.getPlotData(),
+    //        currentDataset = plotData.getActiveDataSeries(), // just to create a dataset if there is none.
+    //        currentIndex = plotData.getActiveDataSeriesIndex(),
+    //        $datasetList = document.getElementById('manual-sidebar-dataset-list'),
+    //        listHTML = '',
+    //        i;
+    //    for (i = 0; i < plotData.dataSeriesColl.length; i++) {
+    //        listHTML += '<option>' + plotData.dataSeriesColl[i].name + '</option>';
+    //    }
+    //    $datasetList.innerHTML = listHTML;
+    //    $datasetList.selectedIndex = currentIndex;
+    //}
 
-    function changeDataset($datasetList) {
-        var index = $datasetList.selectedIndex;
-        wpd.appData.getPlotData().setActiveDataSeriesIndex(index);
-        wpd.graphicsWidget.forceHandlerRepaint();
-        wpd.dataPointCounter.setCount();
-    }
+    //function changeDataset($datasetList) {
+    //    var index = $datasetList.selectedIndex;
+    //    wpd.appData.getPlotData().setActiveDataSeriesIndex(index);
+    //    tool.showAreaUnderCurveIfNeeded();
+    //    wpd.graphicsWidget.forceHandlerRepaint();
+    //    wpd.dataPointCounter.setCount();
+    //}
 
     var toolKeyMap = {
         d: deletePoints,
@@ -169,8 +170,8 @@ wpd.acquireMeanVarianceData = (function () {
         showSidebar: showSidebar,
         switchToolOnKeyPress: switchToolOnKeyPress,
         isToolSwitchKey: isToolSwitchKey,
-        updateDatasetControl: updateDatasetControl,
-        changeDataset: changeDataset,
+        //updateDatasetControl: updateDatasetControl,
+        // changeDataset: changeDataset,
         // editLabels: editLabels
     };
 })();
@@ -180,7 +181,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         var self = this;
         var plotData = wpd.appData.getPlotData();
         var $dom = {
-            $button: $('#mean-variance-select-button'),
+         // $button: $('#mean-variance-create-points-button'),
             $locked: $('#mean-variance-dataSeriesLocked'),
 
             $useTable: $('#use-table'),
@@ -192,8 +193,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             $dataStructureList: $('#mean-variance-data-structure'),
             $includeIndividuals: $('#include-individuals'),
 
-            $meanVarianceSidebarDatasetList: $('#meanVarianceSidebar-dataset-list'),
-            $automaticSidebarDatasetList: $('#automatic-sidebar-dataset-list'),
+            $dataSetLists: $('.dataset-list'),
             $dataPointCountEditWrapper: $('#mean-variance-dataPointCount-wrapper'),
             $dataPointCountEdit: $('#mean-variance-dataPointCount'),
             $dataSeriesCountEdit: $('#mean-variance-dataSeriesCount'),
@@ -206,6 +206,14 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             $gridEditX: $('#grid-edit-x'),
             $gridEditY: $('#grid-edit-y')
         };
+
+        function populateDatasetControls() {
+            $dom.$dataSetLists.each(function() {
+                wpd.utils.populateDatasetControl(this);
+            });
+        }
+
+        populateDatasetControls();
 
         var dataStructures = wpd._config.profileSettings.dataStructures;
         var gridSettings = {
@@ -654,7 +662,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             return dso;
         };
 
-        var modeStack = [this.modes.createPoints];
+        var modeStack = [];
         var modifierMode = null;
 
         this.pushMode = function (newMode) {
@@ -828,13 +836,31 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             return info;
         };
 
-        function dataSeriesNameChangedHandler(seriesIndex, series) {
-            var seriesTitleEdit = $([
-                "#mean-variance-formContainer input.series-name[data-series='",
-                seriesIndex,
-                "']"
-            ].join(''));
-            seriesTitleEdit.val(series.name);
+        function dataSeriesChangedHandler(eventObj) {
+            // eventObj: { seriesIndex: ..., series: ..., action: "renamed" };
+            switch (eventObj.action) {
+                case "renamed":
+                    if (useTable) {
+                        var seriesTitleEdit = $([
+                            "#mean-variance-formContainer input.series-name[data-series='",
+                            eventObj.seriesIndex,
+                            "']"
+                        ].join(''));
+                        seriesTitleEdit.val(series.name);
+                    }
+                    populateDatasetControls();
+                    break;
+                case "seriesAdded":
+                    populateDatasetControls();
+                    break;
+                case "seriesRemoved":
+                    //populateDatasetControl();
+                    break;
+                case "selectedSeriesChanged":
+                    populateDatasetControls();
+                    self.showAreaUnderCurveIfNeeded();
+                    break;
+            }
         }
 
         this.attachedToDom = false;
@@ -856,12 +882,10 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             });
 
             this.attachedToDom = true;
-            wpd.dataSeriesManagement.addNameChangeHandler(dataSeriesNameChangedHandler);
-            $dom.$button.addClass('pressed-button');
+            wpd.dataSeriesManagement.addDataSeriesChangeHandler(dataSeriesChangedHandler);
             wpd.graphicsWidget.setRepainter(new wpd.DataPointsRepainter());
 
-            $dom.$meanVarianceSidebarDatasetList.on('change', datasetChanged);
-            $dom.$automaticSidebarDatasetList.on('change', datasetChanged);
+            $dom.$dataSetLists.on('change', datasetChanged);
             $dom.$useTable.on('change', useTableChanged);
             $dom.$showTrapezoids.on('change', showTrapezoidsChanged);
             $dom.$outcomeMeasureList.on('change', outcomeMeasureChanged);
@@ -1602,7 +1626,12 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         }
 
         function datasetChanged() {
-            wpd.acquireData.changeDataset(this);
+            var index = this.selectedIndex;
+            plotData.setActiveDataSeriesIndex(index);
+
+            wpd.graphicsWidget.forceHandlerRepaint();
+            wpd.dataPointCounter.setCount();
+            self.showAreaUnderCurveIfNeeded();
         }
         function useTableChanged(ev) {
             useTable = getUseTable();
@@ -1930,6 +1959,12 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             return { area: area, sortedPoints: sortedData };
         }
 
+        this.showAreaUnderCurveIfNeeded = function() {
+            if (!useTable) {
+                showAreaUnderCurve ();
+            }
+        };
+
         function showAreaUnderCurve() {
             var series = wpd.appData.getPlotData().getActiveDataSeries();
             var areaAndSortedPoints = calculateAreaUnderCurveForSeries(series);
@@ -1941,12 +1976,6 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 var sp = sortedPoints[i];
                 series.setPixelAt(i, sp.x, sp.y);
             }
-
-            // Paint the area
-         // var painter = wpd.graphicsWidget.getRepainter();
-         // painter.setShowArea(true);
-         // wpd.graphicsWidget.forceHandlerRepaint();
-         // painter.setShowArea(false);
 
             $dom.$areaUnderCurve.html(
                 "Area under curve: " + area
@@ -2033,9 +2062,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
                 dataIndex = asi.series.addPixel(imagePos.x, imagePos.y, metaData);
 
-                if (!useTable) {
-                    showAreaUnderCurve();
-                }
+                self.showAreaUnderCurveIfNeeded();
 
                 //wpd.graphicsHelper.drawPoint(imagePos, "rgb(200,0,0)", pointLabel);
                 wpd.graphicsWidget.forceHandlerRepaint(); // draw points from the painter only
@@ -2088,9 +2115,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 wpd.graphicsWidget.resetData();
 
 
-                if (!useTable) {
-                    showAreaUnderCurve();
-                }
+                self.showAreaUnderCurveIfNeeded();
 
                 wpd.graphicsWidget.forceHandlerRepaint();
                 wpd.graphicsWidget.updateZoomOnEvent(ev);
@@ -2121,8 +2146,8 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         this.onRemove = function () {
             hideAllDataPopups();
             this.removeEventHandlers();
-            wpd.dataSeriesManagement.removeNameChangedHandler(dataSeriesNameChangedHandler);
-            $dom.$button.removeClass('pressed-button');
+            wpd.dataSeriesManagement.removeDataSeriesChangeHandler(dataSeriesChangedHandler);
+            $('.mean-variance-selection-mode').removeClass('pressed-button');
         };
 
         function createPointsKeyDown(ev) {
@@ -2256,9 +2281,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
             activeDataSeries.setPixelAt(selIndex, pointPx, pointPy);
 
-            if (!useTable) {
-                showAreaUnderCurve();
-            }
+            self.showAreaUnderCurveIfNeeded();
 
             wpd.graphicsWidget.forceHandlerRepaint();
             wpd.graphicsWidget.updateZoomToImagePosn(pointPx, pointPy);
@@ -2299,7 +2322,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 return;
             } else {
                 if (wpd.keyCodes.isAlphabet(ev.keyCode, 't')) {
-                    if (ev.eventPhase === 1) {
+                    if (ev.eventPhase === 3) {
                         return;
                     }
                     // toggle display of points

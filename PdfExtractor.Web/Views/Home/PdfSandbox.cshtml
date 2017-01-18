@@ -549,8 +549,8 @@
                         <div class="wpd-menu-header">Data</div>
                         <div class="wpd-menu-dropdown">
                             <ul>
-                                <li id="wpd-datamenu-acquire" onclick="wpd.acquireData.load();">Acquire Data</li>
-                                <li id="wpd-datamenu-acquire-mean-variance" onclick="wpd.acquireMeanVarianceData.load();">Acquire Mean & Variance Data</li>
+                                <!--li id="wpd-datamenu-acquire" onclick="wpd.acquireData.load();">Acquire Data</li-->
+                                <li id="wpd-datamenu-acquire-mean-variance" onclick="wpd.acquireMeanVarianceData.load();">Acquire Data (new)</li>
                                 <li id="wpd-datamenu-manage" onclick="wpd.dataSeriesManagement.manage();">Manage Datasets</li>
                             </ul>
                         </div>
@@ -698,10 +698,10 @@
                         Manual Mode <input type="button" value="Automatic Mode" style="width: 125px;" onclick="wpd.autoExtraction.start();">
                     </p>
                     <hr />
-                    <p>Dataset <select id="meanVarianceSidebar-dataset-list" style="width:160px;"></select></p>
+                    <p>Dataset <select class="dataset-list" style="width:160px;"></select></p>
                     <hr />
                     <p>
-                        <input id="mean-variance-select-button" class="mean-variance-selection-mode createPoints" value="Add Point (A)" onclick="wpd.acquireMeanVarianceData.meanVarianceSelection();" type="button" style="width: 112px;">
+                        <input id="mean-variance-create-points-button" class="mean-variance-selection-mode createPoints" value="Add Point (A)" onclick="wpd.acquireMeanVarianceData.meanVarianceSelection();" type="button" style="width: 112px;">
                         <input id="mean-variance-adjust-button" class="mean-variance-selection-mode adjustPoints" value="Adjust Point (S)" onclick="wpd.acquireMeanVarianceData.adjustPoints();" type="button" style="width: 112px;">
                     </p>
                     <div class="vertical-spacer"></div>
@@ -729,6 +729,8 @@
                             <input type="checkbox" id="show-trapezoids" />
                             Show trapezoids
                         </label>
+                        <hr />
+                        <p>Data Points: <span class="data-point-counter">0</span></p>
                     </div>
                     <div id="table-controls">
                         <div class="vertical-spacer"></div>
@@ -786,7 +788,7 @@
                 <div id="auto-extraction-sidebar" class="sidebar">
                     <p class="sidebar-title">Automatic Mode <input type="button" value="Manual Mode" style="width:110px;" onclick="wpd.acquireMeanVarianceData.load();" /></p>
                     <hr />
-                    <p>Dataset <select id="automatic-sidebar-dataset-list" onchange="wpd.acquireData.changeDataset(this);" style="width:160px;"></select></p>
+                    <p>Dataset <select class="dataset-list" style="width:160px;"></select></p>
                     <hr />
                     <p>Mask <input type="button" value="Box" style="width:50px;" onclick="wpd.dataMask.markBox();" id="box-mask"><input type="button" value="Pen" style="width:45px;" onClick="wpd.dataMask.markPen();" id="pen-mask"><input type="button" value="Erase" style="width:50px;" onClick="wpd.dataMask.eraseMarks();" id="erase-mask"><input type="button" value="View" style="width:40px;" onclick="wpd.dataMask.viewMask();" id="view-mask" /></p>
                     <hr />
