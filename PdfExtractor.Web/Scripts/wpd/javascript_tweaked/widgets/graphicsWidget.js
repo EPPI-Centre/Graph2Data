@@ -316,7 +316,7 @@ wpd.graphicsWidget = (function () {
     }
 
     function setZoomImage(ix, iy) {
-        console.log("setZoomImage(" + ix + ", " + iy + ")");
+     // console.log("setZoomImage(" + ix + ", " + iy + ")");
         var zsize = wpd.zoomView.getSize(),
             zratio = wpd.zoomView.getZoomRatio(),
             ix0, iy0,

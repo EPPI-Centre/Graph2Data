@@ -576,6 +576,8 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     "</option>"
                 ].join(''));
             });
+
+            $dom.$outcomeMeasureList.change();
         }
 
         function populateDataStructures() {
@@ -590,6 +592,8 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     "</option>"
                 ].join(''));
             });
+
+            $dom.$dataStructureList.change();
         }
 
         function showCheckboxSetting($cb, isChecked, triggerChange) {
@@ -627,7 +631,6 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         configureSubTableSpecs();
 
         // TODO: Be clearer about which things should be done within OnAttach
-        $dom.$outcomeMeasureList.change();
 
         this.getOutcomeMeasure = function () {
             var outcomeMeasure = null;
