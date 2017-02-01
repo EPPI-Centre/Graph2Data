@@ -181,7 +181,10 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         var self = this;
         var plotData = wpd.appData.getPlotData();
         var $dom = {
-         // $button: $('#mean-variance-create-points-button'),
+            $createPointsButton: $('#mean-variance-create-points-button'),
+            $adjustPointsButton: $('#mean-variance-adjust-button'),
+            $deletePointsButton: $('#mean-variance-delete-point-button'),
+
             $locked: $('#mean-variance-dataSeriesLocked'),
 
             $useTable: $('#use-table'),
@@ -1088,15 +1091,28 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 }
             }, '.series-name');
 
+            function showElemIf($elem, showIf) {
+                if (showIf) {
+                    $elem.removeClass('hidden');
+                }
+                else {
+                    $elem.addClass('hidden');
+                }
+            }
+            function applyUseTable(profile) {
+                showCheckboxSetting($dom.$useTable, profile.useTable, true);
+                showElemIf($dom.$detachFormContainerTrigger, useTable);
+
+                //showElemIf($dom.$createPointsButton, !useTable);
+                //showElemIf($dom.$adjustPointsButton, !useTable);
+                showElemIf($dom.$deletePointsButton, !useTable);
+            }
+
             function applyProfile(profile) {
+
                 gridSettings.snap = profile.gridSettings.snap;
                 gridSettings._dimensions = profile.gridSettings.dimensions;
 
-                showCheckboxSetting($dom.$useTable, profile.useTable, true);
-
-                if (!useTable) {
-                    $dom.$detachFormContainerTrigger.addClass('hidden');
-                }
                 $dom.$outcomeMeasureList
                     .find('option#' + profile.outcomeMeasureId)
                     .attr('selected', 'selected')
@@ -1106,6 +1122,8 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     .find('option#' + profile.dataStructureId)
                     .attr('selected', 'selected')
                     .change();
+
+                applyUseTable(profile);
 
                 showCheckboxSetting($dom.$includeIndividuals, profile.includeIndividuals, true);
 
@@ -1786,12 +1804,12 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             return $cell;
         }
 
-        function getNormalizedDataValueX(value) {
-            if (value.constructor === Array) {
-                value = value[0];
-            }
-            return value;
-        }
+        //function getNormalizedDataValueX(value) {
+        //    if (value.constructor === Array) {
+        //        value = value[0];
+        //    }
+        //    return value;
+        //}
         function getNormalizedDataValueY(value) {
             if (value.constructor === Array) {
                 if (value.length > 1) {
@@ -2089,7 +2107,6 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
             if (useTable) {
                 var cell = getCellCorrespondingToSelectedPoint(dataSeries);
-                var cell = getCellCorrespondingToSelectedPoint(dataSeries);
                 selectCell(cell);
             }
 
@@ -2157,7 +2174,8 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             var $target = $(ev.target);
             var fromEdit = $target.hasClass('mean')
                 || $target.hasClass('variance')
-             // || $target.hasClass('group-name');
+            // || $target.hasClass('group-name')
+            ;
 
             if (fromEdit) {
                 // Don't support modifying points etc if the keydown came from a mean/variance/groupName edit
@@ -2334,7 +2352,8 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 } else {
                     switch (this.getMode()) {
                         case this.modes.createPoints:
-                            createPointsKeyDown(ev);
+                         // moving newly-created points is now disabled
+                         // createPointsKeyDown(ev);
                             break;
                         case this.modes.adjustPoints:
                             adjustPointsKeyDown(ev);
