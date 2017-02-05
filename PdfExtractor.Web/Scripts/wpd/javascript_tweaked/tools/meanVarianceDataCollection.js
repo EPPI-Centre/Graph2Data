@@ -380,7 +380,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 dataPopup.open();
             }
         }
-        function focusNextAvailableValueCell() {
+        function focusNextAvailableNestedValueCell() {
             var $available = self.findNextAvaialbleNestedValueCell();
             selectCell($available);
         }
@@ -962,7 +962,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                             if (dataPopupVisible && !nestedDataPopupVisible) {
                                 showNestedDataPopup();
                             }
-                            focusNextAvailableValueCell();
+                            focusNextAvailableNestedValueCell();
                             wpd.graphicsWidget.forceHandlerRepaint();
                         } else {
                             if (self.getModifierMode() === self.modes.selectSubjectDataPoints) {
@@ -2003,6 +2003,15 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             );
         }
 
+        function focusFirstValueCell() {
+            if (!getActiveCell()) {
+                var first = $dom.$formContainer
+                    .find('>table>tbody input[data-series="0"]:not(.series-name):first');
+                setActiveCell(first);
+            }
+            selectCell(getActiveCell());
+        }
+
         function createPointsMouseClick(ev, pos, imagePos) {
             var mi = getModeInfo(),
                 aci,
@@ -2013,25 +2022,28 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             if (useTable) {
                 aci = getActiveCellInfo();
 
-                info = getInfo(aci.cell);
-                if (info.is.subjectDataPointsCount) {
-                    focusNextAvailableValueCell();
-                    aci = getActiveCellInfo();
-                    info = getInfo(aci.cell);
-                }
-
                 if (aci.activeCell === null || (mi.subjectDataPointsMode && aci.activeNestedCell === null)) { // && activeNestedCell === null) {
                     // TODO: Select the first cell in the grid rather than showing an alert!
-                    alert(["please select a ",
-                        mi.headerMode
-                            ? "header"
-                            : mi.subjectDataPointsMode
-                                ? "subject data point"
-                                : "data",
-                        " cell before attempting to add a point!"
-                    ].join(''));
 
-                    return;
+                    focusFirstValueCell();
+                    aci = getActiveCellInfo();
+                    //alert(["please select a ",
+                    //    mi.headerMode
+                    //        ? "header"
+                    //        : mi.subjectDataPointsMode
+                    //            ? "subject data point"
+                    //            : "data",
+                    //    " cell before attempting to add a point!"
+                    //].join(''));
+
+                    // return;
+                }
+
+                info = getInfo(aci.cell);
+                if (info.is.subjectDataPointsCount) {
+                    focusNextAvailableNestedValueCell();
+                    aci = getActiveCellInfo();
+                    info = getInfo(aci.cell);
                 }
             }
 
