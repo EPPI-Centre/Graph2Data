@@ -1104,7 +1104,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 showElemIf($dom.$detachFormContainerTrigger, useTable);
 
                 //showElemIf($dom.$createPointsButton, !useTable);
-                //showElemIf($dom.$adjustPointsButton, !useTable);
+                showElemIf($dom.$adjustPointsButton, !useTable);
                 showElemIf($dom.$deletePointsButton, !useTable);
             }
 
@@ -2359,7 +2359,10 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     switch (this.getMode()) {
                         case this.modes.createPoints:
                          // moving newly-created points is now disabled
-                         // createPointsKeyDown(ev);
+                            // createPointsKeyDown(ev);
+                            if (useTable) {
+                                adjustPointsKeyDown(ev);
+                            }
                             break;
                         case this.modes.adjustPoints:
                             adjustPointsKeyDown(ev);
