@@ -495,7 +495,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             //].join(''));
 
             if (_$activeNestedCell) {
-                _$activeNestedCell.removeClass('focused');
+                _$activeNestedCell.removeClass(focusedClassName);
             }
 
             _$activeNestedCell = $cell;
@@ -2013,6 +2013,13 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             if (useTable) {
                 aci = getActiveCellInfo();
 
+                info = getInfo(aci.cell);
+                if (info.is.subjectDataPointsCount) {
+                    focusNextAvailableValueCell();
+                    aci = getActiveCellInfo();
+                    info = getInfo(aci.cell);
+                }
+
                 if (aci.activeCell === null || (mi.subjectDataPointsMode && aci.activeNestedCell === null)) { // && activeNestedCell === null) {
                     // TODO: Select the first cell in the grid rather than showing an alert!
                     alert(["please select a ",
@@ -2026,7 +2033,6 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
                     return;
                 }
-                info = getInfo(aci.cell);
             }
 
 
