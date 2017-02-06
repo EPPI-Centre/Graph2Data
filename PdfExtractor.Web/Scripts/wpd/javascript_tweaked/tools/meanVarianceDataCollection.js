@@ -1062,7 +1062,8 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                         wpd.graphicsWidget.forceHandlerRepaint();
                     }
                 },
-                change: function(e) {
+                change: function (e) {
+                    var msg = ["nestedConfig.change..."];
                     var $edit = $(this);
                     var info = getInfo($edit);
 
@@ -1072,7 +1073,9 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                         var counts = imd.counts;
                         var subjectCount = $edit.val();
                         counts[info.dataPoint] = subjectCount;
+                        msg.push("..just set the count for dataPoint: ", info.dataPoint, " to: " + subjectCount);
                     }
+                    console.log(msg.join(''));
                 }
             };
             nestedConfig.spinchange = nestedConfig.change;
@@ -2023,20 +2026,9 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 aci = getActiveCellInfo();
 
                 if (aci.activeCell === null || (mi.subjectDataPointsMode && aci.activeNestedCell === null)) { // && activeNestedCell === null) {
-                    // TODO: Select the first cell in the grid rather than showing an alert!
-
+                    // Select the first cell in the grid
                     focusFirstValueCell();
                     aci = getActiveCellInfo();
-                    //alert(["please select a ",
-                    //    mi.headerMode
-                    //        ? "header"
-                    //        : mi.subjectDataPointsMode
-                    //            ? "subject data point"
-                    //            : "data",
-                    //    " cell before attempting to add a point!"
-                    //].join(''));
-
-                    // return;
                 }
 
                 info = getInfo(aci.cell);
@@ -2049,15 +2041,6 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
 
             var asi = self.getActiveSeriesInfo(), pointLabel = null;
-
-            //if (plotData.axes.dataPointsHaveLabels) { // e.g. Bar charts
-
-            //    pointLabel = [
-            //        "S", info.dataSeries, ".",
-            //        info.dataPoint,
-            //        (info.is.variance ? "E" : "")
-            //    ].join('');
-            //}
 
             // if (blah && confirm ("This group already data - would you like to override it?"))) {}
             if (useTable) {
@@ -2103,7 +2086,6 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
                 self.showAreaUnderCurveIfNeeded();
 
-                //wpd.graphicsHelper.drawPoint(imagePos, "rgb(200,0,0)", pointLabel);
                 wpd.graphicsWidget.forceHandlerRepaint(); // draw points from the painter only
 
                 lock();
