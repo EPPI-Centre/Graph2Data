@@ -52,13 +52,13 @@ namespace PdfExtractor.Web
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
 
-            bundles.Add(new ScriptBundle("~/bundles/pdfjsold").Include(
-                "~/Scripts/viewer-poc/web/pdf.js",
-                "~/Scripts/viewer-poc/web/pdf.worker.js",
-             // "~/Scripts/viewer-poc/web/viewer.js",
-                "~/Scripts/dviewer-poc/web/debugger.js",
-                "~/Scripts/viewer-poc/web/l10n.js"
-                ));
+            //bundles.Add(new ScriptBundle("~/bundles/pdfjsold").Include(
+            //    "~/Scripts/viewer-poc/web/pdf.js",
+            //    "~/Scripts/viewer-poc/web/pdf.worker.js",
+            // // "~/Scripts/viewer-poc/web/viewer.js",
+            //    "~/Scripts/dviewer-poc/web/debugger.js",
+            //    "~/Scripts/viewer-poc/web/l10n.js"
+            //    ));
 
             bundles.Add(new ScriptBundle("~/bundles/pdfjs").Include(
                 "~/Scripts/viewer-poc/web/pdf.js",

@@ -6822,7 +6822,9 @@
 							var EXECUTION_STEPS = 10;
 
 							function CanvasGraphics(canvasCtx, commonObjs, objs, imageLayer) {
-								this.ctx = canvasCtx;
+							    this.ctx = canvasCtx;
+							    this.ctx.imageInfo = [];
+							    this.ctx.imageInfo.iteration = 0;
 								this.current = new CanvasExtraState();
 								this.stateStack = [];
 								this.pendingClip = null;
@@ -7241,15 +7243,89 @@
 								},
 
 								doStuff: function CanvasGraphics_Lee_doStuff() {
-									var canvas = this.ctx.canvas;
-									var width = canvas.width;
-									var height = canvas.height;
-									this.ctx.beginPath();
-									this.ctx.moveTo(0,0);
-									this.ctx.lineTo(width-1,height-1);
-									this.ctx.stroke();
+								    this.ctx.save();
+								    var ctx = this.ctx;
+								    var canvas = this.ctx.canvas;
+								    var width = canvas.width;
+								    var height = canvas.height;
+								    var self = this;
+								    var ctf = ctx._transformMatrix;
+
+								    function drawGrid() {
+								        function setStrokeColor(idx) {
+								            if (idx === 0) {
+								                self.setStrokeRGBColor(0, 255, 0);
+								            }
+								            else {
+								                self.setStrokeRGBColor(255, 99, 71);
+								            }
+								        }
+								        self.setLineWidth(3);
+								        var xc = 10, yc = 10;
+								        var dx = (width / xc) / ctf[0];
+								        var dy = (height / yc) / -ctf[3];
+
+								        for (var x = 0; x < 10; x++) {
+								            ctx.beginPath();
+								            setStrokeColor(x);
+								            ctx.moveTo(x * dx, 0);
+								            ctx.lineTo(x * dx, height);
+								            ctx.stroke();
+								        }
+								        for (var y = 0; y < 10; y++) {
+								            ctx.beginPath();
+								            setStrokeColor(y);
+								            ctx.moveTo(0, y * dy);
+								            ctx.lineTo(height, y * dy);
+								            ctx.stroke();
+                                        }
+								    }
+
+								 // drawGrid();
+								    this.colours = [
+                                        [255, 0, 0],
+                                        [0, 255, 0],
+                                        [0, 0, 255],
+                                        [255, 255, 0],
+                                        [0, 255, 255],
+                                        [128, 128, 0],
+                                        [255, 128, 0],
+                                        [128, 255, 0],
+                                        [0, 128, 0]
+								    ];
+								    this.setLineWidth(2);
+								    for (var i = 0; i < this.ctx.imageInfo.length; i++) {
+								        //this.ctx.beginPath();
+								        //this.setStrokeRGBColor(255, 105, 180);
+								        //this.ctx.moveTo(this.ctx.imageInfo[1].derived.position.x / ctf[0], (ctf[5]-462) / -ctf[3]);
+								        //this.ctx.lineTo(0, 0);
+								        //this.ctx.stroke();
+
+									    this.ctx.beginPath();
+									    var col = this.colours[this.ctx.imageInfo.iteration % this.colours.length];
+                                        this.setStrokeRGBColor(col[0],col[1],col[2]);
+                                        var ii = this.ctx.imageInfo[i];
+                                        this.ctx.moveTo(0, 0);
+								        var w = ii.image.width / ctf[0];
+								        var h = ii.image.height / -ctf[3];
+                                        var x1 = ii.derived.position.x / ctf[0];
+                                        var y1 = (ctf[5] - ii.derived.position.y) / -ctf[3];
+
+                                        this.ctx.moveTo(
+                                            x1,
+                                            y1
+                                        );
+								        this.ctx.lineTo(x1 + w, y1);
+								        this.ctx.lineTo(x1 + w, y1+h);
+								        this.ctx.lineTo(x1, y1+h);
+								        this.ctx.lineTo(x1, y1);
+                                        this.ctx.stroke();
+                                    }
+								    this.ctx.restore();
+
+								    this.ctx.imageInfo = [];
 								},
-								
+
 								endDrawing : function CanvasGraphics_endDrawing() {
 									// Finishing all opened operations such as SMask group painting.
 									if (this.current.activeSMask !== null) {
@@ -8364,8 +8440,24 @@
 									this.restore();
 								},
 
+								lee_captureImageInfo: function CanvasGraphics_lee_captureImageInfo(image) {
+								    //  Lee - hack to capture image positions and contents as they're drawn
+								    var ii = {
+								        image: image,
+								        transform: this.ctx._transformMatrix.slice(),
+								    };
+								    ii.derived = {
+								        position: { x: ii.transform[4], y: ii.transform[5] },
+								        scale: { x: ii.transform[0], y: ii.transform[3] }
+								        //, scale2: Util.singularValueDecompose2dScale(ii.transform)
+								    }
+								    this.ctx.imageInfo[this.ctx.imageInfo.length] = ii;
+								    this.ctx.imageInfo.iteration++;
+								},
+
 								paintJpegXObject : function CanvasGraphics_paintJpegXObject(objId, w, h) {
-									var domImage = this.objs.get(objId);
+								    var domImage = this.objs.get(objId);
+
 									if (!domImage) {
 										warn('Dependent image isn\'t ready yet');
 										return;
@@ -8391,6 +8483,8 @@
 										});
 									}
 									this.restore();
+
+									this.lee_captureImageInfo(domImage);
 								},
 
 								paintImageMaskXObject : function CanvasGraphics_paintImageMaskXObject(img) {
@@ -10679,9 +10773,9 @@
 							InternalRenderTask.prototype = {
 
 								doStuff : function InternalRenderTask_Lee_doStuff () {
-								 // this.gfx.doStuff();
+								    this.gfx.doStuff();
 								},
-								
+
 								initalizeGraphics :
 								function InternalRenderTask_initalizeGraphics(transparency) {
 
