@@ -1587,7 +1587,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             return ["<tr><td>", lbl, "</td><td>", val, "</td></tr>"].join('');
         }
         function applyTooltips() {
-            if ($.url().param('demo')) {
+            if (!$.url().param('dev')) {
                 return;
             }
 

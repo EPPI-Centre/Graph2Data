@@ -14,8 +14,8 @@
 
         /*
         each handler has a paramter 'sel':
-        
-        sel: { 
+
+        sel: {
             elem: dom elem for selection,
             canvas: canvas beneath selection
             canvasBounds: bounds of canvas relative to top-left of screen
@@ -227,13 +227,17 @@
         });
 
         var info = $([
-            '<div class="info">',
+            '<div class="info hidden">',
                 '<div class="header">Annotations</div>',
                 '<div class="content"></div>',
             '</div>'
         ].join(''));
         var infoHeader = info.find('>.header');
         var infoContent = info.find('>.content');
+
+        if ($.url().param('dev')) {
+            info.removeClass('hidden');
+        }
 
         infoHeader.on('click',
             function toggleAnnotationMode() {
@@ -391,7 +395,7 @@
         }
 
         function showInfo(e) {
-            if ($.url().param('demo')) {
+            if (!$.url().param('dev')) {
                 return;
             }
             infoContent.html([

@@ -48,8 +48,6 @@ namespace PdfExtractor.Web.Controllers
         {
             var json = System.IO.File.ReadAllText(SettingsFilePath);
 
-            var pt = JsonConvert.SerializeObject(new Coord{X = 100, Y = 200});
-
             var jss = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
             var settings = JsonConvert.DeserializeObject<Settings>(json, jss);
 
