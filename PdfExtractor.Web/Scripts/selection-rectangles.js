@@ -232,6 +232,7 @@
                 '<div class="content"></div>',
             '</div>'
         ].join(''));
+
         var infoHeader = info.find('>.header');
         var infoContent = info.find('>.content');
 
