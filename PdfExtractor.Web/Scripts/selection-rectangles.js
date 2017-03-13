@@ -5,8 +5,8 @@
 
     function _initConfig(config) {
         config = config || {};
-        config.minX = config.minX || 20;
-        config.minY = config.minY || 20;
+        config.minX = config.minX || 35;
+        config.minY = config.minY || 35;
         config.$growthContainer = config.$growthContainer || body;
         config.minDragDistance = config.minDragDistance || 5;
 
@@ -194,6 +194,7 @@
     //    return JSON.stringify(info);
     //}
 
+    var _module;
     function init(canvases, config) {
         canvases = canvases || [];
 
@@ -248,7 +249,8 @@
                 } else {
                     body.addClass(annotationsDisabled);
                 }
-            });
+            }
+        );
 
         config.$growthContainer.append(info);
 
@@ -432,6 +434,19 @@
             return "(" + pos.x + "," + pos.y + ") - (" + pos.w + " x " + pos.h + ")";
         }
 
+        function doSetRectPosition(rectElem, rs) {
+            if (rectElem && rectElem.style) {
+                rectElem.style.left = rs.left + 'px';
+                rectElem.style.top = rs.top + 'px';
+            }
+        }
+        function doSetRectSize(rectElem, rs) {
+            if (rectElem && rectElem.style) {
+                rectElem.style.width = rs.width + 'px';
+                rectElem.style.height = rs.height + 'px';
+            }
+        }
+
         function setRectSize(rectElem, mouseStart) {
             if (!mouseStart) {
                 debugger;
@@ -441,16 +456,14 @@
                 y: mouse.y - mouseStart.y
             };
             var rs = {
-                x: Math.abs(d.x),
-                y: Math.abs(d.y)
+                left: Math.min(mouse.x, mouseStart.x),
+                top: Math.min(mouse.y, mouseStart.y),
+                width: Math.abs(d.x),
+                height: Math.abs(d.y),
             };
 
-            if (rectElem && rectElem.style) {
-                rectElem.style.width = rs.x + 'px';
-                rectElem.style.height = rs.y + 'px';
-                rectElem.style.left = Math.min(mouse.x, mouseStart.x) + 'px';
-                rectElem.style.top = Math.min(mouse.y, mouseStart.y) + 'px';
-            }
+            doSetRectPosition(rectElem, rs);
+            doSetRectSize(rectElem, rs);
 
             return rs;
         }
@@ -538,47 +551,44 @@
             showInfo(e);
         }
 
-        $(document)
-            .on(
-                {
-                    keydown: function (e) {
-                        //console.log("key: " + e.key);
-                        //console.log("keyCode: " + e.keyCode);
-                        if (creating) {
-                            if (e.shiftKey) {
-                                if (!dragging) {
-                                    beginDrag(e);
-                                } else {
-                                    endDrag(e);
-                                }
-                            }
+        $(document).on({
+            keydown: function (e) {
+                //console.log("key: " + e.key);
+                //console.log("keyCode: " + e.keyCode);
+                if (creating) {
+                    if (e.shiftKey) {
+                        if (!dragging) {
+                            beginDrag(e);
                         } else {
-                            if (e.shiftKey) {
-                                if (!sizing) {
-                                    beginSizing(e);
-                                } else {
-                                    endSizing(e);
-                                }
-                            }
+                            endDrag(e);
                         }
-                        switch (e.keyCode) {
-                            case 37: // Left arrow
-                            case 38: // Up arrow
-                            case 39: // Right arrow
-                            case 40: // Down arrow
-                                doMoveFocused(e);
-                                break;
-
-                            case 46: // Delete
-                                if (focused) {
-                                    removeRect(focused);
-                                    focused = null;
-                                }
-                                break;
+                    }
+                } else {
+                    if (e.shiftKey) {
+                        if (!sizing) {
+                            beginSizing(e);
+                        } else {
+                            endSizing(e);
                         }
                     }
                 }
-            );
+                switch (e.keyCode) {
+                    case 37: // Left arrow
+                    case 38: // Up arrow
+                    case 39: // Right arrow
+                    case 40: // Down arrow
+                        doMoveFocused(e);
+                        break;
+
+                    case 46: // Delete
+                        if (focused) {
+                            removeRect(focused);
+                            focused = null;
+                        }
+                        break;
+                }
+            }
+        });
 
         function findCanvasBeneathSelection($elem) {
             var elem = $elem[0];
@@ -692,46 +702,42 @@
         }
 
 
-        $canvasOverlay.on(
-            {
-                mouseenter: function (e) {
-                    if (creating || dragging) {
-                        return;
-                    }
-                    setHovered($(this));
-                },
-                mouseleave: function (e) {
-                    if (creating || dragging) {
-                        return;
-                    }
-                    if (dragSuggested) {
-                        endDragSuggest(e);
-                    }
-                    setUnhovered($(this));
+        $canvasOverlay.on({
+            mouseenter: function (e) {
+                if (creating || dragging) {
+                    return;
                 }
+                setHovered($(this));
             },
+            mouseleave: function (e) {
+                if (creating || dragging) {
+                    return;
+                }
+                if (dragSuggested) {
+                    endDragSuggest(e);
+                }
+                setUnhovered($(this));
+            }},
             '.rectangle'
         );
 
-        $canvasOverlay.on(
-            {
-                mousedown: function(e) {
-                    var $elem = $(this.parentNode);
-                    config.selectionNumberClickedHandler(prepareSelectionInfo($elem));
-                    e.preventDefault();
-                }
-            },
-            '.rectangle > .id');
+        $canvasOverlay.on({
+            mousedown: function(e) {
+                var $elem = $(this.parentNode);
+                config.selectionNumberClickedHandler(prepareSelectionInfo($elem));
+                e.preventDefault();
+            }},
+            '.rectangle > .id'
+        );
 
-        $canvasOverlay.on(
-            {
-                mousedown: function(e) {
-                    var $elem = $(this.parentNode);
-                    config.dataIconClickedHandler(prepareSelectionInfo($elem));
-                    e.preventDefault();
-                }
-            },
-            '.rectangle.has-data > .data');
+        $canvasOverlay.on({
+            mousedown: function(e) {
+                var $elem = $(this.parentNode);
+                config.dataIconClickedHandler(prepareSelectionInfo($elem));
+                e.preventDefault();
+            }},
+            '.rectangle.has-data > .data'
+        );
 
         function doMoveFocused(e) {
             /*
@@ -826,6 +832,32 @@
             nextId = rects.length + 1;
         }
 
+
+        function doCreateSelectionDiv(pos) {
+            var id = nextId++;
+            var rectHtml = [
+                "<div ",
+                    "class='rectangle' ",
+                 // idAttr,"='",id,"'",
+                    "style='",
+                        "left: ", pos.x, "px; ",
+                        "top: ", pos.y, "px' ",
+             // "tabIndex='", id, "'",
+                ">",
+                    "<span ",
+                        "class='id hidden'",
+                    ">",
+                    id,
+                    "</span>",
+                    "<span class='data'>data</span>",
+                "</div>"
+            ].join('');
+            element = $(rectHtml)[0];
+            setRectId(element, id);
+            $canvasOverlay.append(element);
+            createSelectionInfo(id);
+        }
+
         function beginCreatingSelection(e) {
             if (!creating) {
                 if (focused) {
@@ -837,28 +869,30 @@
                 // console.log("begun.");
                 mouseStart = mouse;
 
-                var id = nextId++;
-                var rectHtml = [
-                    "<div ",
-                        "class='rectangle' ",
-                     // idAttr,"='",id,"'",
-                        "style='",
-                            "left: ", mouseStart.x, "px; ",
-                            "top: ", mouseStart.y, "px' ",
-                 // "tabIndex='", id, "'",
-                    ">",
-                        "<span ",
-                            "class='id hidden'",
-                        ">",
-                        id,
-                        "</span>",
-                        "<span class='data'>data</span>",
-                    "</div>"
-                ].join('');
-                element = $(rectHtml)[0];
-                setRectId(element, id);
-                $canvasOverlay.append(element);
-                createSelectionInfo(id);
+                doCreateSelectionDiv(mouseStart);
+
+                //var id = nextId++;
+                //var rectHtml = [
+                //    "<div ",
+                //        "class='rectangle' ",
+                //     // idAttr,"='",id,"'",
+                //        "style='",
+                //            "left: ", mouseStart.x, "px; ",
+                //            "top: ", mouseStart.y, "px' ",
+                // // "tabIndex='", id, "'",
+                //    ">",
+                //        "<span ",
+                //            "class='id hidden'",
+                //        ">",
+                //        id,
+                //        "</span>",
+                //        "<span class='data'>data</span>",
+                //    "</div>"
+                //].join('');
+                //element = $(rectHtml)[0];
+                //setRectId(element, id);
+                //$canvasOverlay.append(element);
+                //createSelectionInfo(id);
 
                 creating = true;
             }
@@ -875,6 +909,12 @@
             config.selectionDeletedHandler(prepareSelectionInfo($elem));
         }
 
+        function doEndCreatingSelectionDiv() {
+            var $element = $(element);
+            config.selectionCreatedHandler(prepareSelectionInfo($element));
+            showIdElem($element, true);
+        }
+
         function endCreatingSelection(e) {
             if (creating && element) {
                 endDrag(e);
@@ -884,9 +924,8 @@
                     //console.log("rect was too small: " + coord(rs) + " - removed.");
                 } else {
                     // console.log("finished. rect: " + coord(rs));
-                    var $element = $(element);
-                    config.selectionCreatedHandler(prepareSelectionInfo($element));
-                    showIdElem($element, true);
+
+                    doEndCreatingSelectionDiv();
                     setHovered($element);
                     setFocused($element);
                 }
@@ -1027,6 +1066,51 @@
             e.preventDefault();
         };
 
+        // createSelection
+        //      canvas is the canvas containing the area of interest
+        //      bounds are the { left: .., top: .., width: .., height: .. } - bounds of the area of interest,
+        //          expressed in the canvas' (inner) coordinate system
+        //
+        _module.createSelection =
+        function createSelection(canvas, bounds) {
+            // convert to canvas-relative then page-relative bounds
+            var hiddenScale = getCanvasHiddenScale(canvas);
+            var $canvas = $(canvas);
+            //var canvasPos = $canvas.position();
+            //var wrapperPos = $canvas.parent('.canvasWrapper').position();
+            //var pageContainerPos = $(canvas.offsetParent).position();
+            var canvasPos = $canvas.offset();
+
+            var pageBounds = [];
+            for (var prop in bounds) {
+                if (bounds.hasOwnProperty(prop)) {
+                    var value = bounds[prop];
+                    var isRange = prop === 'width' || prop === 'height';
+                    switch (prop) {
+                        // case 'x1':
+                        // case 'x2':
+                        case 'left':
+                            // case 'right':
+                        case 'width':
+                            pageBounds[prop] = value * hiddenScale.x + (isRange ? 0 : canvasPos.left);
+                            break;
+                            //  case 'y1':
+                            //  case 'y2':
+                        case 'top':
+                            //  case 'bottom':
+                        case 'height':
+                            pageBounds[prop] = value * hiddenScale.y + (isRange ? 0 : canvasPos.top);
+                            break;
+                    }
+                }
+            }
+
+            doCreateSelectionDiv({ x: pageBounds.left, y: pageBounds.top - pageBounds.height });
+            // set the size of the rect - usually completed during mouse move
+            doSetRectSize(element, pageBounds);
+            doEndCreatingSelectionDiv();
+        }
+
         window.selectionRectangles_initialized = true;
     }
 
@@ -1056,7 +1140,6 @@
 
         return hiddenScale;
     }
-
 
     function getZoomedCloneOfArea(sel, scale) {
         var ctx1 = sel.canvas;
@@ -1089,13 +1172,16 @@
         return copiedCanvas;
     }
 
-
-    window.selectionRectangles = {
+    _module = {
         init: init,
         getSelections: getSelections,
         getSelectionInfo: getSelectionInfo,
         getZoomedCloneOfArea: getZoomedCloneOfArea,
-        getCanvasHiddenScale: getCanvasHiddenScale
-    }
+        getCanvasHiddenScale: getCanvasHiddenScale,
+     // createSelection: createSelection <-- set elsewhere
+    };
+
+
+    window.selectionRectangles = _module;
 })();
 

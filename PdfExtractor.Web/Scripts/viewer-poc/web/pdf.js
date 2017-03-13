@@ -6852,8 +6852,8 @@
 
                             function CanvasGraphics(canvasCtx, commonObjs, objs, imageLayer) {
                                 this.ctx = canvasCtx;
-                                this.ctx.imageInfo = [];
-                                this.ctx.imageInfo.iteration = 0;
+                                this.ctx.canvas._imageInfo = [];
+                                this.ctx.canvas._imageInfo.iteration = 0;
                                 this.current = new CanvasExtraState();
                                 this.stateStack = [];
                                 this.pendingClip = null;
@@ -7276,97 +7276,97 @@
                                 },
 
                                 doStuff: function CanvasGraphics_Lee_doStuff() {
-                                    this.ctx.save();
-                                    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-                                    var ctx = this.ctx;
-                                    var canvas = this.ctx.canvas;
-                                    var width = canvas.width;
-                                    var height = canvas.height;
-                                    console.log(width + " x " + height);
-                                    var self = this;
+                                    //var ctx = this.ctx;
+                                    //ctx.save();
+                                    //ctx.setTransform(1, 0, 0, 1, 0, 0);
+                                    //var canvas = ctx.canvas;
+                                    //var width = canvas.width;
+                                    //var height = canvas.height;
+                                    //console.log(width + " x " + height);
+                                    //var self = this;
 
-                                    var ctf = ctx._transformMatrix;
+                                    //var ctf = ctx._transformMatrix;
 
-                                    function drawGrid(lineColor) {
-                                        function setStrokeColor(idx) {
-                                            self.setStrokeRGBColor.apply(self, lineColor);
-                                            //if (idx === 0) {
-                                            //    self.setStrokeRGBColor(0, 255, 0);
-                                            //}
-                                            //else {
-                                            //    self.setStrokeRGBColor(255, 0, 0);
-                                            //}
-                                        }
-                                        // var xc = 10, yc = 10;
-                                        //var dx = (width / xc) / ctf[0];
-                                        //var dy = (height / yc) / -ctf[3];
-                                        var dx = 25, dy = 25;
+                                    //function drawGrid(lineColor) {
+                                    //    function setStrokeColor(idx) {
+                                    //        self.setStrokeRGBColor.apply(self, lineColor);
+                                    //        //if (idx === 0) {
+                                    //        //    self.setStrokeRGBColor(0, 255, 0);
+                                    //        //}
+                                    //        //else {
+                                    //        //    self.setStrokeRGBColor(255, 0, 0);
+                                    //        //}
+                                    //    }
+                                    //    // var xc = 10, yc = 10;
+                                    //    //var dx = (width / xc) / ctf[0];
+                                    //    //var dy = (height / yc) / -ctf[3];
+                                    //    var dx = 25, dy = 25;
 
-                                        //width = 300; height = 500;
-                                        for (var x = 0; x < width; x += dx) {
-                                            ctx.beginPath();
-                                            self.setLineWidth((x % 500 == 0) ? 3 : 1);
-                                            setStrokeColor(x);
-                                            self.setDash((x % 100 == 0) ? [] : [5]);
-                                            ctx.moveTo(x, 0);
-                                            ctx.lineTo(x, height);
-                                            ctx.stroke();
-                                        }
-                                        for (var y = 0; y < height; y += dy) {
-                                            ctx.beginPath();
-                                            self.setLineWidth((y % 500 == 0) ? 3 : 1);
-                                            setStrokeColor(y);
-                                            self.setDash((y % 100 == 0) ? [] : [5]);
-                                            ctx.moveTo(0, y);
-                                            ctx.lineTo(height, y);
-                                            ctx.stroke();
-                                        }
-                                    }
+                                    //    //width = 300; height = 500;
+                                    //    for (var x = 0; x < width; x += dx) {
+                                    //        ctx.beginPath();
+                                    //        self.setLineWidth((x % 500 == 0) ? 3 : 1);
+                                    //        setStrokeColor(x);
+                                    //        self.setDash((x % 100 == 0) ? [] : [5]);
+                                    //        ctx.moveTo(x, 0);
+                                    //        ctx.lineTo(x, height);
+                                    //        ctx.stroke();
+                                    //    }
+                                    //    for (var y = 0; y < height; y += dy) {
+                                    //        ctx.beginPath();
+                                    //        self.setLineWidth((y % 500 == 0) ? 3 : 1);
+                                    //        setStrokeColor(y);
+                                    //        self.setDash((y % 100 == 0) ? [] : [5]);
+                                    //        ctx.moveTo(0, y);
+                                    //        ctx.lineTo(height, y);
+                                    //        ctx.stroke();
+                                    //    }
+                                    //}
 
-                                    //drawGrid([0,0,255]);
-                                    this.colours = [
-                                        [255, 0, 0],
-                                        [0, 255, 0],
-                                        [0, 0, 255],
-                                        [255, 255, 0],
-                                        [0, 255, 255],
-                                        [128, 128, 0],
-                                        [255, 128, 0],
-                                        [128, 255, 0],
-                                        [0, 128, 0]
-                                    ];
-                                    this.setLineWidth(2);
-                                    for (var i = 0; i < this.ctx.imageInfo.length; i++) {
-                                        //this.ctx.beginPath();
-                                        //this.setStrokeRGBColor(255, 105, 180);
-                                        //this.ctx.moveTo(this.ctx.imageInfo[1].derived.position.x / ctf[0], (ctf[5]-462) / -ctf[3]);
-                                        //this.ctx.lineTo(0, 0);
-                                        //this.ctx.stroke();
+                                    ////drawGrid([0,0,255]);
+                                    //this.colours = [
+                                    //    [255, 0, 0],
+                                    //    [0, 255, 0],
+                                    //    [0, 0, 255],
+                                    //    [255, 255, 0],
+                                    //    [0, 255, 255],
+                                    //    [128, 128, 0],
+                                    //    [255, 128, 0],
+                                    //    [128, 255, 0],
+                                    //    [0, 128, 0]
+                                    //];
+                                    //this.setLineWidth(2);
+                                    //for (var i = 0; i < ctx.canvas._imageInfo.length; i++) {
 
-                                        this.ctx.beginPath();
-                                        //var col = this.colours[this.ctx.imageInfo.iteration % this.colours.length];
-                                        var col = [255, 0, 255];
-                                        this.setStrokeRGBColor(col[0],col[1],col[2]);
-                                        var ii = this.ctx.imageInfo[i];
-                                        //this.ctx.moveTo(0, 0);
-                                        var w = ii.image.width * ii.transform[0];// / ctf[0];
-                                        var h = ii.image.height * ii.transform[3];// / -ctf[3];
-                                        var x1 = ii.derived.position.x;// / ctf[0];
-                                        var y1 = ii.derived.position.y;//(ctf[5] - ii.derived.position.y);// / -ctf[3];
+                                    //    ctx.beginPath();
+                                    //    var col = [255, 0, 255];
+                                    //    this.setStrokeRGBColor(col[0],col[1],col[2]);
+                                    //    var ii = ctx.canvas._imageInfo[i];
+                                    //    var w = ii.image.width * ii.transform[0];// / ctf[0];
+                                    //    var h = ii.image.height * ii.transform[3];// / -ctf[3];
+                                    //    var x1 = ii.derived.position.x;// / ctf[0];
+                                    //    var y1 = ii.derived.position.y;//(ctf[5] - ii.derived.position.y);// / -ctf[3];
 
-                                        this.ctx.moveTo(
-                                            x1,
-                                            y1
-                                        );
-                                        this.ctx.lineTo(x1 + w, y1);
-                                        this.ctx.lineTo(x1 + w, y1-h);
-                                        this.ctx.lineTo(x1, y1-h);
-                                        this.ctx.lineTo(x1, y1);
-                                        this.ctx.stroke();
-                                    }
-                                    this.ctx.restore();
+                                    //    ctx.moveTo(
+                                    //        x1,
+                                    //        y1
+                                    //    );
+                                    //    ctx.lineTo(x1 + w, y1);
+                                    //    ctx.lineTo(x1 + w, y1-h);
+                                    //    ctx.lineTo(x1, y1-h);
+                                    //    ctx.lineTo(x1, y1);
+                                    //    ctx.stroke();
 
-                                    this.ctx.imageInfo = [];
+                                    //    //window.selectionRectangles.createSelection(ctx.canvas, {
+                                    //    //    left: x1,
+                                    //    //    top: y1,
+                                    //    //    width: w,
+                                    //    //    height: h
+                                    //    //});
+                                    //}
+                                    //ctx.restore();
+
+                                    //// ctx.canvas._imageInfo = [];
                                 },
 
                                 endDrawing : function CanvasGraphics_endDrawing() {
@@ -8494,8 +8494,8 @@
                                         scale: { x: ii.transform[0], y: ii.transform[3] }
                                         //, scale2: Util.singularValueDecompose2dScale(ii.transform)
                                     }
-                                    this.ctx.imageInfo[this.ctx.imageInfo.length] = ii;
-                                    this.ctx.imageInfo.iteration++;
+                                    this.ctx.canvas._imageInfo[this.ctx.canvas._imageInfo.length] = ii;
+                                    this.ctx.canvas._imageInfo.iteration++;
                                 },
 
                                 paintJpegXObject : function CanvasGraphics_paintJpegXObject(objId, w, h) {
