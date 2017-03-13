@@ -247,7 +247,7 @@
         });
 
         var info = $([
-            '<div class="info hidden">',
+            '<div class="info">',
                 '<div class="header">Annotations</div>',
                 '<div class="content"></div>',
             '</div>'
@@ -256,9 +256,9 @@
         var infoHeader = info.find('>.header');
         var infoContent = info.find('>.content');
 
-        if (wpd.utils.getDevOptions().showSelectionInfo) {
-            info.removeClass('hidden');
-        }
+        //if (wpd.utils.getDevOptions().showSelectionInfo) {
+        //    info.removeClass('hidden');
+        //}
 
         infoHeader.on('click',
             function toggleAnnotationMode() {

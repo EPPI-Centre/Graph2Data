@@ -94,7 +94,7 @@ namespace PdfExtractor.Web.Controllers
         {
             var filePath = HttpContext.Server.MapPath(Path.Combine(
                 "~/Content/Docs/Input",
-                _pdfPaths[18]
+                _pdfPaths[12]
             ));
             //var fileStream = System.IO.File.OpenRead(filePath);
             //return new FileStreamResult(fileStream, "application/pdf");
