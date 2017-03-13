@@ -655,8 +655,10 @@
                 //    y2: eb.bottom - cb.top
                 //});
                 var si = getSelectionInfoFromRect($elem);
-                if (!si.hasOwnProperty('autoPlaced') || autoPlaced) {
-                    si.autoPlaced = autoPlaced;
+                if (si) {
+                    if (!si.hasOwnProperty('autoPlaced') || autoPlaced) {
+                        si.autoPlaced = autoPlaced;
+                    }
                 }
 
                 function applyDataStyle(rect) {
@@ -902,7 +904,7 @@
 
         function removeRect(elem) {
             var $elem = $(elem);
-            if (!$elem.hasClass('rectangle')) { return; }s
+            if (!$elem.hasClass('rectangle')) { return; }
 
             $elem.remove();
             renumber();
