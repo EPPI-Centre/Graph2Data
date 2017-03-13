@@ -8852,7 +8852,8 @@ var pdfjsWebLibs = {
                                 var si = sel.dataStore.getData();
                                 var zoomedCloneImgSrc = si.zoomedCloneImgSrc;
                                 if (!zoomedCloneImgSrc) {
-                                    var zoomedClone = wpd.utils.getDevOptions().oldImageExtraction
+                                    var oldMethod = !si.autoPlaced || wpd.utils.getDevOptions().oldImageExtraction;
+                                    var zoomedClone = oldMethod
                                         ? window.selectionRectangles.getZoomedCloneOfArea(sel, 2)
                                         : window.selectionRectangles.getZoomedCloneOfArea2(sel, 1);
 

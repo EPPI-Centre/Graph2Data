@@ -124,6 +124,9 @@ wpd.utils = (function () {
     function getDevOptions() {
         var options = {}, url = $.url();
 
+        if (url.param('dev-show-selection-info')) {
+            options.showSelectionInfo = true;
+        }
         if (url.param('dev-grid')) {
             options.grid = true;
         }

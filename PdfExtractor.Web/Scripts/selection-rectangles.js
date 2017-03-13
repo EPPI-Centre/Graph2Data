@@ -217,10 +217,10 @@
     function init(canvases, config) {
         canvases = canvases || [];
 
+        if (canvases.length > 0) {
+            _registerCanvases(canvases);
+        }
         if (window.selectionRectangles_initialized) {
-            if (canvases.length > 0) {
-                _registerCanvases(canvases);
-            }
             return;
         }
         config = _initConfig(config);
@@ -256,7 +256,7 @@
         var infoHeader = info.find('>.header');
         var infoContent = info.find('>.content');
 
-        if ($.url().param('dev')) {
+        if (wpd.utils.getDevOptions().showSelectionInfo) {
             info.removeClass('hidden');
         }
 
@@ -393,6 +393,7 @@
                     "<tbody>",
                     row("id", si.id),
                     row("data", si.dataDesc),
+                    row("auto", si.autoPlaced),
                     "</tbody>",
                     "</table>"
                 ].join('');
@@ -417,14 +418,14 @@
         }
 
         function showInfo(e) {
-            if (!$.url().param('dev')) {
+            if (!wpd.utils.getDevOptions().showSelectionInfo) {
                 return;
             }
             infoContent.html([
                 "<table>",
                 "<tbody>",
              // row("zindexRange", _getZindexRange()),
-                row("canvaes", _getCanvasCount()),
+                row("canvas", _getCanvasCount()),
                 row("buttons", getButtons(e)),
                 row("mouse", coordOption(mouse)),
                 row("mousePrev", coordOption(mousePrev)),
@@ -541,6 +542,10 @@
                     else {
                         // dragging an existing rect
                         var moveElem = hovered || focused;
+
+                        var si = getSelectionInfoFromRect(moveElem);
+                        si.autoPlaced = false;
+
                         if (sizing) {
                             var extent = _getElemExtent(moveElem);
                             var extentOffset = applyOffset(extent, moveDelta);
@@ -630,7 +635,7 @@
             return ret;
         }
 
-        function prepareSelectionInfo($elem) {
+        function prepareSelectionInfo($elem, autoPlaced) {
             var canvasInfo = findCanvasBeneathSelection($elem);
             var ret = null;
             if (canvasInfo) {
@@ -649,6 +654,10 @@
                 //    x2: eb.right - cb.left,
                 //    y2: eb.bottom - cb.top
                 //});
+                var si = getSelectionInfoFromRect($elem);
+                if (!si.hasOwnProperty('autoPlaced') || autoPlaced) {
+                    si.autoPlaced = autoPlaced;
+                }
 
                 function applyDataStyle(rect) {
                     var si = getSelectionInfoFromRect(rect);
@@ -686,7 +695,8 @@
                             return {
                                 data: si.data,
                                 dataDesc: si.dataDesc,
-                                zoomedCloneImgSrc: si.zoomedCloneImgSrc
+                                zoomedCloneImgSrc: si.zoomedCloneImgSrc,
+                                autoPlaced: si.autoPlaced
                             };
                         }
                     }
@@ -881,33 +891,9 @@
                 if (hovered) {
                     setUnhovered(hovered);
                 }
-                // console.log("begun.");
                 mouseStart = mouse;
 
                 doCreateSelectionDiv(mouseStart);
-
-                //var id = nextId++;
-                //var rectHtml = [
-                //    "<div ",
-                //        "class='rectangle' ",
-                //     // idAttr,"='",id,"'",
-                //        "style='",
-                //            "left: ", mouseStart.x, "px; ",
-                //            "top: ", mouseStart.y, "px' ",
-                // // "tabIndex='", id, "'",
-                //    ">",
-                //        "<span ",
-                //            "class='id hidden'",
-                //        ">",
-                //        id,
-                //        "</span>",
-                //        "<span class='data'>data</span>",
-                //    "</div>"
-                //].join('');
-                //element = $(rectHtml)[0];
-                //setRectId(element, id);
-                //$canvasOverlay.append(element);
-                //createSelectionInfo(id);
 
                 creating = true;
             }
@@ -916,7 +902,7 @@
 
         function removeRect(elem) {
             var $elem = $(elem);
-            if (!$elem.hasClass('rectangle')) { return; }
+            if (!$elem.hasClass('rectangle')) { return; }s
 
             $elem.remove();
             renumber();
@@ -924,10 +910,11 @@
             config.selectionDeletedHandler(prepareSelectionInfo($elem));
         }
 
-        function doEndCreatingSelectionDiv() {
+        function doEndCreatingSelectionDiv(autoPlaced) {
             var $element = $(element);
-            config.selectionCreatedHandler(prepareSelectionInfo($element));
+            config.selectionCreatedHandler(prepareSelectionInfo($element, autoPlaced));
             showIdElem($element, true);
+            return $element;
         }
 
         function endCreatingSelection(e) {
@@ -940,7 +927,7 @@
                 } else {
                     // console.log("finished. rect: " + coord(rs));
 
-                    doEndCreatingSelectionDiv();
+                    var $element = doEndCreatingSelectionDiv();
                     setHovered($element);
                     setFocused($element);
                 }
@@ -1091,9 +1078,6 @@
             // convert to canvas-relative then page-relative bounds
             var hiddenScale = getCanvasHiddenScale(canvas);
             var $canvas = $(canvas);
-            //var canvasPos = $canvas.position();
-            //var wrapperPos = $canvas.parent('.canvasWrapper').position();
-            //var pageContainerPos = $(canvas.offsetParent).position();
             var canvasPos = $canvas.offset();
 
             var pageBounds = [];
@@ -1123,7 +1107,7 @@
             doCreateSelectionDiv({ x: pageBounds.left, y: pageBounds.top - pageBounds.height });
             // set the size of the rect - usually completed during mouse move
             doSetRectSize(element, pageBounds);
-            doEndCreatingSelectionDiv();
+            doEndCreatingSelectionDiv(true); // true <- autoPlaced
         }
 
         window.selectionRectangles_initialized = true;
