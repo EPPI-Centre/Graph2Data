@@ -160,7 +160,6 @@
     function _getCanvasCount() {
         var keys = Object.keys(_registeredCanvases);
         var keyCount = keys.length;
-        //var keyCount = $(_registeredCanvases).size();
         return keyCount;
     }
 
@@ -169,6 +168,21 @@
             function(idx, c) {
                 _registeredCanvases[c.id] = c;
             });
+    }
+
+    function _getImageInfoFromSelId(selId) {
+        var ii, idx = 0, more = true;
+        $.each(_registeredCanvases, function (_, canvas) {
+            $.each (canvas._imageInfo, function (_, info) {
+                if (++idx == selId) {
+                    ii = info;
+                    more = false;
+                }
+                return more;
+            });
+            return more;
+        });
+        return ii;
     }
 
     //function _getZindexRange() {
@@ -193,6 +207,11 @@
     //    var info = { elemCount: elemCount, min: min, max: max };
     //    return JSON.stringify(info);
     //}
+
+    function getRectId(rect) {
+        var id = $(rect).attr(idAttr);
+        return id;
+    }
 
     var _module;
     function init(canvases, config) {
@@ -793,10 +812,6 @@
             }
         }
 
-        function getRectId(rect) {
-            var id = $(rect).attr(idAttr);
-            return id;
-        }
         function setRectId(rect, id) {
             $(rect).attr(idAttr, id);
         }
@@ -1160,9 +1175,37 @@
         ctx2.fillRect(0, 0, scaled.width, scaled.height);
         ctx2.drawImage(ctx1,
             sel.bounds.left / hiddenScale.x,
-            sel.bounds.top  / hiddenScale.y,
+            sel.bounds.top / hiddenScale.y,
             preScaled.width, //sel.bounds.width,
             preScaled.height, //sel.bounds.height,
+            0,
+            0,
+            scaled.width,
+            scaled.height
+        );
+
+        return copiedCanvas;
+    }
+
+    function getZoomedCloneOfArea2(sel, scale) {
+        var selId = getRectId(sel.elem);
+     // var ii = sel.canvas._imageInfo[selId - 1];
+        var ii = _getImageInfoFromSelId (selId);
+        var ctx1 = sel.canvas;
+        var scaled = {
+            width: ii.image.width * scale,
+            height: ii.image.height * scale
+        };
+        var copiedCanvas = $("<canvas>").attr("width", scaled.width).attr("height", scaled.height)[0];
+        var ctx2 = copiedCanvas.getContext("2d", { alpha: false });
+
+        ctx2.fillStyle = "rgb(255,0,0)";
+        ctx2.fillRect(0, 0, scaled.width, scaled.height);
+        ctx2.drawImage(ii.image,
+            0,
+            0,
+            ii.image.width,
+            ii.image.height,
             0,
             0,
             scaled.width,
@@ -1177,6 +1220,7 @@
         getSelections: getSelections,
         getSelectionInfo: getSelectionInfo,
         getZoomedCloneOfArea: getZoomedCloneOfArea,
+        getZoomedCloneOfArea2: getZoomedCloneOfArea2,
         getCanvasHiddenScale: getCanvasHiddenScale,
      // createSelection: createSelection <-- set elsewhere
     };

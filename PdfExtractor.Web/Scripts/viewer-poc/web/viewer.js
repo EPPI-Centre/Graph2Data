@@ -8735,29 +8735,27 @@ var pdfjsWebLibs = {
                     modal.open();
                 }
 
+                // makeCssRgb() can be called thousands of times. Using |rgbBuf| avoids
+                // creating many intermediate strings.
+                function makeCssRgb(r, g, b) {
+                    rgbBuf[1] = r;
+                    rgbBuf[3] = g;
+                    rgbBuf[5] = b;
+                    return rgbBuf.join('');
+                }
+
+
+                var rgbBuf = ['rgb(', 0, ',', 0, ',', 0, ')'];
+
                 function transplantedDoStuff(canvas) {
                     var ctx = canvas.getContext('2d');
-                 // var ctx = this.ctx;
                     ctx.save();
                     ctx.setTransform(1, 0, 0, 1, 0, 0);
-                    //var canvas = ctx.canvas;
                     var width = canvas.width;
                     var height = canvas.height;
                     console.log(width + " x " + height);
-                    //var self = this;
 
                     var ctf = ctx._transformMatrix;
-
-                    var rgbBuf = ['rgb(', 0, ',', 0, ',', 0, ')'];
-
-                    // makeCssRgb() can be called thousands of times. Using |rgbBuf| avoids
-                    // creating many intermediate strings.
-                    function makeCssRgb(r, g, b) {
-                        rgbBuf[1] = r;
-                        rgbBuf[3] = g;
-                        rgbBuf[5] = b;
-                        return rgbBuf.join('');
-                    }
 
                     function setStrokeRGBColor(r, g, b) {
                         var color = makeCssRgb(r, g, b);
@@ -8766,60 +8764,64 @@ var pdfjsWebLibs = {
 
 
                     function drawGrid(lineColor) {
+                        function setDash(dashArray, dashPhase) {
+                            if (ctx.setLineDash !== undefined) {
+                                ctx.setLineDash(dashArray);
+                                ctx.lineDashOffset = dashPhase;
+                            } else {
+                                ctx.mozDash = dashArray;
+                                ctx.mozDashOffset = dashPhase;
+                            }
+                        }
                         function setStrokeColor(idx) {
                             setStrokeRGBColor.apply(self, lineColor);
                         }
-                        // var xc = 10, yc = 10;
-                        //var dx = (width / xc) / ctf[0];
-                        //var dy = (height / yc) / -ctf[3];
                         var dx = 25, dy = 25;
 
-                        //width = 300; height = 500;
                         for (var x = 0; x < width; x += dx) {
                             ctx.beginPath();
-                            //self.setLineWidth((x % 500 == 0) ? 3 : 1);
                             ctx.lineWidth = (x % 500 == 0) ? 3 : 1;
                             setStrokeColor(x);
-                            self.setDash((x % 100 == 0) ? [] : [5]);
+                            setDash((x % 100 == 0) ? [] : [5]);
                             ctx.moveTo(x, 0);
                             ctx.lineTo(x, height);
                             ctx.stroke();
                         }
                         for (var y = 0; y < height; y += dy) {
                             ctx.beginPath();
-                            //self.setLineWidth((y % 500 == 0) ? 3 : 1);
                             ctx.lineWidth = (y % 500 == 0) ? 3 : 1;
                             setStrokeColor(y);
-                            self.setDash((y % 100 == 0) ? [] : [5]);
+                            setDash((y % 100 == 0) ? [] : [5]);
                             ctx.moveTo(0, y);
                             ctx.lineTo(height, y);
                             ctx.stroke();
                         }
                     }
 
-                    //drawGrid([0,0,255]);
-                    //this.setLineWidth(2);
+                    if (wpd.utils.getDevOptions().grid) {
+                        drawGrid([0, 0, 255]);
+                    }
+
                     ctx.lineWidth = 2;
                     for (var i = 0; i < canvas._imageInfo.length; i++) {
 
+                        var ii = canvas._imageInfo[i];
+                        var w = ii.image.width * ii.derived.scale.x;
+                        var h = ii.image.height * ii.derived.scale.y;
+                        var x1 = ii.derived.position.x;
+                        var y1 = ii.derived.position.y;
+
+                        // Uncomment to draw image bounds onto the canvas (begin)
                         //ctx.beginPath();
                         //var col = [255, 0, 255];
                         //setStrokeRGBColor(col[0],col[1],col[2]);
-                        var ii = canvas._imageInfo[i];
-                        var w = ii.image.width * ii.transform[0];// / ctf[0];
-                        var h = ii.image.height * ii.transform[3];// / -ctf[3];
-                        var x1 = ii.derived.position.x;// / ctf[0];
-                        var y1 = ii.derived.position.y;//(ctf[5] - ii.derived.position.y);// / -ctf[3];
-
-                        //ctx.moveTo(
-                        //    x1,
-                        //    y1
-                        //);
+                        //ctx.moveTo(x1, y1);
                         //ctx.lineTo(x1 + w, y1);
                         //ctx.lineTo(x1 + w, y1-h);
                         //ctx.lineTo(x1, y1-h);
                         //ctx.lineTo(x1, y1);
                         //ctx.stroke();
+                        // Uncomment to draw image bounds onto the canvas (end)
 
                         window.selectionRectangles.createSelection(canvas, {
                             left: x1,
@@ -8830,7 +8832,7 @@ var pdfjsWebLibs = {
                     }
                     ctx.restore();
 
-                    canvas._imageInfo = [];
+                 // canvas._imageInfo = []; <-- don't discard the imageInfo
                 }
 
                 window.selectionRectangles.init(
@@ -8850,7 +8852,10 @@ var pdfjsWebLibs = {
                                 var si = sel.dataStore.getData();
                                 var zoomedCloneImgSrc = si.zoomedCloneImgSrc;
                                 if (!zoomedCloneImgSrc) {
-                                    var zoomedClone = window.selectionRectangles.getZoomedCloneOfArea(sel, 2);
+                                    var zoomedClone = wpd.utils.getDevOptions().oldImageExtraction
+                                        ? window.selectionRectangles.getZoomedCloneOfArea(sel, 2)
+                                        : window.selectionRectangles.getZoomedCloneOfArea2(sel, 2);
+
                                     zoomedCloneImgSrc = zoomedClone.toDataURL("image/png");
 
                                     sel.dataStore.putData({ zoomedCloneImgSrc: zoomedCloneImgSrc });

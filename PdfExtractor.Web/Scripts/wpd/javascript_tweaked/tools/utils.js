@@ -121,13 +121,27 @@ wpd.utils = (function () {
         //datasetList.selectedIndex = currentIndex;
     }
 
+    function getDevOptions() {
+        var options = {}, url = $.url();
+
+        if (url.param('dev-grid')) {
+            options.grid = true;
+        }
+        if (url.param('dev-old-image-extraction')) {
+            options.oldImageExtraction = true;
+        }
+
+        return options;
+    }
+
     return {
         notice: notice,
         getElemId: getElemId,
         _$: _$,
         bindMemberFunctions: bindMemberFunctions,
         deepClone: deepClone,
-        populateDatasetControl: populateDatasetControl
+        populateDatasetControl: populateDatasetControl,
+        getDevOptions: getDevOptions
     };
 
 })();
