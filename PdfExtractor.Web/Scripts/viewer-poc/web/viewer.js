@@ -8854,7 +8854,7 @@ var pdfjsWebLibs = {
                                 if (!zoomedCloneImgSrc) {
                                     var zoomedClone = wpd.utils.getDevOptions().oldImageExtraction
                                         ? window.selectionRectangles.getZoomedCloneOfArea(sel, 2)
-                                        : window.selectionRectangles.getZoomedCloneOfArea2(sel, 2);
+                                        : window.selectionRectangles.getZoomedCloneOfArea2(sel, 1);
 
                                     zoomedCloneImgSrc = zoomedClone.toDataURL("image/png");
 
