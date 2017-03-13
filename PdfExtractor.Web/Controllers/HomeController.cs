@@ -63,7 +63,10 @@ namespace PdfExtractor.Web.Controllers
             @"Graphs_from_Hugh\ppv npv chart.pdf",
 
             // 17
-            @"Graphs_from_Hugh\scatter plot.pdf"
+            @"Graphs_from_Hugh\scatter plot.pdf",
+
+            // 18
+            @"Graphs_from_Fala\Graphs.pdf"
 
 
         };
@@ -91,7 +94,7 @@ namespace PdfExtractor.Web.Controllers
         {
             var filePath = HttpContext.Server.MapPath(Path.Combine(
                 "~/Content/Docs/Input",
-                _pdfPaths[12]
+                _pdfPaths[18]
             ));
             //var fileStream = System.IO.File.OpenRead(filePath);
             //return new FileStreamResult(fileStream, "application/pdf");

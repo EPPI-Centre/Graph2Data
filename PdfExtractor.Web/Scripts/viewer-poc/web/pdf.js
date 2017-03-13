@@ -8393,11 +8393,11 @@
                                     this.restore();
                                 },
 
-                                lee_captureImageInfo: function CanvasGraphics_lee_captureImageInfo(image, transformMatrix) {
+                                lee_captureImageInfo: function CanvasGraphics_lee_captureImageInfo(image, transform) {
                                     //  Lee - capture image positions and contents as they're drawn
                                     var ii = {
                                         image: image
-                                    }, transform = transformMatrix.slice();
+                                    };
                                     ii.derived = {
                                         position: { x: transform[4], y: transform[5] },
                                         scale: { x: transform[0], y: transform[3] }
@@ -8589,6 +8589,16 @@
                                     this.paintInlineImageXObjectGroup(imgData, map);
                                 },
 
+                                lee_canvasToImg :
+                                function CanvasGraphics_lee_canvasToImg(canvas, width, height) {
+                                    var img = new Image();
+                                    img.src = canvas.toDataURL();
+                                    img.width = width;
+                                    img.height = height;
+
+                                    return img;
+                                },
+
                                 paintInlineImageXObject :
                                 function CanvasGraphics_paintInlineImageXObject(imgData) {
                                     var width = imgData.width;
@@ -8598,6 +8608,9 @@
                                     this.save();
                                     // scale the image to the unit square
                                     ctx.scale(1 / width, -1 / height);
+
+                                    var lee_transformMatrix = ctx._transformMatrix.slice();
+                                    var leeImg;
 
                                     var currentTransform = ctx.mozCurrentTransformInverse;
                                     var a = currentTransform[0],
@@ -8612,12 +8625,15 @@
                                     // instanceof HTMLElement does not work in jsdom node.js module
                                     if (imgData instanceof HTMLElement || !imgData.data) {
                                         imgToPaint = imgData;
+                                        leeImg = imgToPaint;
                                     } else {
                                         tmpCanvas = this.cachedCanvases.getCanvas('inlineImage',
                                                 width, height);
                                         var tmpCtx = tmpCanvas.context;
                                         putBinaryImageData(tmpCtx, imgData);
                                         imgToPaint = tmpCanvas.canvas;
+
+                                        leeImg = this.lee_canvasToImg(tmpCanvas.canvas, width, height);
                                     }
 
                                     var paintWidth = width,
@@ -8647,6 +8663,9 @@
                                         imgToPaint = tmpCanvas.canvas;
                                         paintWidth = newWidth;
                                         paintHeight = newHeight;
+
+                                        leeImg = this.lee_canvasToImg(tmpCanvas.canvas, paintWidth, paintHeight);
+
                                         tmpCanvasId = tmpCanvasId === 'prescale1' ? 'prescale2' : 'prescale1';
                                     }
                                     ctx.drawImage(imgToPaint, 0, 0, paintWidth, paintHeight,
@@ -8663,6 +8682,8 @@
                                         });
                                     }
                                     this.restore();
+
+                                    this.lee_captureImageInfo(leeImg, lee_transformMatrix);
                                 },
 
                                 paintInlineImageXObjectGroup :
