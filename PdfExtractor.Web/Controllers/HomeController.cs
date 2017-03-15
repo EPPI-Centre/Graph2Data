@@ -66,8 +66,10 @@ namespace PdfExtractor.Web.Controllers
             @"Graphs_from_Hugh\scatter plot.pdf",
 
             // 18
-            @"Graphs_from_Fala\Graphs.pdf"
+            @"Graphs_from_Fala\Graphs.pdf",
 
+            //19
+            @"Graphs_from_Fala\Graphs_130317.pdf"
 
         };
 
@@ -94,7 +96,7 @@ namespace PdfExtractor.Web.Controllers
         {
             var filePath = HttpContext.Server.MapPath(Path.Combine(
                 "~/Content/Docs/Input",
-                _pdfPaths[12]
+                _pdfPaths[19]
             ));
             //var fileStream = System.IO.File.OpenRead(filePath);
             //return new FileStreamResult(fileStream, "application/pdf");

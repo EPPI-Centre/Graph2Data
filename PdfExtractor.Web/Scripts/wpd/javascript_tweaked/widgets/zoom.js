@@ -1,9 +1,9 @@
 /*
-	WebPlotDigitizer - http://arohatgi.info/WebPlotDigitizer
+    WebPlotDigitizer - http://arohatgi.info/WebPlotDigitizer
 
-	Copyright 2010-2016 Ankit Rohatgi <ankitrohatgi@hotmail.com>
+    Copyright 2010-2016 Ankit Rohatgi <ankitrohatgi@hotmail.com>
 
-	This file is part of WebPlotDigitizer.
+    This file is part of WebPlotDigitizer.
 
     WebPlotDigitizer is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -35,21 +35,22 @@ wpd.zoomView = (function() {
         pix = [],
         zoomTimeout,
         zoomRatio,
-        crosshairColorText = 'black';
+        crosshairColorText = 'red';
 
     pix[0] = [];
 
     function init() {
 
         zCanvas = document.getElementById('zoomCanvas');
-    	zctx = zCanvas.getContext('2d');
-	    tempCanvas = document.createElement('canvas');
+        zctx = zCanvas.getContext('2d');
+
+        tempCanvas = document.createElement('canvas');
         tctx = tempCanvas.getContext('2d');
 
         $mPosn = document.getElementById('mousePosition');
         $mPosnOrig = document.getElementById('mousePositionOrig');
 
-        zoomRatio = 5;
+        zoomRatio = 8;
 
         drawCrosshair();
     }
