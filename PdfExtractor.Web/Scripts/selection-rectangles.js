@@ -170,19 +170,29 @@
             });
     }
 
-    function _getImageInfoFromSelId(selId) {
-        var ii, idx = 0, more = true;
+    function _findImageMetaInfoBySelId(selId) {
+        var imi, idx = 0, more = true;
         $.each(_registeredCanvases, function (_, canvas) {
-            $.each (canvas._imageInfo, function (_, info) {
+            $.each(canvas._imageInfo, function (canvasRelativeSelIdx, info) {
                 if (++idx == selId) {
-                    ii = info;
+                    imi = {
+                        canvas: canvas,
+                        canvasRelativeSelIdx: canvasRelativeSelIdx,
+                        info: info
+                    };
                     more = false;
                 }
                 return more;
             });
             return more;
         });
-        return ii;
+        return imi;
+    }
+
+    function _getImageInfoFromSelId(selId) {
+        var imi = _findImageMetaInfoBySelId(selId);
+
+        return imi ? imi.info : undefined;
     }
 
     //function _getZindexRange() {
@@ -690,6 +700,14 @@
                             if (obj.hasOwnProperty('zoomedCloneImgSrc')) {
                                 si.zoomedCloneImgSrc = obj.zoomedCloneImgSrc;
                             }
+
+                            // ???? - revisit this when saving data
+                            //if (obj.hasOwnProperty('canvasImageInfo')) {
+                            //    si.canvasImageInfo = obj.canvasImageInfo;
+                            //}
+                            //if (obj.hasOwnProperty('autoPlaced')) {
+                            //    si.canvasImageInfo = obj.autoPlaced;
+                            //}
                             applyDataStyle(rect);
                         },
                         getData: function() {
@@ -698,6 +716,7 @@
                                 data: si.data,
                                 dataDesc: si.dataDesc,
                                 zoomedCloneImgSrc: si.zoomedCloneImgSrc,
+                                canvasImageInfo: si.canvasImageInfo,
                                 autoPlaced: si.autoPlaced
                             };
                         }
@@ -831,12 +850,13 @@
             var id = getRectId(rect);
             return _selectionInfo[id];
         }
-        function createSelectionInfo(id) {
+        function createSelectionInfo(id, canvasImageInfo) {
             _selectionInfo[id] = {
                 id: id + "",
                 data: null,
                 dataDesc: "none",
-                zoomedCloneImgSrc: null
+                zoomedCloneImgSrc: null,
+                canvasImageInfo: canvasImageInfo
             };
         }
 
@@ -860,7 +880,7 @@
         }
 
 
-        function doCreateSelectionDiv(pos) {
+        function doCreateSelectionDiv(pos, canvasImageInfo) {
             var id = nextId++;
             var rectHtml = [
                 "<div ",
@@ -882,7 +902,7 @@
             element = $(rectHtml)[0];
             setRectId(element, id);
             $canvasOverlay.append(element);
-            createSelectionInfo(id);
+            createSelectionInfo(id, canvasImageInfo);
         }
 
         function beginCreatingSelection(e) {
@@ -906,7 +926,16 @@
             var $elem = $(elem);
             if (!$elem.hasClass('rectangle')) { return; }
 
+            var si = getSelectionInfoFromRect(elem);
+            var cii = si.canvasImageInfo;
+            if (cii) {
+                cii.canvas._imageInfo.splice(cii.imageInfoIndex, 1);
+                si.canvasImageInfo *= -1; 'deleted'
+            }
+
             $elem.remove();
+
+            // discards unused selectionInfo_s
             renumber();
 
             config.selectionDeletedHandler(prepareSelectionInfo($elem));
@@ -1076,7 +1105,7 @@
         //          expressed in the canvas' (inner) coordinate system
         //
         _module.createSelection =
-        function createSelection(canvas, bounds) {
+        function createSelection(canvas, bounds, canvasImageInfo) {
             // convert to canvas-relative then page-relative bounds
             var hiddenScale = getCanvasHiddenScale(canvas);
             var $canvas = $(canvas);
@@ -1106,7 +1135,10 @@
                 }
             }
 
-            doCreateSelectionDiv({ x: pageBounds.left, y: pageBounds.top - pageBounds.height });
+            doCreateSelectionDiv({
+                x: pageBounds.left,
+                y: pageBounds.top - pageBounds.height
+            }, canvasImageInfo);
             // set the size of the rect - usually completed during mouse move
             doSetRectSize(element, pageBounds);
             doEndCreatingSelectionDiv(true); // true <- autoPlaced
@@ -1157,8 +1189,8 @@
         var copiedCanvas = $("<canvas>").attr("width", scaled.width).attr("height", scaled.height)[0];
         var ctx2 = copiedCanvas.getContext("2d", { alpha: false });
 
-        ctx2.fillStyle = "rgb(255,0,0)";
-        ctx2.fillRect(0, 0, scaled.width, scaled.height);
+        //ctx2.fillStyle = "rgb(255,0,0)";
+        //ctx2.fillRect(0, 0, scaled.width, scaled.height);
         ctx2.drawImage(ctx1,
             sel.bounds.left / hiddenScale.x,
             sel.bounds.top / hiddenScale.y,
@@ -1176,7 +1208,10 @@
     function getZoomedCloneOfArea2(sel, scale) {
         var selId = getRectId(sel.elem);
      // var ii = sel.canvas._imageInfo[selId - 1];
-        var ii = _getImageInfoFromSelId (selId);
+        var ii = _getImageInfoFromSelId(selId);
+        if (!ii) {
+            alert("Unexpected attempt to getZoomedCloneOfArea2 where ii could not be found - consider calling original method.");
+        }
         var ctx1 = sel.canvas;
         var scaled = {
             width: ii.image.width * scale,
@@ -1185,8 +1220,8 @@
         var copiedCanvas = $("<canvas>").attr("width", scaled.width).attr("height", scaled.height)[0];
         var ctx2 = copiedCanvas.getContext("2d", { alpha: false });
 
-        ctx2.fillStyle = "rgb(255,0,0)";
-        ctx2.fillRect(0, 0, scaled.width, scaled.height);
+        //ctx2.fillStyle = "rgb(255,0,0)";
+        //ctx2.fillRect(0, 0, scaled.width, scaled.height);
         ctx2.drawImage(ii.image,
             0,
             0,

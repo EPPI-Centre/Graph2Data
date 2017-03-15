@@ -8762,7 +8762,6 @@ var pdfjsWebLibs = {
                         ctx.strokeStyle = color;
                     }
 
-
                     function drawGrid(lineColor) {
                         function setDash(dashArray, dashPhase) {
                             if (ctx.setLineDash !== undefined) {
@@ -8776,22 +8775,24 @@ var pdfjsWebLibs = {
                         function setStrokeColor(idx) {
                             setStrokeRGBColor.apply(self, lineColor);
                         }
-                        var dx = 25, dy = 25;
+                        var dx = 25, dy = 25, dw = 5,
+                            minor = 100, major = 500,
+                            minorWidth = 1, majorWidth = 3;
 
                         for (var x = 0; x < width; x += dx) {
                             ctx.beginPath();
-                            ctx.lineWidth = (x % 500 == 0) ? 3 : 1;
+                            ctx.lineWidth = (x % major == 0) ? majorWidth : minorWidth;
                             setStrokeColor(x);
-                            setDash((x % 100 == 0) ? [] : [5]);
+                            setDash((x % minor == 0) ? [] : [dw]);
                             ctx.moveTo(x, 0);
                             ctx.lineTo(x, height);
                             ctx.stroke();
                         }
                         for (var y = 0; y < height; y += dy) {
                             ctx.beginPath();
-                            ctx.lineWidth = (y % 500 == 0) ? 3 : 1;
+                            ctx.lineWidth = (y % major == 0) ? majorWidth : minorWidth;
                             setStrokeColor(y);
-                            setDash((y % 100 == 0) ? [] : [5]);
+                            setDash((y % minor == 0) ? [] : [dw]);
                             ctx.moveTo(0, y);
                             ctx.lineTo(height, y);
                             ctx.stroke();
@@ -8811,23 +8812,14 @@ var pdfjsWebLibs = {
                         var x1 = ii.derived.position.x;
                         var y1 = ii.derived.position.y;
 
-                        // Uncomment to draw image bounds onto the canvas (begin)
-                        //ctx.beginPath();
-                        //var col = [255, 0, 255];
-                        //setStrokeRGBColor(col[0],col[1],col[2]);
-                        //ctx.moveTo(x1, y1);
-                        //ctx.lineTo(x1 + w, y1);
-                        //ctx.lineTo(x1 + w, y1-h);
-                        //ctx.lineTo(x1, y1-h);
-                        //ctx.lineTo(x1, y1);
-                        //ctx.stroke();
-                        // Uncomment to draw image bounds onto the canvas (end)
-
                         window.selectionRectangles.createSelection(canvas, {
                             left: x1,
                             top: y1,
                             width: w,
                             height: h
+                        }, {
+                            canvas: canvas,
+                            imageInfoIndex: i
                         });
                     }
                     ctx.restore();
