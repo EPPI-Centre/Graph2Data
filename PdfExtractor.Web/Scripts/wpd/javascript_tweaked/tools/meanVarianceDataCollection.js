@@ -1702,8 +1702,8 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         }
         function gridDimensionsChanged(ev) {
             gridSettings.setDimensions({
-                x: parseInt($dom.$gridEditX.val(), 10),
-                y: parseInt($dom.$gridEditY.val(), 10)
+                x: parseFloat($dom.$gridEditX.val()),
+                y: parseFloat($dom.$gridEditY.val())
             });
 
             var dim = gridSettings.getDimensions();
