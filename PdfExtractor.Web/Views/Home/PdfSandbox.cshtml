@@ -1,27 +1,30 @@
-﻿<script@model dynamic
+﻿@model dynamic
 
 @section scripts {
     @Scripts.Render("~/bundles/pdfjs")
     @Styles.Render("~/Content/pdfstyle")
 
+    @Scripts.Render("~/bundles/jquery-ui")
+    @Styles.Render("~/Scripts/jquery-ui-1.12.1.only-spinner/bundle")
+
     <script type="text/javascript" src="~/Scripts/jquery.resize.js"></script>
 
-    <link rel="stylesheet" href="~/Content/PdfSandbox.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="~/Content/PdfSandbox.css" type="text/css" media="screen" />
 
-    <link href="~/Content/selection-rectangles.css" rel="stylesheet"/>
+    <link href="~/Content/selection-rectangles.css" rel="stylesheet" />
     <script type="text/javascript" src="~/Scripts/selection-rectangles.js"></script>
 
-    <link href="~/Scripts/jBox/jBox.css" rel="stylesheet"/>
+    <link href="~/Scripts/jBox/jBox.css" rel="stylesheet" />
     <script type="text/javascript" src="~/Scripts/jBox/jBox.js"></script>
 
     <link href="~/Scripts/jBox/plugins/Notice/jBox.notice.css" rel="stylesheet" />
-    <link href="~/Scripts/jBox/themes/NoticeFancy.css" rel="stylesheet"/>
+    <link href="~/Scripts/jBox/themes/NoticeFancy.css" rel="stylesheet" />
     <script type="text/javascript" src="~/Scripts/jBox/plugins/Notice/jBox.Notice.js"></script>
 
     <script type="text/javascript" src="~/Scripts/purl.js"></script>
 
-<script type="text/javascript">
-        window.alert = function(msg) {
+    <script type="text/javascript">
+        window.alert = function (msg) {
             var modal = new jBox('Modal',
             {
                 content: msg,
@@ -38,8 +41,8 @@
     </script>
 
 
-    <link rel="stylesheet" href="~/Content/wpd/styles.css" type="text/css" media="screen"/>
-    <link rel="stylesheet" href="~/Content/wpd/widgets.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="~/Content/wpd/styles.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="~/Content/wpd/widgets.css" type="text/css" media="screen" />
     @*<script src="~/Scripts/WebPlotDigitizer/combined-compiled.js"></script>*@
     @*<script src="~/Scripts/wpd/wpd_combined_tweaked.js"></script>*@
     @Scripts.Render("~/bundles/wpd_tweaked")
@@ -47,23 +50,18 @@
     <script type="text/javascript" src="~/Scripts/plot.ly.1.19.2.min.js"></script>
 
     @*<link href="~/Scripts/tabulator/tabulator.css" rel="stylesheet">
-    <script src="~/Scripts/tabulator/tabulator.js" type="text/javascript"></script>*@
+        <script src="~/Scripts/tabulator/tabulator.js" type="text/javascript"></script>*@
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="google" content="notranslate">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
+    <!-- This page was served by -->
     <link rel="resource" type="application/l10n" href="~/Scripts/viewer-poc/web/locale/locale.properties">
     <script type="text/javascript">
         @{
-            //var blah = Url.Content("~/Scripts/viewer-poc/web/BMJ 2011 Olesen.pdf");
-            //var blah = Url.Content("~/Scripts/viewer-poc/web/Report_Data types_UI dev_2-converted to pdf.pdf");
-            var blah = Url.Content("~/Scripts/viewer-poc/web/Report_Data types_UI dev_2_page-inserted-for-pdf-export.pdf");
-            //var blah = Url.Content("~/Scripts/viewer-poc/web/Scatter plots.pdf");
-            var uri = new Uri(Request.Url.Scheme + System.Uri.SchemeDelimiter + Request.Url.Host + blah);
-            var fileUri = uri.AbsoluteUri;
+            var uri = new Uri(Request.Url.Scheme + Uri.SchemeDelimiter + Request.Url.Host + Url.Content(Model.PdfPath));
         }
-        DEFAULT_URL = "@fileUri";
+        DEFAULT_URL = "@uri.AbsoluteUri";
 
         //$(function() {
         //    document.addEventListener("pagesloaded", function (e) {
@@ -71,11 +69,11 @@
         //    });
         //});
 
-        $(function() {
+        $(function () {
             $.post({
                 url: "@Url.Action("Get", "Settings")",
                 data: "",
-                success: function(data, status, xhr) {
+                success: function (data, status, xhr) {
                     begin(JSON.parse(data));
                 },
                 dataType: "json"
@@ -86,35 +84,40 @@
                 // body.addClass('wpd-visible');
                 @{
                     var contentBase = Url.Content("~/Content/wpd/");
+                    var siteBase = Url.Content("~");
+
                     var contentBaseUri = new Uri(Request.Url.Scheme + System.Uri.SchemeDelimiter + Request.Url.Host + contentBase);
+                    var siteBaseUri = new Uri(Request.Url.Scheme + System.Uri.SchemeDelimiter + Request.Url.Host + siteBase);
                 }
 
                 var wpdConfig = {
                     contentBaseUri: "@contentBaseUri",
+                    siteBaseUri: "@siteBaseUri",
                     loadingCurtainSelector: ".wpdContainer > .loadingCurtain",
                     sidebarContainerSelector: ".wpdContainer .sidebarContainer",
                     mainContainerSelector: ".wpdContainer .mainContainer",
                     appContainerElem: $('.wpdContainer')[0],
                     focusedSelection: null,
                     wpdPlotMemento: null,
-                    userSettings: userSettings
+                    userSettings: userSettings,
                 };
-                wpdConfig.show = function() {
+                wpdConfig.show = function () {
                     body.addClass('wpd-visible');
                     wpd.initApp(wpdConfig);
                 };
-                wpdConfig.hide = function(wpdPlotMemento) {
+                wpdConfig.hide = function (wpdPlotMemento) {
+                    wpd.acquireMeanVarianceData.hideAllDataPopups();
                     wpdConfig.focusedSelection.dataStore.putData({
                         data: wpdPlotMemento,
                         dataDesc: "wpdPlotMemento" //wpdPlotMemento.datasets.length + " data sets"
                     });
                     body.removeClass('wpd-visible');
                 };
-                wpdConfig.flushSettings = function(settings) {
+                wpdConfig.flushSettings = function (settings) {
                     $.post({
                         url: "@Url.Action("Set", "Settings")",
                         data: JSON.stringify(settings),
-                        success: function(data, status, xhr) {
+                        success: function (data, status, xhr) {
                             console.log("Settings saved!");
                         },
                         dataType: "json"
@@ -130,7 +133,7 @@
 
                 $('#wpd-filemenu-lee-close')
                     .on('click',
-                        function(e) {
+                        function (e) {
                             var wpdPlotMemento = wpd.appData.getMemento();
                             wpdConfig.hide(wpdPlotMemento);
                         });
@@ -409,70 +412,71 @@
     <div id="printContainer"></div>
     <div id="mozPrintCallback-shim" hidden>
         <style>
-@@media print {
-  #printContainer div {
-    page-break-after: always;
-    page-break-inside: avoid;
-  }
-}
+            @@media print {
+                #printContainer div {
+                    page-break-after: always;
+                    page-break-inside: avoid;
+                }
+            }
         </style>
         <style scoped>
-#mozPrintCallback-shim {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  z-index: 9999999;
+            #mozPrintCallback-shim {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: 100%;
+                z-index: 9999999;
+                display: block;
+                text-align: center;
+                background-color: rgba(0, 0, 0, 0.5);
+            }
 
-  display: block;
-  text-align: center;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-#mozPrintCallback-shim[hidden] {
-  display: none;
-}
-@@media print {
-  #mozPrintCallback-shim {
-    display: none;
-  }
-}
+                #mozPrintCallback-shim[hidden] {
+                    display: none;
+                }
 
-#mozPrintCallback-shim .mozPrintCallback-dialog-box {
-  display: inline-block;
-  margin: -50px auto 0;
-  position: relative;
-  top: 45%;
-  left: 0;
-  min-width: 220px;
-  max-width: 400px;
+            @@media print {
+                #mozPrintCallback-shim {
+                    display: none;
+                }
+            }
 
-  padding: 9px;
+            #mozPrintCallback-shim .mozPrintCallback-dialog-box {
+                display: inline-block;
+                margin: -50px auto 0;
+                position: relative;
+                top: 45%;
+                left: 0;
+                min-width: 220px;
+                max-width: 400px;
+                padding: 9px;
+                border: 1px solid hsla(0, 0%, 0%, .5);
+                border-radius: 2px;
+                box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+                background-color: #474747;
+                color: hsl(0, 0%, 85%);
+                font-size: 16px;
+                line-height: 20px;
+            }
 
-  border: 1px solid hsla(0, 0%, 0%, .5);
-  border-radius: 2px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+            #mozPrintCallback-shim .progress-row {
+                clear: both;
+                padding: 1em 0;
+            }
 
-  background-color: #474747;
+            #mozPrintCallback-shim progress {
+                width: 100%;
+            }
 
-  color: hsl(0, 0%, 85%);
-  font-size: 16px;
-  line-height: 20px;
-}
-#mozPrintCallback-shim .progress-row {
-  clear: both;
-  padding: 1em 0;
-}
-#mozPrintCallback-shim progress {
-  width: 100%;
-}
-#mozPrintCallback-shim .relative-progress {
-  clear: both;
-  float: right;
-}
-#mozPrintCallback-shim .progress-actions {
-  clear: both;
-}
+            #mozPrintCallback-shim .relative-progress {
+                clear: both;
+                float: right;
+            }
+
+            #mozPrintCallback-shim .progress-actions {
+                clear: both;
+            }
         </style>
         <div class="mozPrintCallback-dialog-box">
             <!-- TODO: Localise the following strings -->
@@ -506,12 +510,12 @@
                         <div class="wpd-menu-header">File</div>
                         <div class="wpd-menu-dropdown">
                             <ul>
-                                <li id="wpd-filemenu-loadimage" onclick="wpd.popup.show('loadNewImage');">Load Image</li>
+                                @*<li id="wpd-filemenu-loadimage" onclick="wpd.popup.show('loadNewImage');">Load Image</li>
                                 <li id="wpd-filemenu-capture" onclick="wpd.webcamCapture.start();">Webcam Capture</li>
-                                <li id="wpd-filemenu-runscript" onclick="wpd.scriptInjector.start();">Run Script</li>
+                                <li id="wpd-filemenu-runscript" onclick="wpd.scriptInjector.start();">Run Script</li>*@
                                 <li id="wpd-filemenu-saveimage" onclick="wpd.graphicsWidget.saveImage();">Save Image</li>
-                                <li id="wpd-filemenu-exportdata" onclick="wpd.saveResume.save();">Export JSON</li>
-                                <li id="wpd-filemenu-import" onclick="wpd.saveResume.load();">Import JSON</li>
+                                @*<li id="wpd-filemenu-exportda ta" onclick="wpd.saveResume.save();">Export JSON</li>
+                                <li id="wpd-filemenu-import" onclick="wpd.saveResume.load();">Import JSON</li>*@
                                 <li id="wpd-filemenu-lee-close" onclick="javascript: void (0);">Lee(temporary) Close</li>
                             </ul>
                         </div>
@@ -538,7 +542,7 @@
                                 <li id="wpd-axesmenu-defineaxes" onclick="wpd.alignAxes.editAlignment();">Calibrate Axes</li>
                                 <li id="wpd-axesmenu-grid" onclick="wpd.gridDetection.start();">Remove Grid</li>
                                 <!-- <li id="wpd-axesmenu-perspective" onclick="wpd.perspective.start();">Perspective Transformation</li> -->
-                                <li id="wpd-axesmenu-tranformation-equations" onclick="wpd.transformationEquations.show();">Transformation Equations</li>
+                                @*<li id="wpd-axesmenu-tranformation-equations" onclick="wpd.transformationEquations.show();">Transformation Equations</li>*@
                             </ul>
                         </div>
                     </div>
@@ -546,9 +550,9 @@
                         <div class="wpd-menu-header">Data</div>
                         <div class="wpd-menu-dropdown">
                             <ul>
-                                <li id="wpd-datamenu-acquire" onclick="wpd.acquireData.load();">Acquire Data</li>
-                                <li id="wpd-datamenu-acquire-mean-variance" onclick="wpd.acquireMeanVarianceData.load();">Acquire Mean & Variance Data</li>
-                                <li id="wpd-datamenu-manage" onclick="wpd.dataSeriesManagement.manage();">Manage Datasets</li>
+                                <!--li id="wpd-datamenu-acquire" onclick="wpd.acquireData.load();">Acquire Data</li-->
+                                <li id="wpd-datamenu-acquire-mean-variance" onclick="wpd.acquireMeanVarianceData.load();">Acquire Data (new)</li>
+                                @*<li id="wpd-datamenu-manage" onclick="wpd.dataSeriesManagement.manage();">Manage Datasets</li>*@
                             </ul>
                         </div>
                     </div>
@@ -563,7 +567,7 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="wpd-menu">
+                    @*<div class="wpd-menu">
                         <div class="wpd-menu-header">Help</div>
                         <div class="wpd-menu-dropdown">
                             <ul>
@@ -575,7 +579,7 @@
                                 <li id="wpd-helpmenu-donate"><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=CVFJGV5SNEV9J&lc=US&item_name=WebPlotDigitizer&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted" target="_blank">Donate (PayPal)</a></li>
                             </ul>
                         </div>
-                    </div>
+                    </div>*@
                 </div>
 
 
@@ -603,18 +607,25 @@
                     </div>
                 </div>
 
-                <div style="display:inline-block; position: absolute; top: 5px; right: 290px;">
-                    <button type="button" title="Zoom in" onclick="wpd.graphicsWidget.zoomIn();" style="border:none; width:20px;">+</button>
-                    <button type="button" title="Zoom out" onclick="wpd.graphicsWidget.zoomOut();" style="border:none; width:20px;">-</button>
-                    <button type="button" title="View actual size" onclick="wpd.graphicsWidget.zoom100perc();" style="border:none;">100%</button>
-                    <button type="button" title="Fit to graphics area" onclick="wpd.graphicsWidget.zoomFit();" style="border:none;">Fit</button>
+                <div id='mini-control-widget' style="display: inline-block; position: absolute; top: 5px; right: 290px;">
+                    <input id="grid-edit-x" size="3" title='Grid X scale' type="text"/>
+                    <input id='snap-to-grid-x' title='Snap to grid X' type='checkbox'/>
+
+                    <input id="grid-edit-y" size="3" title='Grid Y scale' type="text" />
+                    <input id='snap-to-grid-y' title='Snap to grid Y' type='checkbox' />
+
+                    <button type="button" title="Zoom in" onclick="wpd.graphicsWidget.zoomIn();" style="border: none; width: 20px;">+</button>
+                    <button type="button" title="Zoom out" onclick="wpd.graphicsWidget.zoomOut();" style="border: none; width: 20px;">-</button>
+                    <button type="button" title="View actual size" onclick="wpd.graphicsWidget.zoom100perc();" style="border: none;">100%</button>
+                    <button type="button" title="Fit to graphics area" onclick="wpd.graphicsWidget.zoomFit();" style="border: none;">Fit</button>
                     @*<button title="Toggle extended crosshair" onclick="wpd.graphicsWidget.toggleExtendedCrosshairBtn();" style="border:none; width:20px; background-image: url('~/Content/wpd/images/crosshair.png'); background-repeat: no-repeat; background-position: center;" id="extended-crosshair-btn">&nbsp;</button>*@
-                    <button
-                        title="Toggle extended crosshair"
-                        onclick="wpd.graphicsWidget.toggleExtendedCrosshairBtn();"
-                        class="extended-crosshair"
-                        @*style="border: none; width: 20px; background-image: url('~/Content/wpd/images/crosshair.png'); background-repeat: no-repeat; background-position: center;" *@
-                        id="extended-crosshair-btn">&nbsp;</button>
+                    <button title="Toggle extended crosshair"
+                            onclick="wpd.graphicsWidget.toggleExtendedCrosshairBtn();"
+                            class="extended-crosshair"
+                            @*style="border: none; width: 20px; background-image: url('~/Content/wpd/images/crosshair.png'); background-repeat: no-repeat; background-position: center;" *@
+                            id="extended-crosshair-btn">
+                        &nbsp;
+                    </button>
                 </div>
 
             </div>
@@ -639,6 +650,7 @@
                 <canvas id="zoomCrossHair" class="zoomLayers" width=250 height=250 style="position:absolute; top: 0px; left: 0px; z-index:2; background:transparent;"></canvas>
                 <div id="cursorPosition" style="position:relative;">
                     [<span id="mousePosition"></span>]
+                    [<span id="mousePositionOrig"></span>]
                 </div>
             </div>
 
@@ -655,12 +667,14 @@
 
                 <!-- manual mode -->
                 <div id="acquireDataSidebar" class="sidebar">
-                    <p class="sidebar-title">Manual Mode <input type="button" value="Automatic Mode" style="width: 125px;" onclick="wpd.autoExtraction.start();">
+                    <p class="sidebar-title">
+                        Manual Mode <input type="button" value="Automatic Mode" style="width: 125px;" onclick="wpd.autoExtraction.start();">
                     </p>
-                    <hr/>
-                    <p>Dataset <select id="manual-sidebar-dataset-list" onchange="wpd.acquireData.changeDataset(this);" style="width: 160px;"></select>
+                    <hr />
+                    <p>
+                        Dataset <select id="manual-sidebar-dataset-list" onchange="wpd.acquireData.changeDataset(this);" style="width: 160px;"></select>
                     </p>
-                    <hr/>
+                    <hr />
                     <p>
                         <input type="button" value="Add Point (A)" onclick="wpd.acquireData.manualSelection();" style="width: 115px;" id="manual-select-button">
                         <input type="button" value="Adjust Point (S)" onClick="wpd.acquireData.adjustPoints();" style="width: 115px;" id="manual-adjust-button">
@@ -681,8 +695,14 @@
 
                 <!-- Mean & Variance data extraction -->
                 <div id="meanVarianceSidebar" class="sidebar">
+                    <p class="sidebar-title">
+                        Manual Mode <input type="button" value="Automatic Mode" style="width: 125px;" onclick="wpd.autoExtraction.start();">
+                    </p>
+                    <hr />
+                    <p>Dataset <select class="dataset-list" style="width:160px;"></select></p>
+                    <hr />
                     <p>
-                        <input id="mean-variance-select-button" class="mean-variance-selection-mode createPoints" value="Add Point (A)" onclick="wpd.acquireMeanVarianceData.meanVarianceSelection();" type="button" style="width: 112px;">
+                        <input id="mean-variance-create-points-button" class="mean-variance-selection-mode createPoints" value="Add Point (A)" onclick="wpd.acquireMeanVarianceData.meanVarianceSelection();" type="button" style="width: 112px;">
                         <input id="mean-variance-adjust-button" class="mean-variance-selection-mode adjustPoints" value="Adjust Point (S)" onclick="wpd.acquireMeanVarianceData.adjustPoints();" type="button" style="width: 112px;">
                     </p>
                     <div class="vertical-spacer"></div>
@@ -699,42 +719,61 @@
                     </p>
                     <div class="vertical-spacer"></div>
                     <p>
-                        <b>Outcome measure</b>
-                        <select id="outcome-measure"></select>
-                    </p>
-                    <div class="vertical-spacer"></div>
-                   <p>
-                        <b>Data structure</b>
-                        <select id="mean-variance-data-structure"></select>
-                        <label for="include-individuals">
-                            <input type="checkbox" id="include-individuals" />
-                            Include individuals
+                        <label for="use-table">
+                            <input type="checkbox" id="use-table"/>
+                            Use table
                         </label>
                     </p>
-                    <div class="vertical-spacer"></div>
-                   <p>
-                        # Data series
-                        <input type="text" size="3" id="mean-variance-dataSeriesCount"/>
-                    </p>
-                    <div class="vertical-spacer"></div>
-                    <p id="mean-variance-dataPointCount-wrapper">
-                        # Data points
-                        <input type="text" size="3" id="mean-variance-dataPointCount" />
-                    </p>
-                    <div class="vertical-spacer"></div>
-                    <p>
-                        <label for="mean-variance-dataSeriesLocked">
-                            <input type="checkbox" id="mean-variance-dataSeriesLocked"/>
-                             Locked
+                    <div id="free-controls">
+                        <span id="area-under-curve"></span>
+                        <label for="show-trapezoids">
+                            <input type="checkbox" id="show-trapezoids" />
+                            Show trapezoids
                         </label>
-                    </p>
-                    <div class="vertical-spacer"></div>
-                    <p>
-                        <div id="mean-variance-formContainerHost">
-                            <div id="mean-variance-formContainerDetachTrigger">Detach</div>
-                            <div id="mean-variance-formContainer"></div>
-                        </div>
-                    </p>
+                        <hr />
+                        <p>Data Points: <span class="data-point-counter">0</span></p>
+                    </div>
+                    <div id="table-controls">
+                        <div class="vertical-spacer"></div>
+                        <p>
+                            <b>Outcome measure</b>
+                            <select id="outcome-measure"></select>
+                        </p>
+                        <div class="vertical-spacer"></div>
+                        <p>
+                            <b>Data structure</b>
+                            <select id="mean-variance-data-structure"></select>
+                            <label for="include-individuals">
+                                <input type="checkbox" id="include-individuals" />
+                                Include individuals
+                            </label>
+                        </p>
+                        <div class="vertical-spacer"></div>
+                        <p>
+                            # Data series
+                            <input type="text" size="3" id="mean-variance-dataSeriesCount" />
+                        </p>
+                        <div class="vertical-spacer"></div>
+                        <p id="mean-variance-dataPointCount-wrapper">
+                            # Data points
+                            <input type="text" size="3" id="mean-variance-dataPointCount" />
+                        </p>
+                        <div class="vertical-spacer"></div>
+                        <p>
+                            <label for="mean-variance-dataSeriesLocked">
+                                <input type="checkbox" id="mean-variance-dataSeriesLocked" />
+                                Locked
+                            </label>
+                        </p>
+                        <div class="vertical-spacer"></div>
+                        <p>
+                            <div id="mean-variance-formContainerHost">
+                                <div id="mean-variance-formContainerDetachTrigger">Detach</div>
+                                <div id="mean-variance-formContainer" class='table-container'></div>
+                                <div id="mean-variance-nestedFormContainer" class='table-container'></div>
+                            </div>
+                        </p>
+                    </div>
                 </div>
 
                 <!-- edit image -->
@@ -748,17 +787,17 @@
 
                 <!-- automatic mode -->
                 <div id="auto-extraction-sidebar" class="sidebar">
-                    <p class="sidebar-title">Automatic Mode <input type="button" value="Manual Mode" style="width:110px;" onclick="wpd.acquireData.load();" /></p>
+                    <p class="sidebar-title">Automatic Mode <input type="button" value="Manual Mode" style="width:110px;" onclick="wpd.acquireMeanVarianceData.load();" /></p>
                     <hr />
-                    <p>Dataset <select id="automatic-sidebar-dataset-list" onchange="wpd.acquireData.changeDataset(this);" style="width:160px;"></select></p>
+                    <p>Dataset <select class="dataset-list" style="width:160px;"></select></p>
                     <hr />
                     <p>Mask <input type="button" value="Box" style="width:50px;" onclick="wpd.dataMask.markBox();" id="box-mask"><input type="button" value="Pen" style="width:45px;" onClick="wpd.dataMask.markPen();" id="pen-mask"><input type="button" value="Erase" style="width:50px;" onClick="wpd.dataMask.eraseMarks();" id="erase-mask"><input type="button" value="View" style="width:40px;" onclick="wpd.dataMask.viewMask();" id="view-mask" /></p>
                     <hr />
                     <p>Color <select id="color-detection-mode-select" onchange="wpd.colorPicker.changeDetectionMode();"><option value="fg">Foreground Color</option><option value="bg">Background Color</option></select><input type="button" id="color-button" value=" " onclick="wpd.colorPicker.startPicker();" style="width: 25px;" title="Click to change color" /></p>
                     <p>
                         Distance
-                            <input type="text" size="3" id="color-distance-value" onchange="wpd.colorPicker.changeColorDistance();" />
-                            <input type="button" value="Filter Colors" onclick="wpd.colorPicker.testColorDetection();" style="width: 90px;">
+                        <input type="text" size="3" id="color-distance-value" onchange="wpd.colorPicker.changeColorDistance();" />
+                        <input type="button" value="Filter Colors" onclick="wpd.colorPicker.testColorDetection();" style="width: 90px;">
                     </p>
                     <hr />
                     <p>
@@ -962,6 +1001,19 @@
         </center>
         <p>&nbsp;</p>
         <p align="center"><input type="button" value="Align Axes" onclick="wpd.alignAxes.start();">&nbsp;<input type="button" value="Cancel" onClick="wpd.popup.close('axesList');"></p>
+    </div>
+
+    <!-- Choose profile -->
+    <div id="chooseProfile" class="popup" style="width: 400px;">
+        <div class="popupheading">Choose Plot Type</div>
+        <p>&nbsp;</p>
+        <center>
+            Profile <select id="profile-selection-list"></select>
+        </center>
+        <p>&nbsp;</p>
+        <p align="center">
+            <input id="confirmProfileChoice" type="button" value="Choose Profile">
+        </p>
     </div>
 
     <!-- XY Alignment -->

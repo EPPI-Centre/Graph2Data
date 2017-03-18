@@ -29,7 +29,7 @@ wpd.dataTable = (function () {
         dataCache,
         sortedData,
         tableText;
-    
+
     function showPlotData() {
         dataProvider = wpd.plotDataProvider;
         show();
@@ -48,7 +48,7 @@ wpd.dataTable = (function () {
     }
 
     function show() {
-        wpd.graphicsWidget.removeTool();
+     // wpd.graphicsWidget.removeTool();
         wpd.popup.show('csvWindow');
         refresh();
     }
@@ -125,7 +125,7 @@ wpd.dataTable = (function () {
             $sortingOrder = document.getElementById('data-sort-order'),
             isConnectivity = sortingKey === 'NearestNeighbor',
             isRaw = sortingKey === 'raw';
-        
+
         if(isConnectivity || isRaw) {
             $sortingOrder.setAttribute('disabled', true);
         } else {
@@ -184,12 +184,12 @@ wpd.dataTable = (function () {
 
             for(rowi = 0; rowi < rowCount - 1; rowi++) {
                 minindex = -1;
-                
+
                 // loop through all other points and find the nearest next neighbor
                 for(rowcompi = rowi + 1; rowcompi < rowCount; rowcompi++) {
                     compdist = 0;
                     for(fi = 0; fi < connFieldIndices.length; fi++) {
-                        cfi = connFieldIndices[fi];       
+                        cfi = connFieldIndices[fi];
                         compdist += (sortedData[rowi][cfi] - sortedData[rowcompi][cfi])*(sortedData[rowi][cfi] - sortedData[rowcompi][cfi]);
                     }
 
@@ -198,7 +198,7 @@ wpd.dataTable = (function () {
                         minindex = rowcompi;
                     }
                 }
-                
+
                 // swap (minindex) and (rowi+1) rows
                 for(fi = 0; fi < dataCache.fields.length; fi++) {
                     swp = sortedData[minindex][fi];

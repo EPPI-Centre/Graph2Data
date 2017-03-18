@@ -1,9 +1,9 @@
 /*
-	WebPlotDigitizer - http://arohatgi.info/WebPlotDigitizer
+    WebPlotDigitizer - http://arohatgi.info/WebPlotDigitizer
 
-	Copyright 2010-2016 Ankit Rohatgi <ankitrohatgi@hotmail.com>
+    Copyright 2010-2016 Ankit Rohatgi <ankitrohatgi@hotmail.com>
 
-	This file is part of WebPlotDigitizer.
+    This file is part of WebPlotDigitizer.
 
     WebPlotDigitizer is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,31 +23,34 @@
 /* Zoomed-in view */
 var wpd = wpd || {};
 wpd.zoomView = (function() {
-    var zCanvas, 
+    var zCanvas,
         zctx,
         tempCanvas,
         tctx,
         zWindowWidth = 250,
         zWindowHeight = 250,
         $mPosn,
+        $mPosnOrig,
         extendedCrosshair = false,
         pix = [],
         zoomTimeout,
         zoomRatio,
-        crosshairColorText = 'black';
+        crosshairColorText = 'red';
 
     pix[0] = [];
 
     function init() {
 
         zCanvas = document.getElementById('zoomCanvas');
-    	zctx = zCanvas.getContext('2d');
-	    tempCanvas = document.createElement('canvas');
+        zctx = zCanvas.getContext('2d');
+
+        tempCanvas = document.createElement('canvas');
         tctx = tempCanvas.getContext('2d');
 
         $mPosn = document.getElementById('mousePosition');
+        $mPosnOrig = document.getElementById('mousePositionOrig');
 
-        zoomRatio = 5;
+        zoomRatio = 8;
 
         drawCrosshair();
     }
@@ -55,7 +58,7 @@ wpd.zoomView = (function() {
     function drawCrosshair() {
         var zCrossHair = document.getElementById("zoomCrossHair");
         var zchCtx = zCrossHair.getContext("2d");
-        
+
         zCrossHair.width = zCrossHair.width;
 
         if(crosshairColorText === 'black') {
@@ -75,7 +78,7 @@ wpd.zoomView = (function() {
         zchCtx.lineTo(zWindowWidth, zWindowHeight/2);
         zchCtx.stroke();
     }
- 
+
     function setZoomRatio(zratio) {
         zoomRatio = zratio;
     }
@@ -101,12 +104,14 @@ wpd.zoomView = (function() {
     }
 
     function setCoords(imageX, imageY) {
+        var origPos = imageX.toFixed(2) + ', ' + imageY.toFixed(2);
         if(wpd.appData.isAligned()) {
             var plotData = wpd.appData.getPlotData();
-            $mPosn.innerHTML = plotData.axes.pixelToLiveString(imageX, imageY);
+            $mPosn.innerHTML = "dataPos: " + plotData.axes.pixelToLiveString(imageX, imageY);
         } else {
-            $mPosn.innerHTML = imageX.toFixed(2) + ', ' + imageY.toFixed(2);
+            $mPosn.innerHTML = "origPos: " + origPos;
         }
+        $mPosnOrig.innerHTML = "origPos:" + origPos;
     }
 
     function showSettingsWindow() {

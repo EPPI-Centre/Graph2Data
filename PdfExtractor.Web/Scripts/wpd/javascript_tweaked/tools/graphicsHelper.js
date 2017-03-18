@@ -1,9 +1,9 @@
 /*
-	WebPlotDigitizer - http://arohatgi.info/WebPlotDigitizer
+    WebPlotDigitizer - http://arohatgi.info/WebPlotDigitizer
 
-	Copyright 2010-2016 Ankit Rohatgi <ankitrohatgi@hotmail.com>
+    Copyright 2010-2016 Ankit Rohatgi <ankitrohatgi@hotmail.com>
 
-	This file is part of WebPlotDigitizer.
+    This file is part of WebPlotDigitizer.
 
     WebPlotDigitizer is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,12 +25,35 @@ var wpd = wpd || {};
 
 wpd.graphicsHelper = (function () {
 
+    function drawTrapezoid(imageVertices, fillStyle) {
+        var ctx = wpd.graphicsWidget.getAllContexts(),
+            context = ctx.dataCtx,
+            screenVertices = $.map(imageVertices, function (iv) {
+                return wpd.graphicsWidget.screenPx(iv.x, iv.y);
+            });
+
+        context.beginPath();
+        context.fillStyle = fillStyle;
+        context.moveTo(screenVertices[0].x, screenVertices[0].y);
+        for (var i = 1; i < imageVertices.length; i++) {
+            context.lineTo(screenVertices[i].x, screenVertices[i].y);
+        }
+        context.lineTo(screenVertices[0].x, screenVertices[0].y);
+     // context.closePath();
+        context.fill();
+    }
+
     // imagePx - relative to original image
     // fillStyle - e.g. "rgb(200,0,0)"
     // label - e.g. "Bar 0"
     function drawPoint(imagePx, fillStyle, label, textStrokeStyle, pointStrokeStyles, radius) {
         textStrokeStyle = textStrokeStyle || "rgb(255, 255, 255)";
-        pointStrokeStyles = pointStrokeStyles || [{ style: "rgb(255, 255, 255)", width: 1 }];
+        pointStrokeStyles = pointStrokeStyles || {};
+        pointStrokeStyles.default =
+            pointStrokeStyles.default
+            || [{ style: "rgb(255, 255, 255)", width: 1 }];
+        pointStrokeStyles.orig = pointStrokeStyles.orig || pointStrokeStyles.default;
+
         radius = radius || 2;
 
         var screenPx = wpd.graphicsWidget.screenPx(imagePx.x, imagePx.y),
@@ -55,14 +78,19 @@ wpd.graphicsHelper = (function () {
                 context.fillText(label, point.x - 10, point.y + 18);
             }
 
+            var pss = isOrigDataContext
+                ? pointStrokeStyles.orig
+                : pointStrokeStyles.default;
 
-            var r = radius + pointStrokeStyles.reduce (function(a, b) {
+            var r = radius + pss.reduce(function (a, b) {
                 return { width: a.width + b.width };
             }, { width: 0 }).width;
 
-            for (var i = pointStrokeStyles.length - 1; i >= 0; i--) {
-                var ss = pointStrokeStyles[i];
-                if (!isOrigDataContext || (ss.hasOwnProperty('onZoom') && ss.onZoom)) {
+            for (var i = pss.length - 1; i >= 0; i--) {
+                var ss = pss[i];
+                if (
+                    !isOrigDataContext ||
+                    (ss.hasOwnProperty('onZoom') && ss.onZoom)) {
                     context.beginPath();
                     context.strokeStyle = ss.style;
                     context.lineWidth = ss.width;
@@ -80,7 +108,7 @@ wpd.graphicsHelper = (function () {
 
         doDraw(ctx.dataCtx, screenPx, false);
         doDraw(ctx.oriDataCtx, imagePx, true);
-        
+
 
         //// Original Image Data Canvas Layer
         //if(label != null) {
@@ -99,7 +127,8 @@ wpd.graphicsHelper = (function () {
     }
 
     return {
-        drawPoint : drawPoint
+        drawPoint : drawPoint,
+        drawTrapezoid: drawTrapezoid
     };
 
 })();

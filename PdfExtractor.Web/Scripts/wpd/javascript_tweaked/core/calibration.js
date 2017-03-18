@@ -1,9 +1,9 @@
 /*
-	WebPlotDigitizer - http://arohatgi.info/WebPlotdigitizer
+    WebPlotDigitizer - http://arohatgi.info/WebPlotdigitizer
 
-	Copyright 2010-2016 Ankit Rohatgi <ankitrohatgi@hotmail.com>
+    Copyright 2010-2016 Ankit Rohatgi <ankitrohatgi@hotmail.com>
 
-	This file is part of WebPlotDigitizer.
+    This file is part of WebPlotDigitizer.
 
     WebPlotDIgitizer is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -105,7 +105,7 @@ wpd.Calibration = (function () {
 
         this.findNearestPoint = function(x, y, threshold) {
             threshold = (threshold == null) ? 50 : parseFloat(threshold);
-            var minDist, minIndex = -1, 
+            var minDist, minIndex = -1,
                 i, dist;
             for (i = 0; i < state.px.length; i++) {
                 dist = Math.sqrt((x - state.px[i]) * (x - state.px[i]) + (y - state.py[i]) * (y - state.py[i]));

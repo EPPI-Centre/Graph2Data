@@ -25,24 +25,16 @@ wpd.autoExtraction = (function () {
 
     function start() {
         wpd.sidebar.show('auto-extraction-sidebar');
-        updateDatasetControl();
+     // updateDatasetControl();
         wpd.colorPicker.init();
         wpd.algoManager.updateAlgoList();
     }
 
-    function updateDatasetControl() {
-        var plotData = wpd.appData.getPlotData(),
-            currentDataset = plotData.getActiveDataSeries(), // just to create a dataset if there is none.
-            currentIndex = plotData.getActiveDataSeriesIndex(),
-            $datasetList = document.getElementById('automatic-sidebar-dataset-list'),
-            listHTML = '',
-            i;
-        for(i = 0; i < plotData.dataSeriesColl.length; i++) {
-            listHTML += '<option>'+plotData.dataSeriesColl[i].name+'</option>';
-        }
-        $datasetList.innerHTML = listHTML;
-        $datasetList.selectedIndex = currentIndex;
-    }
+    //function updateDatasetControl() {
+    //    wpd.utils.populateDatasetControl(
+    //        document.getElementById('automatic-sidebar-dataset-list')
+    //    );
+    //}
 
     function changeDataset() {
         var $datasetList = document.getElementById('automatic-sidebar-dataset-list'),
@@ -51,10 +43,10 @@ wpd.autoExtraction = (function () {
         wpd.graphicsWidget.forceHandlerRepaint();
         wpd.dataPointCounter.setCount();
     }
-          
+
     return {
         start: start,
-        updateDatasetControl: updateDatasetControl,
+     // updateDatasetControl: updateDatasetControl,
         changeDataset: changeDataset
     };
 })();
@@ -66,7 +58,7 @@ wpd.algoManager = (function() {
     var axesPtr;
 
     function updateAlgoList() {
-        
+
         var innerHTML = '',
             axes = wpd.appData.getPlotData().axes,
             $algoOptions = document.getElementById('auto-extract-algo-name');
@@ -136,11 +128,11 @@ wpd.algoManager = (function() {
             pi,
             tableString = "<table>";
 
-        
+
         for(pi = 0; pi < algoParams.length; pi++) {
-            tableString += '<tr><td>' + algoParams[pi][0] + 
-                '</td><td><input type="text" size=3 id="algo-param-' + pi + 
-                '" class="algo-params" value="'+ algoParams[pi][2] + '"/></td><td>' 
+            tableString += '<tr><td>' + algoParams[pi][0] +
+                '</td><td><input type="text" size=3 id="algo-param-' + pi +
+                '" class="algo-params" value="'+ algoParams[pi][2] + '"/></td><td>'
                 + algoParams[pi][1] + '</td></tr>';
         }
 

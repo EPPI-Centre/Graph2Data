@@ -24,6 +24,7 @@ namespace PdfExtractor.Web.Controllers
         {
             public string Filename { get; set; }
             public Coord DataEntryPopupPosition { get; set; }
+            public Coord NestedDataEntryPopupPosition { get; set; }
         }
 
         public class Settings
@@ -46,8 +47,6 @@ namespace PdfExtractor.Web.Controllers
         public JsonResult Get()
         {
             var json = System.IO.File.ReadAllText(SettingsFilePath);
-
-            var pt = JsonConvert.SerializeObject(new Coord{X = 100, Y = 200});
 
             var jss = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
             var settings = JsonConvert.DeserializeObject<Settings>(json, jss);

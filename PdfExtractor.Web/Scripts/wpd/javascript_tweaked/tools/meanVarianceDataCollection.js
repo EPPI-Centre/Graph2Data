@@ -1,9 +1,9 @@
 /*
-	WebPlotDigitizer - http://arohatgi.info/WebPlotDigitizer
+    WebPlotDigitizer - http://arohatgi.info/WebPlotDigitizer
 
-	Copyright 2010-2016 Ankit Rohatgi <ankitrohatgi@hotmail.com>
+    Copyright 2010-2016 Ankit Rohatgi <ankitrohatgi@hotmail.com>
 
-	This file is part of WebPlotDigitizer.
+    This file is part of WebPlotDigitizer.
 
     WebPlotDigitizer is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -41,8 +41,9 @@ wpd.acquireMeanVarianceData = (function () {
             wpd.graphicsWidget.removeTool();
             wpd.graphicsWidget.setRepainter(new wpd.DataPointsRepainter());
 
-            tool = new wpd.acquireMeanVarianceData.MeanVarianceSelectionTool();
-            wpd.graphicsWidget.setTool(tool);
+            meanVarianceSelection();
+//            tool = new wpd.acquireMeanVarianceData.MeanVarianceSelectionTool();
+//            wpd.graphicsWidget.setTool(tool);
         }
     }
 
@@ -51,8 +52,8 @@ wpd.acquireMeanVarianceData = (function () {
     //}
 
     function meanVarianceSelection() {
-        // var tool = new wpd.acquireMeanVarianceData.MeanVarianceSelectionTool();
-        // wpd.graphicsWidget.setTool(tool);
+        tool = new wpd.acquireMeanVarianceData.MeanVarianceSelectionTool();
+        wpd.graphicsWidget.setTool(tool);
         tool.setMode(tool.modes.createPoints);
     }
 
@@ -71,7 +72,7 @@ wpd.acquireMeanVarianceData = (function () {
         wpd.appData.getPlotData().getActiveDataSeries().clearAll();
      // wpd.graphicsWidget.removeTool();
         wpd.graphicsWidget.resetData();
-     // wpd.dataPointCounter.setCount();
+        wpd.dataPointCounter.setCount();
      // wpd.graphicsWidget.removeRepainter();
         tool.buildTable();
     }
@@ -99,7 +100,7 @@ wpd.acquireMeanVarianceData = (function () {
 
     function showSidebar() {
         wpd.sidebar.show('meanVarianceSidebar');
-        updateDatasetControl();
+     // updateDatasetControl();
         updateControlVisibility();
         wpd.dataPointCounter.setCount();
     }
@@ -114,26 +115,27 @@ wpd.acquireMeanVarianceData = (function () {
         }
     }
 
-    function updateDatasetControl() {
-        var plotData = wpd.appData.getPlotData(),
-            currentDataset = plotData.getActiveDataSeries(), // just to create a dataset if there is none.
-            currentIndex = plotData.getActiveDataSeriesIndex(),
-            $datasetList = document.getElementById('manual-sidebar-dataset-list'),
-            listHTML = '',
-            i;
-        for (i = 0; i < plotData.dataSeriesColl.length; i++) {
-            listHTML += '<option>' + plotData.dataSeriesColl[i].name + '</option>';
-        }
-        $datasetList.innerHTML = listHTML;
-        $datasetList.selectedIndex = currentIndex;
-    }
+    //function updateDatasetControl() {
+    //    var plotData = wpd.appData.getPlotData(),
+    //        currentDataset = plotData.getActiveDataSeries(), // just to create a dataset if there is none.
+    //        currentIndex = plotData.getActiveDataSeriesIndex(),
+    //        $datasetList = document.getElementById('manual-sidebar-dataset-list'),
+    //        listHTML = '',
+    //        i;
+    //    for (i = 0; i < plotData.dataSeriesColl.length; i++) {
+    //        listHTML += '<option>' + plotData.dataSeriesColl[i].name + '</option>';
+    //    }
+    //    $datasetList.innerHTML = listHTML;
+    //    $datasetList.selectedIndex = currentIndex;
+    //}
 
-    function changeDataset($datasetList) {
-        var index = $datasetList.selectedIndex;
-        wpd.appData.getPlotData().setActiveDataSeriesIndex(index);
-        wpd.graphicsWidget.forceHandlerRepaint();
-        wpd.dataPointCounter.setCount();
-    }
+    //function changeDataset($datasetList) {
+    //    var index = $datasetList.selectedIndex;
+    //    wpd.appData.getPlotData().setActiveDataSeriesIndex(index);
+    //    tool.showAreaUnderCurveIfNeeded();
+    //    wpd.graphicsWidget.forceHandlerRepaint();
+    //    wpd.dataPointCounter.setCount();
+    //}
 
     var toolKeyMap = {
         d: deletePoints,
@@ -158,6 +160,20 @@ wpd.acquireMeanVarianceData = (function () {
         return keyMapped;
     }
 
+    function hideAllDataPopups() {
+        $('.jBox-wrapper.jBox-Modal').each(function () {
+            $(this).data('jBox').destroy();
+        });
+        //$.each([
+        //    dataPopup,
+        //    nestedDataPopup
+        //], function (idx, pu) {
+        //    if (pu) {
+        //        pu.close();
+        //    }
+        //});
+    }
+
     return {
         load: load,
         meanVarianceSelection: meanVarianceSelection,
@@ -168,8 +184,9 @@ wpd.acquireMeanVarianceData = (function () {
         showSidebar: showSidebar,
         switchToolOnKeyPress: switchToolOnKeyPress,
         isToolSwitchKey: isToolSwitchKey,
-        updateDatasetControl: updateDatasetControl,
-        changeDataset: changeDataset,
+        hideAllDataPopups: hideAllDataPopups
+        //updateDatasetControl: updateDatasetControl,
+        // changeDataset: changeDataset,
         // editLabels: editLabels
     };
 })();
@@ -178,70 +195,337 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
     var Tool = function () {
         var self = this;
         var plotData = wpd.appData.getPlotData();
-        var $button = $('#mean-variance-select-button');
-        var $locked = $('#mean-variance-dataSeriesLocked');
+        var $dom = {
+            $createPointsButton: $('#mean-variance-create-points-button'),
+            $adjustPointsButton: $('#mean-variance-adjust-button'),
+            $deletePointsButton: $('#mean-variance-delete-point-button'),
 
-        var $outcomeMeasureList = $('#outcome-measure');
-        var $dataStructureList = $('#mean-variance-data-structure');
-        var $includeIndividuals = $('#include-individuals');
+            $locked: $('#mean-variance-dataSeriesLocked'),
 
-        var $dataPointCountEditWrapper = $('#mean-variance-dataPointCount-wrapper');
-        var $dataPointCountEdit = $('#mean-variance-dataPointCount');
-        var $dataSeriesCountEdit = $('#mean-variance-dataSeriesCount');
-        var $formContainerHost = $('#mean-variance-formContainerHost');
-        var $formContainer = $('#mean-variance-formContainer');
-        var $detachFormContainerTrigger = $('#mean-variance-formContainerDetachTrigger');
+            $useTable: $('#use-table'),
+            $tableControls: $('#table-controls'),
+            $freeControls: $('#free-controls'),
+            $areaUnderCurve: $('#area-under-curve'),
+            $showTrapezoids: $('#show-trapezoids'),
+            $outcomeMeasureList: $('#outcome-measure'),
+            $dataStructureList: $('#mean-variance-data-structure'),
+            $includeIndividuals: $('#include-individuals'),
 
-        var dataStructures = null,
-            outcomeMeasures = null,
-            curOutcomeMeasure;
+            $dataSetLists: $('.dataset-list'),
+            $dataPointCountEditWrapper: $('#mean-variance-dataPointCount-wrapper'),
+            $dataPointCountEdit: $('#mean-variance-dataPointCount'),
+            $dataSeriesCountEdit: $('#mean-variance-dataSeriesCount'),
+            $formContainerHost: $('#mean-variance-formContainerHost'),
+            $formContainer: $('#mean-variance-formContainer'),
+            $detachFormContainerTrigger: $('#mean-variance-formContainerDetachTrigger'),
+            $nestedFormContainer: $('#mean-variance-nestedFormContainer'),
+            $snapToGridX: $('#snap-to-grid-x'),
+            $snapToGridY: $('#snap-to-grid-y'),
+            $gridEditX: $('#grid-edit-x'),
+            $gridEditY: $('#grid-edit-y')
+        };
 
-        var dataPopupTitle = "Data extraction";
-        var dataPopup = null;
-        function showDataPopup() {
-            dataPopup = new jBox('Modal', {
-                content: $formContainer,
-                title: dataPopupTitle,
-                closeOnEsc: true,
-                closeButton: 'box',
-                closeOnClick: 'overlay',
-                draggable: "title",
-                overlay: false,
-                pointer: true,
-                position: wpd._config.userSettings.documents[0].dataEntryPopupPosition,
-                onOpen: function () {
-                    $formContainerHost.addClass('detached');
-                },
-                onClose: function () {
-                    dataPopup = null;
-                    $formContainerHost.append($formContainer).removeClass('detached');
-                    var pos = this.wrapper.position();
-                    wpd._config.userSettings.documents[0].dataEntryPopupPosition = {
-                        x: pos.left,
-                        y: pos.top
-                    };
-                    wpd._config.flushSettings(wpd._config.userSettings);
-                },
-                onPosition: function() {
-                 // console.log("onPosition!");
-                },
-                onDragEnd: function() {
-                 // console.log("onDragEnd!");
-                },
-                maxHeight: 500,
-                maxWidth: 10000
+        function populateDatasetControls() {
+            $dom.$dataSetLists.each(function() {
+                wpd.utils.populateDatasetControl(this);
             });
-            dataPopup.open();
         }
 
-        $detachFormContainerTrigger.on({
-            click: function () {
-                showDataPopup();
+        populateDatasetControls();
+
+        var dataStructures = wpd._config.profileSettings.dataStructures;
+        var gridSettings = {
+            snap: {
+                x: true,
+                y: false
+            },
+            _dimensions: {
+                x: 1,
+                y: 1
+            },
+            _pixelDimensions: {
+                x: 0,
+                y: 0
+            },
+            _origin: { x: 0, y: 0 },
+
+            getDimensions: function() {
+                return {
+                    x: this._dimensions.x,
+                    y: this._dimensions.y
+                };
+            },
+            dumpPoint: function(msg, p) {
+                console.log(msg + p.x.toFixed(2) + "," + p.y.toFixed(2));
+            },
+            setDimensions: function (d) {
+                this._dimensions.x = d.x;
+                this._dimensions.y = d.y;
+
+                this.inferPixelDimensions();
+            },
+            inferPixelDimensions: function() {
+                this._origin = plotData.getPixelPoint({ x: 0, y: 0 });
+                this._origin = wpd.graphicsWidget.screenPx(this._origin.x, this._origin.y);
+
+                var point = plotData.getPixelPoint(this._dimensions);
+                point = wpd.graphicsWidget.screenPx(point.x, point.y);
+                var offset = { x: point.x - this._origin.x, y: point.y - this._origin.y };
+                this._pixelDimensions = offset;
+            },
+            getPixelDimensions: function () {
+                return {
+                    x: this._pixelDimensions.x,
+                    y: this._pixelDimensions.y
+                };
+            },
+            //setPixelDimensions: function (d) {
+            //    this._pixelDimensions = d;
+            //},
+            quantize: function (point) {
+                function q(val, dim) {
+                    return Math.round(val / dim) * dim;
+                }
+                if (this.snap.x) {
+                    point.x =
+                        q(point.x - this._origin.x, this._pixelDimensions.x)
+                        + this._origin.x;
+                }
+                if (this.snap.y) {
+                    point.y =
+                        q(point.y - this._origin.y, this._pixelDimensions.y)
+                        + this._origin.y;
+                }
             }
+        };
+
+        wpd.graphicsWidget.setGridSettingsFactory(function() {
+            return gridSettings;
         });
 
-        var $activeCell = null;
+        wpd.utils.bindMemberFunctions(gridSettings);
+
+            var
+         // outcomeMeasures = wpd._config.profileSettings.outcomeMeasures,
+            subTableSpecs,
+            useTable,
+            showTrapezoids,
+            curOutcomeMeasure,
+            nestedSeries = null;
+
+            //nestedSeries = {
+            //    belongsTo: // the data series,
+            //};
+
+        var dataPopupTitle = "Data extraction", nestedDataPopupTitle = "Subject&nbsp;Data&nbsp;Points";
+        var dataPopup = $('.jBox-wrapper.jBox-Modal.dataPopup').data('jBox');
+        var nestedDataPopup = $('.jBox-wrapper.jBox-Modal.nestedDataPopup').data('jBox');
+        var dataPopupVisible = null, nestedDataPopupVisible = null;
+
+        function getUseTable() {
+            return $dom.$useTable.is(":checked");
+        }
+        function getShowTrapezoids() {
+            return $dom.$showTrapezoids.is(":checked");
+        }
+        function getIncludeIndividuals() {
+            return $dom.$includeIndividuals.is(":checked");
+        }
+
+        function showDataPopup() {
+            if (useTable) {
+                if (!dataPopup) {
+                    dataPopup = new jBox('Modal',
+                    {
+                        addClass: 'dataPopup',
+                        content: $dom.$formContainer,
+                        title: dataPopupTitle,
+                        closeOnEsc: true,
+                        closeButton: 'box',
+                        closeOnClick: 'overlay',
+                        draggable: "title",
+                        overlay: false,
+                        pointer: true,
+                        position: wpd._config.userSettings.documents[0].dataEntryPopupPosition,
+                        onOpen: function() {
+                            $dom.$formContainerHost.addClass('detached');
+                            dataPopupVisible = true;
+                        },
+                        onClose: function() {
+                            if (nestedDataPopupVisible) {
+                                hideNestedDataPopup();
+                            }
+                            if (dataPopupVisible) {
+                                var pos = this.wrapper.position();
+                                wpd._config.userSettings.documents[0].dataEntryPopupPosition = {
+                                    x: pos.left,
+                                    y: pos.top
+                                };
+                                wpd._config.flushSettings(wpd._config.userSettings);
+                            }
+                            dataPopupVisible = false;
+                            dataPopup = null;
+
+                            $dom.$formContainerHost.append($dom.$formContainer).removeClass('detached');
+                        },
+                        onPosition: function() {
+                            // console.log("onPosition!");
+                        },
+                        onDragEnd: function() {
+                            // console.log("onDragEnd!");
+                        },
+                        maxHeight: 250,
+                        maxWidth: 800
+                    });
+                }
+                dataPopup.open();
+            }
+        }
+        function focusNextAvailableNestedValueCell() {
+            var $available = self.findNextAvaialbleNestedValueCell();
+            selectCell($available);
+        }
+
+        function showNestedDataPopup() {
+            var zIndex = dataPopup.wrapper.css("zIndex");
+
+            if (!nestedDataPopup) {
+                nestedDataPopup = new jBox('Modal', {
+                    addClass: 'nestedDataPopup',
+                    content: $dom.$nestedFormContainer,
+                    title: nestedDataPopupTitle,
+                    closeOnEsc: true,
+                    closeButton: 'box',
+                    closeOnClick: 'overlay',
+                    draggable: "title",
+                    overlay: false,
+                    pointer: true,
+                    position: wpd._config.userSettings.documents[0].nestedDataEntryPopupPosition,
+                    onOpen: function () {
+                        nestedDataPopupVisible = true;
+                    },
+                    onClose: function () {
+                        if (nestedDataPopup) {
+                            var pos = this.wrapper.position();
+                            wpd._config.userSettings.documents[0].nestedDataEntryPopupPosition = {
+                                x: pos.left,
+                                y: pos.top
+                            };
+                            wpd._config.flushSettings(wpd._config.userSettings);
+                        }
+
+                        nestedDataPopup = null;
+                        nestedDataPopupVisible = false;
+                        setActiveNestedCell(null);
+
+                        $dom.$formContainerHost.append($dom.$nestedFormContainer);
+                    },
+                    onPosition: function () {
+                        // console.log("onPosition!");
+                    },
+                    onDragEnd: function () {
+                        // console.log("onDragEnd!");
+                    },
+                    maxHeight: 250,
+                    maxWidth: 300,
+                    zIndex: zIndex + 1
+                });
+            }
+            nestedDataPopup.open();
+        }
+        function hideNestedDataPopup() {
+            if (nestedDataPopup) {
+                nestedDataPopup.close();
+            }
+        }
+
+     // var $activeCell = null, $activeNestedCell = null;
+        var _$activeCell = null, _$activeNestedCell = null;
+
+        function getActiveCell() {
+            return _$activeCell;
+        }
+        function getActiveNestedCell() {
+            return _$activeNestedCell;
+        }
+        var currentSeriesClassName = "current-series";
+        var focusedClassName = 'focused';
+        function setActiveCell($cell) {
+            //console.log([
+            //    "activeCell: '",
+            //    wpd.utils.getElemId(_$activeCell),
+            //    "' -> '",
+            //    wpd.utils.getElemId($cell),
+            //    "' [activeNestedCell: '",
+            //    wpd.utils.getElemId(_$activeNestedCell),
+            //    "']."
+            //].join(''));
+
+            var info = getInfo($cell);
+            if (_$activeCell) {
+                _$activeCell.removeClass(focusedClassName);
+            }
+
+            _$activeCell = $cell;
+
+            if (_$activeCell) {
+                _$activeCell.addClass(focusedClassName);
+
+                var activeRow = _$activeCell.closest('tr');
+                activeRow.closest('table').find('tr').removeClass(currentSeriesClassName);
+                activeRow.addClass(currentSeriesClassName);
+
+                if (!info.is.groupName) {
+                    var ourSeries = _$activeCell.closest('tr').attr('data-series');
+                    $("tr[data-series='" + ourSeries + "'").addClass(currentSeriesClassName);
+                }
+
+            }
+
+            return _$activeCell;
+        }
+        function setActiveNestedCell($cell) {
+            //console.log([
+            //    "activeNestedCell: '",
+            //    wpd.utils.getElemId(_$activeNestedCell),
+            //    "' -> '",
+            //    wpd.utils.getElemId($cell),
+            //    "' [activeCell: '",
+            //    wpd.utils.getElemId(_$activeCell),
+            //    "']."
+            //].join(''));
+
+            if (_$activeNestedCell) {
+                _$activeNestedCell.removeClass(focusedClassName);
+            }
+
+            _$activeNestedCell = $cell;
+
+            if (_$activeNestedCell) {
+                _$activeNestedCell.addClass(focusedClassName);
+
+                var activeRow = _$activeNestedCell.closest('tr');
+                activeRow.closest('table').find('tr').removeClass(currentSeriesClassName);
+                activeRow.addClass(currentSeriesClassName);
+            }
+
+            return _$activeNestedCell;
+        }
+
         var dataPointCount, dataSeriesCount;
+
+        $dom.$detachFormContainerTrigger.on({
+            click: function () {
+                showDataPopup();
+                var activeCell = getActiveCell();
+                if (activeCell) {
+                    var info = getInfo(activeCell);
+                    if (info.is.subjectDataPoints) {
+                        showNestedDataPopup();
+                    }
+                }
+            }
+        });
 
         this.modes = {
             // modes
@@ -250,275 +534,45 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             deletePoints: "deletePoints",
 
             // modifier modes
-            selectGroupNames:   "selectGroupNames"
+            selectGroupNames: "selectGroupNames",
+            selectSubjectDataPoints: "selectSubjectDataPoints"
         };
 
-        function configureOutcomeMeasures() {
-            outcomeMeasures = [{
-                id: 'simple-table-capture',
-                text: "Simple TableCapture",
-                fields: []
-            }, {
-                id: 'model-experiment',
-                text: "Model Characterising",
+        function forEachSubTableSpecField(callback) {
+            for (var i = 0; i < subTableSpecs.fields.length; i++) {
+                var stsf = subTableSpecs.fields[i];
+                if (callback(i, stsf)) {
+                    break;
+                }
+            }
+        }
+
+        function configureSubTableSpecs() {
+            subTableSpecs = {
                 fields: [{
-                    id: "model_shamPlusVehicle",
-                    text: "Sham + Vehicle",
-                    isControl: true,
-                    css: "model-control"
+                    title: "Value",
+                    css: 'value'
                 }, {
-                    id: "model_npPlusVehicle",
-                    text: "NP + Vehicle",
-                    isControl: false,
-                    css: "model-data"
+                    title: "Count",
+                    css: "count",
+                    isManualEntry: true
                 }]
-            }, {
-                id: 'intervention-experiment',
-                text: "Intervention Testing",
-                fields: [
-                    {
-                        id: "intervention_npPlusVehicle",
-                        text: "NP + Vehicle",
-                        isControl: true,
-                        css: "intervention-control"
-                    }, {
-                        id: "intervention_npPlusRx",
-                        text: "NP + Rx",
-                        isControl: false,
-                        css: "intervention-data"
-                    }
-                ]
-            }];
+                // , manualEntryFieldIndex = ?? // generated
+            };
 
-            forEachOutcomeMeasure(function(index, om) {
-                om.hasFields = (om.fields && om.fields.length > 0);
+            forEachSubTableSpecField(function(idx, stsf) {
+                if (stsf.isManualEntry) {
+                    subTableSpecs.manualEntryFieldIndex = idx;
+                    return true;
+                }
             });
-        }
-
-        function forEachOutcomeMeasure(callback) {
-            for (var i = 0; i < outcomeMeasures.length; i++) {
-                var om = outcomeMeasures[i];
-                if (callback(i, om)) {
-                    break;
-                }
-            }
-        }
-        function forEachDataStructure(callback) {
-            for (var i = 0; i < dataStructures.length; i++) {
-                var ds = dataStructures[i];
-                if (callback(i, ds)) {
-                    break;
-                }
-            }
-        }
-
-        function configureDataStructures() {
-            dataStructures = [
-                {
-                    id: 'mean-and-standard-error',
-                    text: "Mean and Standard Error (SEM)",
-                    dataPoints: [{
-                        name: "Mean",
-                        abbrev: "Mean",
-                        css: "mean",
-                        isReferencePoint: true
-                    }, {
-                        name: "Standard Error (upper)",
-                        abbrev: "SEM",
-                        css: "variance"
-                    }]
-                }, {
-                    id: 'mean-and-standard-deviation',
-                    text: "Mean and Standard Deviation (SD)",
-                    dataPoints: [{
-                        name: "Mean",
-                        abbrev: "Mean",
-                        css: "mean",
-                        isReferencePoint: true
-                    }, {
-                        name: "Standard Deviation (upper)",
-                        abbrev: "SD",
-                        css: "variance"
-                    }]
-                }, {
-                    id: 'mean-and-confidence-interval-95',
-                    text: "Mean and 95% CI",
-                    dataPoints: [{
-                        name: "Mean",
-                        abbrev: "Mean",
-                        css: "mean",
-                        isReferencePoint: true
-                    }, {
-                        name: "95% Confidence range (upper)",
-                        abbrev: "CI95",
-                        css: "variance"
-                    }, {
-                            name: "Lower Quartile",
-                            abbrev: "Q1",
-                                css: "variance"
-                    }, {
-                            name: "Upper Quartile",
-                            abbrev: "Q3",
-                            css: "variance"
-                        }]
-                }, {
-                    id: 'mean-and-confidence-interval-99',
-                    text: "Mean and 99% CI",
-                    varianceAbbrev: "CI99",
-                    dataPoints: [{
-                        name: "Mean",
-                        abbrev: "Mean",
-                        css: "mean",
-                        isReferencePoint: true
-                    }, {
-                        name: "99% Confidence range (upper)",
-                        abbrev: "CI99",
-                        css: "variance"
-                    }, {
-                        name: "Lower Quartile",
-                        abbrev: "Q1",
-                        css: "variance"
-                    }, {
-                        name: "Upper Quartile",
-                        abbrev: "Q3",
-                        css: "variance"
-                    }]
-                }, {
-                    id: 'median-and-confidence-interval-95',
-                    text: "Median and 95% CI",
-                    dataPoints: [{
-                        name: "Median",
-                        abbrev: "Median",
-                        css: "mean",
-                        isReferencePoint: true
-                    }, {
-                        name: "95% Confidence range (upper)",
-                        abbrev: "CI95",
-                        css: "variance"
-                    }, {
-                        name: "Lower Quartile",
-                        abbrev: "Q1",
-                        css: "variance"
-                    }, {
-                        name: "Upper Quartile",
-                        abbrev: "Q3",
-                        css: "variance"
-                    }]
-                }, {
-                    id: 'median-and-confidence-interval-99',
-                    text: "Median and 99% CI",
-                    varianceAbbrev: "CI99",
-                    dataPoints: [{
-                        name: "Median",
-                        abbrev: "Median",
-                        css: "mean",
-                        isReferencePoint: true
-                    }, {
-                        name: "99% Confidence range (upper)",
-                        abbrev: "CI99",
-                        css: "variance"
-                    }, {
-                        name: "Lower Quartile",
-                        abbrev: "Q1",
-                        css: "variance"
-                    }, {
-                        name: "Upper Quartile",
-                        abbrev: "Q3",
-                        css: "variance"
-                    }]
-                }, {
-                    id: 'median-and-interquartile-range',
-                    text: "Median and Interquartile Range",
-                    dataPoints: [{
-                        name: "Median",
-                        abbrev: "Median",
-                        css: "mean",
-                        isReferencePoint: true
-                    }, {
-                        name: "Lower Quartile",
-                        abbrev: "Q1",
-                        css: "variance"
-                    }, {
-                        name: "Upper Quartile",
-                        abbrev: "Q3",
-                        css: "variance"
-                    }]
-                }, {
-                    id: 'box-and-whisker',
-                    text: "Box and whisker plot",
-                    dataPoints: [{
-                        name: "Median",
-                        abbrev: "Median",
-                        css: "mean",
-                        isReferencePoint: true
-                    }, {
-                        name: "Lower Quartile",
-                        abbrev: "Q1",
-                        css: "variance"
-                    }, {
-                        name: "Uper Quartile",
-                        abbrev: "Q3",
-                        css: "variance"
-                    }, {
-                        name: "Lower",
-                        abbrev: "Lower",
-                        css: "variance"
-                    }, {
-                        name: "Upper",
-                        abbrev: "Upper",
-                        css: "variance"
-                    }]
-                }
-            ];
-
-            forEachDataStructure(function(key, ds) {
-                ds.dataPoints.splice(0, 0,
-                {
-                    name: "Subjects in sample",
-                    abbrev: "n",
-                    isManualEntry: true,
-                    css: "subject-count"
-                });
-
-                function getDependentFieldsSelector() {
-                    var dsc = {};
-                    var df = [];
-                    for (var i = 0; i < ds.dataPoints.length; i++) {
-                        var dp = ds.dataPoints[i];
-                        if (!dp.isReferencePoint && !dp.isManualEntry) {
-                            dsc[dp.css] = true;
-                        }
-                    }
-                    for (var prop in dsc) {
-                        if (dsc.hasOwnProperty(prop)) {
-                            df.push("." + prop);
-                        }
-                    }
-                    return df.join(',');
-                }
-
-                ds.refPointFieldIndex = getReferencePointFieldIndexForDataStructure(ds);
-                ds.dependentFieldsSelector = getDependentFieldsSelector();
-            });
-        }
-
-        function getReferencePointFieldIndexForDataStructure(ds) {
-            var index = null;
-
-            for (var i = 0; i < ds.dataPoints.length; i++) {
-                if (ds.dataPoints[i].isReferencePoint) {
-                    index = i;
-                    break;
-                }
-            }
-            return index;
         }
 
         function populateOutcomeMeasures() {
-            $outcomeMeasureList.html("");
+            $dom.$outcomeMeasureList.html("");
 
-            forEachOutcomeMeasure(function(index, om) {
-                $outcomeMeasureList.append([
+            wpd._config.profileSettings.forEachOutcomeMeasure(function (index, om) {
+                $dom.$outcomeMeasureList.append([
                     "<option id='",
                     om.id,
                     "'>",
@@ -526,12 +580,15 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     "</option>"
                 ].join(''));
             });
-        }
-        function populateDataStructures() {
-            $dataStructureList.html("");
 
-            forEachDataStructure(function(index, ds) {
-                $dataStructureList.append([
+            $dom.$outcomeMeasureList.change();
+        }
+
+        function populateDataStructures() {
+            $dom.$dataStructureList.html("");
+
+            wpd._config.profileSettings.forEachDataStructure(function(index, ds) {
+                $dom.$dataStructureList.append([
                     "<option id='",
                     ds.id,
                     "'>",
@@ -539,19 +596,51 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     "</option>"
                 ].join(''));
             });
+
+            $dom.$dataStructureList.change();
         }
 
-        configureOutcomeMeasures();
-        populateOutcomeMeasures();
+        function showCheckboxSetting($cb, isChecked, triggerChange) {
+            if (isChecked) {
+                $cb.attr('checked', 'checked');
+            } else {
+                $cb.removeAttr('checked');
+            }
+            if (triggerChange) {
+                $cb.trigger('change');
+            }
+        }
+        function showEditSetting($edit, value) {
+            $edit.val(value).change();
+        }
 
-        configureDataStructures();
+        function forceExtendedCrosshairAsRequired() {
+            wpd.graphicsWidget.setExtendedCrosshair(
+                gridSettings.snap.x || gridSettings.snap.y
+            );
+        }
+
+        function populateGridSettings() {
+            showCheckboxSetting($dom.$snapToGridX, gridSettings.snap.x);
+            showCheckboxSetting($dom.$snapToGridY, gridSettings.snap.y);
+            var dim = gridSettings.getDimensions();
+            showEditSetting($dom.$gridEditX, dim.x);
+            showEditSetting($dom.$gridEditY, dim.y);
+
+            forceExtendedCrosshairAsRequired();
+        }
+
+        populateOutcomeMeasures();
         populateDataStructures();
+        configureSubTableSpecs();
+
+        // TODO: Be clearer about which things should be done within OnAttach
 
         this.getOutcomeMeasure = function () {
             var outcomeMeasure = null;
-            var option = $outcomeMeasureList.find(':selected')[0];
+            var option = $dom.$outcomeMeasureList.find(':selected')[0];
 
-            forEachOutcomeMeasure(function (index, om) {
+            wpd._config.profileSettings.forEachOutcomeMeasure(function (index, om) {
                 if (option.id === om.id) {
                     outcomeMeasure = om;
                     return true;
@@ -563,10 +652,10 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
         this.getDataStructure = function () {
             var dso = null;
-            var option = $dataStructureList.find(':selected')[0];
-            var includeIndividuals = $includeIndividuals.is(":checked");
+            var option = $dom.$dataStructureList.find(':selected')[0];
+            var includeIndividuals = getIncludeIndividuals();
 
-            forEachDataStructure(function (index, ds) {
+            wpd._config.profileSettings.forEachDataStructure(function (index, ds) {
                 if (option.id === ds.id) {
                     dso = {
                         dataStructure: ds,
@@ -580,14 +669,14 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             return dso;
         };
 
-        var modeStack = [this.modes.createPoints];
+        var modeStack = [];
         var modifierMode = null;
 
         this.pushMode = function (newMode) {
             var oldMode = this.getMode();
 
             modeStack.push(newMode);
-            
+
             this._applyModeTransition(oldMode, newMode);
             this._showMode();
         };
@@ -681,33 +770,104 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
         function getInfo($edit) {
             var dataInfo = $edit.data('dataInfo');
+            var isConfig = {
+                groupName: 'group-name',
+                seriesName: 'series-name',
+                mean: 'mean',
+                variance: 'variance',
+                subjectCount: 'subject-count',
+                subjectDataPoints: 'subject-data-points',
+                subjectDataPointsValue: 'value',
+                subjectDataPointsCount: 'count'
+            };
             var info = {
                 dataStructure: dataStructures[$edit.attr('data-structure')],
                 dataSeries: $edit.attr('data-series'),
                 dataMeasure: $edit.attr('data-measure'),
                 dataPoint: $edit.attr('data-point'), // within ds.dataPoints[]
 
-             // isGroupName: $edit.hasClass('group-name'),
-                isSeriesName: $edit.hasClass('series-name'),
-                isMean: $edit.hasClass('mean'),
-                isVariance: $edit.hasClass('variance'),
-                isSubjectCount: $edit.hasClass('subject-count'),
                 dataIndex: dataInfo ? dataInfo.dataIndex : null,
                 tabIndex: $edit.attr('tabindex')
+                // , isName: "mean" // for example - to be set later
+                // , is: { prop names from isConfig - values are bool } // set later
             };
-            info.dataSeries = (info.isMean || info.isVariance)
+
+            info.is = {};
+            for (var prop in isConfig) {
+                if (isConfig.hasOwnProperty(prop)) {
+                    var yes = $edit.hasClass(isConfig[prop]);
+                    info.is[prop] = yes;
+                    if (yes) {
+                        info.isName = prop;
+                        break;
+                    }
+                }
+            }
+
+            info.dataSeries = (
+                info.is.mean ||
+                info.is.variance ||
+                info.is.subjectDataPoints ||
+                info.is.subjectCount
+            )
                 ? $edit.attr('data-series')
                 : null;
 
+            info.summarize = function() {
+                var html = [
+                    "<table class='cell-info'><tbody>",
+                    info.dataStructure
+                        ? tr("dataStructure", info.dataStructure.text)
+                        : "",
+                    tr("s / m / p", [
+                        (info.dataSeries  ? info.dataSeries  : "-"),
+                        (info.dataMeasure ? info.dataMeasure : "-"),
+                        (info.dataPoint   ? info.dataPoint   : "-")
+                    ].join(' / ')),
+
+                    tr("is", info.isName),
+                    tr("dataIndex", info.dataIndex),
+                    tr("tabIndex", info.tabIndex)
+                ];
+                html.push("</tbody></table>");
+
+                return html.join('');
+            };
+
+            info.dump = function(msg) {
+                var text = JSON.stringify(info);
+
+             // console.log(msg + "--------" + text);
+            };
+
             return info;
         };
-        function dataSeriesNameChangedHandler(seriesIndex, series) {
-            var seriesTitleEdit = $([
-                "#mean-variance-formContainer input.series-name[data-series='",
-                seriesIndex,
-                "']"
-            ].join(''));
-            seriesTitleEdit.val(series.name);
+
+        function dataSeriesChangedHandler(eventObj) {
+            // eventObj: { seriesIndex: ..., series: ..., action: "renamed" };
+            switch (eventObj.action) {
+                case "renamed":
+                    if (useTable) {
+                        var seriesTitleEdit = $([
+                            "#mean-variance-formContainer input.series-name[data-series='",
+                            eventObj.seriesIndex,
+                            "']"
+                        ].join(''));
+                        seriesTitleEdit.val(series.name);
+                    }
+                    populateDatasetControls();
+                    break;
+                case "seriesAdded":
+                    populateDatasetControls();
+                    break;
+                case "seriesRemoved":
+                    //populateDatasetControl();
+                    break;
+                case "selectedSeriesChanged":
+                    populateDatasetControls();
+                    self.showAreaUnderCurveIfNeeded();
+                    break;
+            }
         }
 
         this.attachedToDom = false;
@@ -719,7 +879,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
             $(wpd._config.appContainerElem).on({
                 click: function(e) {
-                    
+
                 },
                 keydown: function(e) {
                     if (wpd.keyCodes.isAlphabet(e.keyCode, 't')) {
@@ -729,26 +889,34 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             });
 
             this.attachedToDom = true;
-            wpd.dataSeriesManagement.addNameChangeHandler(dataSeriesNameChangedHandler);
-            $button.addClass('pressed-button');
+            wpd.dataSeriesManagement.addDataSeriesChangeHandler(dataSeriesChangedHandler);
             wpd.graphicsWidget.setRepainter(new wpd.DataPointsRepainter());
 
-            $outcomeMeasureList.on('change', outcomeMeasureChanged);
-            $dataStructureList.on('change', dataStructureChanged);
-            $includeIndividuals.on('change', dataStructureChanged);
+            $dom.$dataSetLists.on('change', datasetChanged);
+            $dom.$useTable.on('change', useTableChanged);
+            $dom.$showTrapezoids.on('change', showTrapezoidsChanged);
+            $dom.$outcomeMeasureList.on('change', outcomeMeasureChanged);
+            $dom.$dataStructureList.on('change', dataStructureChanged);
+            $dom.$includeIndividuals.on('change', includeIndividualsChanged);
 
-            $dataPointCountEdit.on('change', dataPointCountChanged);
-            $dataSeriesCountEdit.on('change', dataSeriesCountChanged);
+            $dom.$dataPointCountEdit.on('change', dataPointCountChanged);
+            $dom.$dataSeriesCountEdit.on('change', dataSeriesCountChanged);
+
+            $dom.$snapToGridX.on('change', snapToGridChanged);
+            $dom.$snapToGridY.on('change', snapToGridChanged);
+            $dom.$gridEditX.on('change', gridDimensionsChanged);
+            $dom.$gridEditY.on('change', gridDimensionsChanged);
+
 
             var lockable = [
-                $outcomeMeasureList,
-                $dataStructureList,
-                $includeIndividuals,
-                $dataPointCountEdit,
-                $dataSeriesCountEdit
+                $dom.$outcomeMeasureList,
+                $dom.$dataStructureList,
+                $dom.$includeIndividuals,
+                $dom.$dataPointCountEdit,
+                $dom.$dataSeriesCountEdit
             ];
-        
-            $locked.on({
+
+            $dom.$locked.on({
                 change: function (e) {
                     if ($(this).is(':checked')) {
                         $.each(lockable, function(idx, $elem) {
@@ -764,42 +932,123 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 }
             });
 
-            $formContainer.on({
+            var config = {
                 focus: function (e) {
                     var edit = $(this);
                     var info = getInfo(edit);
+                    setActiveCell(edit);
 
-                    if ($activeCell) {
-                        $activeCell.removeClass('focused');
-                    }
-                    $activeCell = edit;
-                    var activeRow = $activeCell.closest('tr');
-                    var currentSeries = "current-series";
-
-                    activeRow.closest('table').find('tr').removeClass(currentSeries);
-                    activeRow.addClass(currentSeries);
-
-                    if (info.isGroupName) {
+                    if (info.is.groupName) {
                         self.setModifierMode(self.modes.selectGroupNames);
-                     // self.pushMode(self.modes.createPoints);
                     } else {
                         if (self.getModifierMode() === self.modes.selectGroupNames) {
                             self.clearModifierMode();
-                         // self.popMode();
                         }
-
-                        var ourSeries = $activeCell.closest('tr').attr('data-series');
-                        $("tr[data-series='" + ourSeries + "'").addClass(currentSeries);
                     }
-                    edit.addClass('focused');
+                 // edit.addClass('focused');
 
-                    if (info.isMean || info.isVariance || info.isGroupName) {
-                        if (info.isMean || info.isVariance) {
+                    if (info.is.mean ||
+                        info.is.variance ||
+                     // info.is.groupName ||
+                        info.is.subjectDataPoints ||
+                        info.is.subjectCount) {
+                        if (info.is.mean || info.is.variance || info.is.subjectDataPoints || info.is.subjectCount) {
                             plotData.setActiveDataSeriesIndex(info.dataSeries);
                         }
 
-                        var dataSeries = plotData.getActiveDataSeries();
+                        if (info.is.subjectDataPoints) {
+                            self.setModifierMode(self.modes.selectSubjectDataPoints);
+                            self.buildNestedTable();
+                            $dom.$nestedFormContainer.removeClass('hidden');
+                            if (dataPopupVisible && !nestedDataPopupVisible) {
+                                showNestedDataPopup();
+                            }
+                            focusNextAvailableNestedValueCell();
+                            wpd.graphicsWidget.forceHandlerRepaint();
+                        } else {
+                            if (self.getModifierMode() === self.modes.selectSubjectDataPoints) {
+                                self.clearModifierMode();
+                            }
+                            hideNestedDataPopup();
+                            $dom.$nestedFormContainer.addClass('hidden');
+
+                            var dataSeries = plotData.getActiveDataSeries();
+                            dataSeries.unselectAll();
+                            if (info.dataIndex != null) {
+                                dataSeries.selectPixel(info.dataIndex);
+                                var selectedPoint = dataSeries.getPixel(info.dataIndex);
+                                if (selectedPoint) {
+                                    wpd.graphicsWidget.resetData();
+                                    wpd.graphicsWidget.forceHandlerRepaint();
+                                    wpd.graphicsWidget.updateZoomToImagePosn(selectedPoint.x, selectedPoint.y);
+                                }
+                            } else {
+                                // wpd.graphicsWidget.forceHandlerRepaint();
+                            }
+                            wpd.graphicsWidget.forceHandlerRepaint();
+                        }
+                    }
+                    //info.dump("focus - ");
+                },
+                blur: function (e) {
+                },
+                keydown: function (e) {
+                    var edit = $(this);
+                    var info = getInfo(edit);
+
+                    var isBarChart = plotData.axes.dataPointsHaveLabels;
+                    var handleSpecialKeys = !info.is.seriesName;
+
+                    if (handleSpecialKeys &&
+                    (
+                        wpd.keyCodes.isUp(e.keyCode) ||
+                            wpd.keyCodes.isDown(e.keyCode) ||
+                            wpd.keyCodes.isLeft(e.keyCode) ||
+                            wpd.keyCodes.isRight(e.keyCode) ||
+                            wpd.keyCodes.isAlphabet(e.keyCode, 'q') ||
+                            wpd.keyCodes.isAlphabet(e.keyCode, 'w') ||
+                            wpd.keyCodes.isAlphabet(e.keyCode, 't') ||
+                            wpd.acquireMeanVarianceData.isToolSwitchKey(e.keyCode)
+                    )) {
+                        e.preventDefault();
+                        self.onKeyDown(e);
+                    }
+                },
+                change: function (e) {
+                    var $edit = $(this);
+                    var info = getInfo($edit);
+                    if (info.is.groupName) {
+                        var groupNames = plotData.metaSeries.groupNames;
+                        var label = $edit.val();
+                        groupNames.text[info.dataPoint] = label;
+                        $edit.attr('title', label);
+                    } else if (info.is.subjectCount) {
+                        // Store the 'n' value!
+                        var series = plotData.getActiveDataSeries();
+                        var measureFieldId = curOutcomeMeasure.fields[info.dataMeasure].id;
+                        var mfmd = series.getMeasureFieldMetaData(measureFieldId);
+                        var nValue = parseInt($edit.val(), 10);
+                        mfmd.n = nValue;
+                    }
+                }
+            };
+            var nestedConfig = {
+                focus: function(e) {
+                    var edit = $(this);
+                    var info = getInfo(edit);
+
+                    setActiveNestedCell(edit);
+
+                    if (info.is.subjectDataPointsValue) {
+                        if (info.dataSeries) {
+                            plotData.setActiveDataSeriesIndex(info.dataSeries);
+                        }
+
+                        var asi = self.getActiveSeriesInfo();
+                     // var dataSeries = plotData.getActiveDataSeries();
+                        var dataSeries = asi.series;
                         dataSeries.unselectAll();
+
                         if (info.dataIndex != null) {
                             dataSeries.selectPixel(info.dataIndex);
                             var selectedPoint = dataSeries.getPixel(info.dataIndex);
@@ -808,77 +1057,35 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                                 wpd.graphicsWidget.forceHandlerRepaint();
                                 wpd.graphicsWidget.updateZoomToImagePosn(selectedPoint.x, selectedPoint.y);
                             }
-                        }
-                        else {
+                        } else {
                             // wpd.graphicsWidget.forceHandlerRepaint();
                         }
                         wpd.graphicsWidget.forceHandlerRepaint();
                     }
-
-                    //var dataSeries = wpd.appData.getPlotData().getActiveDataSeries();
-                    //dataSeries.unselectAll();
-                    //dataSeries.selectNearestPixel(imagePos.x, imagePos.y);
-                    //wpd.graphicsWidget.forceHandlerRepaint();
-                    //wpd.graphicsWidget.updateZoomOnEvent(ev);
-
-
-                    if (info.isMean) {
-                    } else if (info.isVariance) {
-                    }
-
-                    //info.dump("focus - ");
                 },
-                blur: function (e) {
-                    var edit = $(this);
-                    var info = getInfo(edit);
-
-                    if (info.isMean) {
-                    } else if (info.isVariance) {
-                    }
-
-                    //info.dump("blur - ");
-                },
-                keydown: function (e) {
-                    var edit = $(this);
-                    var info = getInfo(edit);
-
-                    var isBarChart = plotData.axes.dataPointsHaveLabels;
-                    var handleSpecialKeys = !info.isSeriesName
-                     // !info.isGroupName
-                    //   || !isBarChart
-                    ;
-
-                    if (handleSpecialKeys && (
-                        wpd.keyCodes.isUp(e.keyCode) ||
-                        wpd.keyCodes.isDown(e.keyCode) ||
-                        wpd.keyCodes.isLeft(e.keyCode) ||
-                        wpd.keyCodes.isRight(e.keyCode) ||
-                        wpd.keyCodes.isAlphabet(e.keyCode, 'q') ||
-                        wpd.keyCodes.isAlphabet(e.keyCode, 'w') ||
-                        wpd.keyCodes.isAlphabet(e.keyCode, 't') ||
-                        wpd.acquireMeanVarianceData.isToolSwitchKey(e.keyCode)
-                    )) {
-                        e.preventDefault();
-                        self.onKeyDown(e);
-                    }
-                    if (info.isMean) {
-                    } else if (info.isVariance) {
-                    }
-
-                    //info.dump("keydown - ");
-                }, change: function(e) {
+                change: function (e) {
+                    var msg = ["nestedConfig.change..."];
                     var $edit = $(this);
                     var info = getInfo($edit);
-                    if (info.isGroupName) {
-                        var groupNames = plotData.metaSeries.groupNames;
-                        var label = $edit.val();
-                        groupNames.text[info.dataPoint] = label;
-                        $edit.attr('title', label);
-                    }
-                }
-            }, '.series-name,.mean,.variance,.subject-count');
 
-            $formContainer.on({
+                    if (info.is.subjectDataPointsCount) {
+                        var outerSeries = plotData.getActiveDataSeries();
+                        var imd = outerSeries.getIndividualMetaData();
+                        var counts = imd.counts;
+                        var subjectCount = $edit.val();
+                        counts[info.dataPoint] = subjectCount;
+                        msg.push("..just set the count for dataPoint: ", info.dataPoint, " to: " + subjectCount);
+                    }
+                    console.log(msg.join(''));
+                }
+            };
+            nestedConfig.spinchange = nestedConfig.change;
+            nestedConfig.keydown = config.keydown;
+
+            $dom.$nestedFormContainer.on(nestedConfig, '.value,.count');
+            $dom.$formContainer.on(config, '.series-name,.mean,.variance,.subject-count,.subject-data-points');
+
+            $dom.$formContainer.on({
                 change: function (e) {
                     var $edit = $(this);
                     var seriesIndex = $edit.attr('data-series');
@@ -888,9 +1095,56 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 }
             }, '.series-name');
 
-            $outcomeMeasureList.change();
-            $dataPointCountEdit.val('2').change();
-            $dataSeriesCountEdit.val('4').change();
+            function showElemIf($elem, showIf) {
+                if (showIf) {
+                    $elem.removeClass('hidden');
+                }
+                else {
+                    $elem.addClass('hidden');
+                }
+            }
+            function applyUseTable(profile) {
+                showCheckboxSetting($dom.$useTable, profile.useTable, true);
+                showElemIf($dom.$detachFormContainerTrigger, useTable);
+
+                //showElemIf($dom.$createPointsButton, !useTable);
+                showElemIf($dom.$adjustPointsButton, !useTable);
+                showElemIf($dom.$deletePointsButton, !useTable);
+            }
+
+            function applyProfile(profile) {
+
+                gridSettings.snap = profile.gridSettings.snap;
+                gridSettings._dimensions = profile.gridSettings.dimensions;
+
+                $dom.$outcomeMeasureList
+                    .find('option#' + profile.outcomeMeasureId)
+                    .attr('selected', 'selected')
+                    .change();
+
+                $dom.$dataStructureList
+                    .find('option#' + profile.dataStructureId)
+                    .attr('selected', 'selected')
+                    .change();
+
+                applyUseTable(profile);
+
+                showCheckboxSetting($dom.$includeIndividuals, profile.includeIndividuals, true);
+
+                $dom.$dataSeriesCountEdit
+                    .val(profile.dataSeriesCount)
+                    .change();
+
+                $dom.$dataPointCountEdit
+                    .val(profile.dataPointCount)
+                    .change();
+
+                lock();
+            }
+
+            applyProfile(wpd._config.profileSettings.getProfile());
+            populateGridSettings();
+
             showDataPopup();
         };
 
@@ -903,29 +1157,203 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             var di = null;
             var ds = dataStructure;
             var dp = ds.dataPoints[dataPointIndex];
-            
+
             if (!dp.isManualEntry) {
                 var pointCount = ds.dataPoints.length;
                 di =
-                    measureIndex * (pointCount - 1) +
+                    measureIndex * (pointCount - 1) +   // (1)
                     (
-                        dataPointIndex < ds.refPointFieldIndex
+                     // dataPointIndex < ds.refPointFieldIndex // TODO: is this correct? should it be the manualEntry field-index?
+                        dataPointIndex < ds.manualEntryFieldIndex // <--- TODO: like this
                             ? dataPointIndex
-                            : dataPointIndex - 1
+                            : dataPointIndex - 1        // (1)
                     ); // ignore 'n' column - there's no associcated point
             }
+
+            // Notes:
+           //   (1) -1 relates the the single manualEntry dataPoint
 
             return di;
         }
 
+        function getNestedDataIndex(
+            rowIndex,
+            stsIndex,
+            subTableSpecs
+        ) {
+            var di = null;
+
+            var stsf = subTableSpecs.fields[stsIndex];
+            var stsFieldCount = subTableSpecs.fields.length;
+
+            // pretend manualEntry has data for the purposes of finding its index
+            var pretend = true;
+
+            if (!stsf.isManualEntry || pretend) {
+                di =
+                    rowIndex * (stsFieldCount - 1) +   // (1)
+                    (
+                        stsIndex < subTableSpecs.manualEntryFieldIndex
+                            ? stsIndex
+                            : stsIndex - 1    // (1)
+                    ); // ignore 'count' column - there's no associcated point
+            }
+
+            // Notes:
+            //  (1) -1 relates to the single manualEntry subTableSpec
+
+            return di;
+        }
+
+        this.findNextAvaialbleNestedValueCell = function() {
+            var outerSeries = plotData.getActiveDataSeries();
+            var imd = outerSeries.getIndividualMetaData();
+            var individualSeries = imd.series;
+            var pointCount = individualSeries.getPixelCount();
+            var iterationCount = pointCount + 1;
+            var di, pixel;
+            var $avail = null;
+
+            for (p = 0; p < iterationCount; p++) {
+                forEachSubTableSpecField(function(idx, stsf) {
+                    di = getNestedDataIndex(p, idx, subTableSpecs);
+                    if (!stsf.isManualEntry) {
+                        if (di >= pointCount) {
+                            if (p === (iterationCount - 1)) {
+                                var valueEdits = $dom.$nestedFormContainer.find("." + stsf.css);
+                                var tabIndices = valueEdits.map(function() {
+                                    return $(this).attr('tabindex');
+                                });
+                                var maxTabIndex = Math.max.apply(null, tabIndices);
+                                $avail = getCellWithTabIndex(maxTabIndex);
+
+                            } else {
+                                pixel = $(individualSeries.getPixel(p));
+                                $avail = getCellCorrespondingToPoint(individualSeries, pixel);
+                            }
+                            return true;
+                        }
+                    }
+                });
+            }
+
+            return $avail;
+        };
+        this.buildNestedTable = function () {
+            // call this to show the nested table in a popup:
+            //  nestedDataPopup.open();
+
+         // var plotData = wpd.appData.getPlotData();
+            var outerSeries = plotData.getActiveDataSeries();
+            var imd = outerSeries.getIndividualMetaData();
+            var individualSeries = imd.series;
+            var individualCounts = imd.counts;
+            var pointCount = individualSeries.getPixelCount();
+            var iterationCount = pointCount + 1;
+            var cellSize = 5;
+            var p, cellContents, di;
+
+            var html = [
+                "<table>",
+                    "<thead>",
+                        "<tr>",
+                            "<th>#</th>"
+            ];
+            forEachSubTableSpecField(function(s, stsf) {
+                html.push("<th>", stsf.title, "</th>");
+            });
+            html.push(
+                    "</tr>",
+                    "</thead>",
+                    "<tbody>"
+            );
+            var tabIndex = this.buildTableNextTabIndex;
+
+            for (p = 0; p < iterationCount; p++) {
+                html.push(
+                    "<tr>",
+                        "<td>",
+                            (p+1),
+                        "</td>"
+                );
+                forEachSubTableSpecField(function (idx, stsf) {
+                    di = getNestedDataIndex(p, idx, subTableSpecs);
+
+                    if (!stsf.isManualEntry) {
+                        if (di < pointCount) {
+                            cellContents = getNormalizedDataValueY(plotData.getDataPoint(individualSeries.getPixel(di)));
+                        } else {
+                            cellContents = "";
+                        }
+                    } else {
+                        //if (!individualCounts.hasOwnProperty(di)) {
+                        //    individualCounts[di] = 1; // default to "1" ?;
+                        //}
+                        if (individualCounts.hasOwnProperty(di)) {
+                            cellContents = individualCounts[di];
+                        } else {
+                            cellContents = "";
+                        }
+                    }
+
+                    html.push(
+                        "<td>",
+                            "<input ",
+                                "type='text' ",
+                                stsf.isManualEntry ? "" : "readonly ",
+                                "size='", cellSize, "' ",
+                                "class='",
+                                    stsf.css,
+                                "' ",
+                                "sub-table-spec='" + idx + "' ",
+                                "data-point='", p, "' ",
+                                "tabindex='", tabIndex++, "' ",
+                                "value='", cellContents, "'",
+                        "</td>"
+                    );
+                });
+                html.push("</tr>");
+            }
+
+            html = html.join('');
+
+            $dom.$nestedFormContainer.html(html);
+            $dom.$nestedFormContainer.find('.count').spinner({ min: 1 });
+
+            // Clear out data for all cells
+            var cells = $dom.$nestedFormContainer.find('td.value');
+            cells.removeData('dataInfo');
+
+            var stsIndex = 0;
+
+            // Assign dataInfo to each nested value-cell with a corresponding pixel
+            for (p = 0; p < pointCount; p++) {
+                di = getNestedDataIndex(p, stsIndex, subTableSpecs);
+                var $cell = getNestedCellForPointAndSts(
+                    p, stsIndex, subTableSpecs
+                );
+                $cell.data('dataInfo', {
+                    dataIndex: di
+                });
+            }
+
+            applyTooltips();
+
+        };
+
 
         // TODO: Update buildTable to add an additional row (individuals) and restrict to one column
-        // when gathering individuals plus mean and small v variance, store the data for each group of 
+        // when gathering individuals plus mean and small v variance, store the data for each group of
         // individuals as a series and have the mean and small v variance as a series which lives in metaData
         //
 
         this.buildTable = function () {
-            if ($locked.is('checked')) {
+            if (!useTable) {
+                wpd.acquireMeanVarianceData.hideAllDataPopups();
+                $dom.$formContainer.html('');
+                return;
+            }
+            if ($dom.$locked.is('checked')) {
                 alert("Please uncheck the locked checkbox to change the numbers of series and/or points.");
             }
 
@@ -938,23 +1366,26 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             var om = curOutcomeMeasure;
             var dso = this.getDataStructure();
             var ds = dso.dataStructure;
-         // var ii = dso.includeIndividuals;
+            var ii = dso.includeIndividuals;
          // var dsi = dso.index;
             var pointCount = ds.dataPoints.length;
             var plotData = wpd.appData.getPlotData();
 
-            plotData.ensureSeriesCount(dataSeriesCount); //, dataPointCount);
-            updateOutcomeMeasureFieldMetaData();
+         // plotData.ensureSeriesCount(dataSeriesCount); //, dataPointCount);
+         // updateOutcomeMeasureFieldMetaData();
 
             var seriesCount = plotData.getDataSeriesCount();
 
             //plotData.setMeasureFieldMetaData();
 
             var p, s, m, di, series, cellContents;
- //           var refPointFieldIndex = getReferencePointFieldIndexForDataStructure(ds);
 
             var measureCount = om.fields.length;
-            var measureIterations = om.hasFields ? measureCount : dataPointCount;
+            var measureIterations = om.hasFields
+                ? measureCount
+                : ii
+                    ? 1
+                    : dataPointCount;
 
             var html = [
                 "<table>",
@@ -984,6 +1415,9 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                         "</th>"
                     );
                 }
+            }
+            if (ii) {
+                html.push("<th>Subjects</th>");
             }
             html.push(
                 "</tr>",
@@ -1055,13 +1489,15 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                                     cellContents = toValue - fromValue;
                                 }
                             } else {
-                                cellContents = "";
+                                cellContents = ""; // TODO: get the 'n' value from store or default if not yet entered
                             }
                             tabIndex = cellsTabIndex++;
                         } else {
                             if (om.hasFields) {
                                 // manual entry cell - currently just the 'n' field which is stored in series metaData
-                                cellContents = series.seriesMetaData.measureFieldData[om.fields[m].id].n;
+                                var mfd = series.seriesMetaData.measureFieldData;
+                                var mfdi = mfd[om.fields[m].id];
+                                cellContents = mfdi.n;
                                 editable = true;
                                 tabIndex = subjectCountTabIndex++;
                             }
@@ -1080,12 +1516,29 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                                    "data-structure='" + dso.index + "' ",
                                    "data-series='", s, "' ",
                                    "data-measure='", m, "' ",
-                                   "data-point='" + p + "' ",
+                                   "data-point='", p, "' ",
                                    "tabindex='", tabIndex, "' ",
                                    "value='", cellContents, "'",
                                "></td>"
                             );
                         }
+                    }
+                    if (ii) {
+                        tabIndex = cellsTabIndex++;
+
+                        html.push(
+                            "<td><input ",
+                                "type='text' ",
+                                "readonly ",
+                                "size='", cellSize, "' ",
+                                "class='subject-data-points' ",
+                                "data-structure='" + dso.index + "' ",
+                                "data-series='", s, "' ",
+                                "data-measure='", m, "' ",
+                                "data-point='", p, "' ",
+                                "tabindex='", tabIndex, "' ",
+                            "></td>"
+                        );
                     }
                     html.push("</tr>");
                }
@@ -1096,7 +1549,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             );
             html = html.join('');
             var $table = $(html);
-            $formContainer.html($table);
+            $dom.$formContainer.html($table);
 
             if (dataPopup) {
                 dataPopup._setTitleWidth();
@@ -1126,78 +1579,185 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             }
 
             applyTooltips();
+
+            this.buildTableNextTabIndex = cellsTabIndex;
+
+            this.buildNestedTable(); // regenerate tab indices
         }
         function tr(lbl, val) {
             return ["<tr><td>", lbl, "</td><td>", val, "</td></tr>"].join('');
         }
         function applyTooltips() {
-            if ($.url().param('demo')) {
+            if (!$.url().param('dev')) {
                 return;
             }
-            $formContainer.find('.series-name,t.subject-count,.mean,.variance').jBox('Tooltip', {
-                delayOpen: 1500,
-                onOpen: function () {
+
+            var editTooltipConfig = {
+                delayOpen: 0,
+             // delayClose: 600000,
+                onOpen: function() {
                     var target = this.source[0];
-                    var info = getInfo($(target));
+                    var $target = $(target);
+                    var info = getInfo($target);
+                 // $target.addClass('tooltip-showing');
 
-                    var html = ["<table class='cell-info'><tbody>"];
-                    for (var prop in info) {
-                        if (info.hasOwnProperty(prop)) {
-                            html.push(tr(prop, info[prop]));
-                        }
+                    this.setContent(info.summarize());
+
+                    if (dataPopup) {
+                        var zIndex = Math.max(
+                            dataPopup.wrapper.css("zIndex"),
+                            nestedDataPopup ? nestedDataPopup.wrapper.css("zIndex") : 0
+                        );
+
+                        this.wrapper.css({ zIndex: zIndex + 1 });
                     }
-                    html.push("</tbody></table>");
-
-                    this.setContent(html.join(''));
                 },
-                zIndex: 20000
-            });
+                onClose: function() {
+                 // var target = this.source[0];
+                 // var $target = $(target);
+                 // $target.removeClass('tooltip-showing');
+                },
+                zIndex: 20000,
+                maxWidth: 300
+            };
+            $dom.$formContainer
+                .find('.series-name,.subject-count,.mean,.variance,.subject-data-points')
+                .jBox('Tooltip', editTooltipConfig);
+
+            $dom.$nestedFormContainer
+                .find('.value,.count')
+                .jBox('Tooltip', editTooltipConfig);
+        }
+
+        function updateUiToReflectShowTableStatus() {
+            if (useTable) {
+                $dom.$tableControls.removeClass('hidden');
+                $dom.$freeControls.addClass('hidden');
+            } else {
+                $dom.$tableControls.addClass('hidden');
+                $dom.$freeControls.removeClass('hidden');
+            }
+        }
+        function showDataPointCounterIfNeeded() {
+            if (curOutcomeMeasure.hasFields || getIncludeIndividuals()) {
+                $dom.$dataPointCountEditWrapper.addClass('hidden');
+            } else {
+                $dom.$dataPointCountEditWrapper.removeClass('hidden');
+            }
         }
 
         function updateOutcomeMeasureFieldMetaData() {
             wpd.appData.getPlotData().setMeasureFieldMetaData(curOutcomeMeasure.fields);
         }
+
+        function datasetChanged() {
+            var index = this.selectedIndex;
+            plotData.setActiveDataSeriesIndex(index);
+
+            wpd.graphicsWidget.forceHandlerRepaint();
+            wpd.dataPointCounter.setCount();
+            self.showAreaUnderCurveIfNeeded();
+        }
+        function useTableChanged(ev) {
+            useTable = getUseTable();
+            updateUiToReflectShowTableStatus();
+            self.buildTable();
+        }
+        function showTrapezoidsChanged(ev) {
+            var painter = wpd.graphicsWidget.getRepainter();
+
+            showTrapezoids = getShowTrapezoids();
+            painter.setShowArea(showTrapezoids);
+            wpd.graphicsWidget.forceHandlerRepaint();
+        }
         function outcomeMeasureChanged(ev) {
             curOutcomeMeasure = self.getOutcomeMeasure();
-            if (curOutcomeMeasure.hasFields) {
-                $dataPointCountEditWrapper.addClass('hidden');
-            } else {
-                $dataPointCountEditWrapper.removeClass('hidden');
-            }
+            updateOutcomeMeasureFieldMetaData();
+
+            showDataPointCounterIfNeeded();
+            //if (curOutcomeMeasure.hasFields) {
+            //    $dom.$dataPointCountEditWrapper.addClass('hidden');
+            //} else {
+            //    $dom.$dataPointCountEditWrapper.removeClass('hidden');
+            //}
             self.buildTable();
         }
 
+        function includeIndividualsChanged(ev) {
+            showDataPointCounterIfNeeded();
+            self.buildTable();
+        }
         function dataStructureChanged(ev) {
             self.buildTable();
         }
 
         function dataPointCountChanged(ev) {
-            dataPointCount = parseInt($dataPointCountEdit.val(), 10);
+            dataPointCount = parseInt($dom.$dataPointCountEdit.val(), 10);
             self.buildTable();
         };
+        function snapToGridChanged(ev) {
+            gridSettings.snap.x = $dom.$snapToGridX.is(':checked');
+            gridSettings.snap.y = $dom.$snapToGridY.is(':checked');
+
+            forceExtendedCrosshairAsRequired();
+        }
+        function gridDimensionsChanged(ev) {
+            gridSettings.setDimensions({
+                x: parseFloat($dom.$gridEditX.val()),
+                y: parseFloat($dom.$gridEditY.val())
+            });
+
+            var dim = gridSettings.getDimensions();
+            var pxDim = gridSettings.getPixelDimensions();
+            console.log([
+                dim.x.toFixed(2),
+                ",",
+                dim.y.toFixed(2),
+                " -> ",
+                pxDim.x.toFixed(2),
+                ",",
+                pxDim.y.toFixed(2)
+            ].join(''));
+        }
         function dataSeriesCountChanged(ev) {
-            dataSeriesCount = parseInt($dataSeriesCountEdit.val(), 10);
+            dataSeriesCount = parseInt($dom.$dataSeriesCountEdit.val(), 10);
+            plotData.ensureSeriesCount(dataSeriesCount); //, dataPointCount);
+
+            updateOutcomeMeasureFieldMetaData();
+
             self.buildTable();
         }
 
-        function getCellCorrespondingToSelectedPoint(dataSeries, alsoSelect) {
+        function getCellCorrespondingToSelectedPoint(dataSeries) {
             var spi = dataSeries.getSelectedPixels()[0];
             var sp = spi != null ? dataSeries.getPixel(spi) : null;
-            $activeCell = sp
+            var activeCell = setActiveCell(
+                sp
                 ? getCellCorrespondingToPoint(dataSeries, sp)
-                : null;
+                : null
+            );
 
-            if (alsoSelect) {
-                selectCell($activeCell);
-            }
+            return activeCell;
         }
+
+        function getCellWithTabIndex(tabIndex) {
+            var $cell = $([
+                ".table-container input",
+                "[tabindex='",
+                    tabIndex,
+                "']"
+                ].join(''));
+
+            return $cell;
+                }
 
         function getCellCorrespondingToPoint(dataSeries, point) {
             var meanVarianceInfo = dataSeries.getPixelMetaDataByKey(point, 'meanVarianceInfo');
             var $cell = $([
-                "#mean-variance-formContainer input",
+             // "#mean-variance-formContainer input",
+                ".table-container input",
                 "[tabindex='",
-                meanVarianceInfo.tabIndex,
+                    meanVarianceInfo.tabIndex,
                 "']"
             ].join(''));
 
@@ -1205,9 +1765,10 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         }
 
         function selectCell($cell) {
-            $("#mean-variance-formContainer input.focused").removeClass('focused');
+            $(".table-container input.focused").removeClass('focused');
             if ($cell) {
                 $cell.addClass('focused');
+                $cell.focus().select();
             }
         }
 
@@ -1229,12 +1790,30 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             return $cell;
         }
 
-        function getNormalizedDataValueX(value) {
-            if (value.constructor === Array) {
-                value = value[0];
-            }
-            return value;
+        function getNestedCellForPointAndSts(
+            pointIndex, stsIndex, subTableSpecs
+        ) {
+            var sts = subTableSpecs.fields[stsIndex];
+
+            var $cell = $([
+                "#mean-variance-nestedFormContainer td input.",
+                    sts.css,
+                "[sub-table-spec='",
+                    stsIndex,
+                "'][data-point='",
+                    pointIndex,
+                "']"
+            ].join(''));
+
+            return $cell;
         }
+
+        //function getNormalizedDataValueX(value) {
+        //    if (value.constructor === Array) {
+        //        value = value[0];
+        //    }
+        //    return value;
+        //}
         function getNormalizedDataValueY(value) {
             if (value.constructor === Array) {
                 if (value.length > 1) {
@@ -1254,15 +1833,13 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             return varianceDataValue - meanDataValue;
         }
 
-        // TODO - WHEN MODIFYING THE POSITION OF A MEAN CELL, UPDATE THE CORRESPONDING VARIANCE DATA AND EDIT!!!!
-
         function getCellValue(imagePos, info, plotData, dataSeries) {
             var val = null;
 
-            if (info.isMean) {
+            if (info.is.mean) {
                 val = getNormalizedDataValueY(plotData.getDataPoint(imagePos));
             }
-            else if (info.isVariance) {
+            else if (info.is.variance) {
                 // Get the corresponding mean cell
                 var $meanCell = getCellForSeriesMeasureAndPoint(
                     info.dataSeries,
@@ -1281,91 +1858,258 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     alert("Please enter the mean before the error bar");
                 }
             }
-            else if (info.isSubjectCount) {
+            else if (info.is.subjectCount) {
                 var om = curOutcomeMeasure;
                 val = dataSeries.seriesMetaData.measureFieldData[
                     om.fields[info.dataMeasure].id].n;
             }
-            //else if (info.isGroupName) {
+            else if (info.is.subjectDataPoints) {
+                var activeNestedCell = getActiveNestedCell();
+                if (activeNestedCell) {
+                    var nestedInfo = getInfo(activeNestedCell);
+                    if (nestedInfo.is.subjectDataPointsValue) {
+                        val = getNormalizedDataValueY(plotData.getDataPoint(imagePos));
+                    }
+                }
+            }
+            else if (info.is.subjectDataPointsValue) {
+                val = getNormalizedDataValueY(plotData.getDataPoint(imagePos));
+            }
+            //else if (info.is.groupName) {
             //    dataPoint = plotData.getDataPoint(imagePos);
             //}
             return val;
         }
 
+        this.getActiveSeriesInfo = function () {
+            var activeDataSeries = plotData.getActiveDataSeries();
+
+            var individualDataSeries = self.getModifierMode() === self.modes.selectSubjectDataPoints
+                ? activeDataSeries.getIndividualMetaData ().series
+                : null;
+
+            var series = individualDataSeries || activeDataSeries;
+
+            return {
+                activeDataSeries: activeDataSeries,
+                individualDataSeries: individualDataSeries,
+                series: series
+            };
+        }
+
+        function getActiveCellInfo() {
+            var activeCell = getActiveCell();
+            var activeNestedCell = getActiveNestedCell();
+            var cell = activeNestedCell || activeCell;
+
+            return {
+                activeCell: activeCell,
+                activeNestedCell: activeNestedCell,
+                cell: cell
+            };
+        }
+
+        function getModeInfo() {
+            var mm = self.getModifierMode();
+            var headerMode = mm === self.modes.selectGroupNames;
+            var subjectDataPointsMode = mm === self.modes.selectSubjectDataPoints;
+
+            return {
+                headerMode: headerMode,
+                subjectDataPointsMode: subjectDataPointsMode
+            };
+        }
+
+        function lock() {
+            $dom.$locked
+                .attr('checked', 'checked')
+                .trigger('change');
+        }
+
+        function annotateData(series) {
+            var axes = plotData.axes,
+                dataPt,
+                transformedDataPt,
+                data = [];
+
+            for (var i = 0; i < series.getCount() ; i++) {
+                dataPt = wpd.utils.deepClone (series.getPixel(i));
+                transformedDataPt = axes.pixelToData(dataPt.x, dataPt.y);
+
+                data.push({ origIndex: i, origData: dataPt, transformedDataPt: transformedDataPt});
+            }
+
+            return data;
+        }
+
+        function calculateAreaUnderCurveForSeries(series) {
+            var i,
+                area = 0,
+                trapezoidArea,
+                count = series.getPixelCount(),
+                sortedData = [];
+
+            if (count > 1) {
+                // get all points in data-space
+                var data = annotateData(series);
+                var origin = plotData.getPixelPoint({ x: 0, y: 0 });
+                origin = plotData.axes.pixelToData(origin.x, origin.y);
+
+                // order them by x
+                data.sort(function(a, b) {
+                    return a.transformedDataPt[0] - b.transformedDataPt[0];
+                });
+
+                for (i = 0; i < data.length; i++) {
+                    sortedData.push(data[i].origData);
+                }
+
+                // calculate the total area of the trapezoids created by two adjacent points and their projection onto the y=0 axis
+                var left = data[0].transformedDataPt, right;
+                for (i = 1; i < count; i++) {
+                    right = data[i].transformedDataPt;
+
+                    // area of trapezoid: base times average height
+                    var width = right[0] - left[0];
+                    var leftHeight = Math.abs(left[1] - origin[1]);
+                    var rightHeight = Math.abs(right[1] - origin[1]);
+                    var averageHeight = (rightHeight + leftHeight) / 2;
+                    trapezoidArea = width * averageHeight;
+                    area += trapezoidArea;
+
+                    left = right;
+                }
+            }
+
+            return { area: area, sortedPoints: sortedData };
+        }
+
+        this.showAreaUnderCurveIfNeeded = function() {
+            if (!useTable) {
+                showAreaUnderCurve ();
+            }
+        };
+
+        function showAreaUnderCurve() {
+            var series = wpd.appData.getPlotData().getActiveDataSeries();
+            var areaAndSortedPoints = calculateAreaUnderCurveForSeries(series);
+            var area = areaAndSortedPoints.area;
+            var sortedPoints = areaAndSortedPoints.sortedPoints;
+
+            // Update the series with identical data (i.e. without introducing any rounding errors) sorted by x
+            for (var i = 0; i < sortedPoints.length; i++) {
+                var sp = sortedPoints[i];
+                series.setPixelAt(i, sp.x, sp.y);
+            }
+
+            $dom.$areaUnderCurve.html(
+                "Area under curve: " + area
+            );
+        }
+
+        function focusFirstValueCell() {
+            if (!getActiveCell()) {
+                var first = $dom.$formContainer
+                    .find('>table>tbody input[data-series="0"]:not(.series-name):first');
+                setActiveCell(first);
+            }
+            selectCell(getActiveCell());
+        }
+
         function createPointsMouseClick(ev, pos, imagePos) {
-            var headerMode = self.getModifierMode() === self.modes.selectGroupNames;
+            var mi = getModeInfo(),
+                aci,
+                info,
+                dataIndex,
+                metaData;
 
-            if ($activeCell === null) {
-                alert(["please select a ",
-                    headerMode
-                        ? "header"
-                        : "data",
-                    " cell before attempting to add a point!"
-                ].join(''));
+            if (useTable) {
+                aci = getActiveCellInfo();
 
-                return;
+                if (aci.activeCell === null || (mi.subjectDataPointsMode && aci.activeNestedCell === null)) { // && activeNestedCell === null) {
+                    // Select the first cell in the grid
+                    focusFirstValueCell();
+                    aci = getActiveCellInfo();
+                }
+
+                info = getInfo(aci.cell);
+                if (info.is.subjectDataPointsCount) {
+                    focusNextAvailableNestedValueCell();
+                    aci = getActiveCellInfo();
+                    info = getInfo(aci.cell);
+                }
             }
 
-            var info = getInfo($activeCell);
 
-            var activeDataSeries = plotData.getActiveDataSeries(),
-                pointLabel = null;
-
-            if (plotData.axes.dataPointsHaveLabels) { // e.g. Bar charts
-
-                pointLabel = [
-                    "S", info.dataSeries, ".",
-                    info.dataPoint,
-                    (info.isVariance ? "E" : "")
-                ].join('');
-            }
+            var asi = self.getActiveSeriesInfo(), pointLabel = null;
 
             // if (blah && confirm ("This group already data - would you like to override it?"))) {}
-            if (info.isGroupName || !$activeCell.val()) {
-                var metaData = { meanVarianceInfo: info };
+            if (useTable) {
+                if (info.is.groupName || !aci.activeCell.val()) {
+                    metaData = { meanVarianceInfo: info };
 
-                if (plotData.axes.dataPointsHaveLabels) {
-                    metaData.label = pointLabel;
+                    imagePos = wpd.graphicsWidget.screenPx(imagePos.x, imagePos.y);
+                    gridSettings.quantize(imagePos);
+                    imagePos = wpd.graphicsWidget.imagePx(imagePos.x, imagePos.y);
+
+                    dataIndex = asi.series.addPixel(imagePos.x, imagePos.y, metaData);
+
+                    //wpd.graphicsHelper.drawPoint(imagePos, "rgb(200,0,0)", pointLabel);
+                    wpd.graphicsWidget.forceHandlerRepaint(); // draw points from the painter only
+
+                    var dataPointView = getCellValue(imagePos, info, plotData, asi.series);
+
+                    lock();
+                    aci.cell.val(dataPointView);
+
+                    aci.cell.data('dataInfo',
+                    {
+                        dataIndex: dataIndex
+                    });
+                    var curTabIndex = aci.cell.prop('tabindex');
+                    var nextTabIndex = curTabIndex + 1;
+
+                    self.buildNestedTable();
+                    var $next = $("[tabindex='" + nextTabIndex + "']");
+                    selectCell($next);
+                } else {
+                    // TODO: Change to a confirm and add the point if 'Yes'
+                    alert("This cell already has data!");
                 }
-                var dataIndex = activeDataSeries.addPixel(imagePos.x, imagePos.y, metaData);
-                wpd.graphicsHelper.drawPoint(imagePos, "rgb(200,0,0)", pointLabel);
-
-                var dataPointView = getCellValue(imagePos, info, plotData, activeDataSeries);
-
-
-                $locked.attr('checked', 'checked').trigger('change');
-                $activeCell.val(dataPointView);
-
-                $activeCell.data('dataInfo',
-                {
-                    dataIndex: dataIndex
-                });
-                var curTabIndex = $activeCell.prop('tabindex');
-                var nextTabIndex = curTabIndex + 1;
-                $formContainer.find("[tabindex='" + nextTabIndex + "']")
-                    .focus()
-                    .select();
             } else {
-                // TODO: Change to a confirm and add the point if 'Yes'
-                alert("This cell already has data!");
-            }
+                metaData = { };
 
+                imagePos = wpd.graphicsWidget.screenPx(imagePos.x, imagePos.y);
+                gridSettings.quantize(imagePos);
+                imagePos = wpd.graphicsWidget.imagePx(imagePos.x, imagePos.y);
+
+                dataIndex = asi.series.addPixel(imagePos.x, imagePos.y, metaData);
+
+                self.showAreaUnderCurveIfNeeded();
+
+                wpd.graphicsWidget.forceHandlerRepaint(); // draw points from the painter only
+
+                lock();
+            }
 
             wpd.graphicsWidget.updateZoomOnEvent(ev);
             wpd.dataPointCounter.setCount();
 
-            // If shiftkey was pressed while clicking on a point that has a label (e.g. bar charts),
-            // then show a popup to edit the label
-            if (plotData.axes.dataPointsHaveLabels && ev.shiftKey) {
-                wpd.dataPointLabelEditor.show(activeDataSeries, activeDataSeries.getCount() - 1, this);
-            }
+            //// If shiftkey was pressed while clicking on a point that has a label (e.g. bar charts),
+            //// then show a popup to edit the label
+            //if (plotData.axes.dataPointsHaveLabels && ev.shiftKey) {
+            //    wpd.dataPointLabelEditor.show(si.series, si.series.getCount() - 1, this);
+            //}
         }
         function adjustPointsMouseClick(ev, pos, imagePos) {
             var dataSeries = wpd.appData.getPlotData().getActiveDataSeries();
             dataSeries.unselectAll();
             dataSeries.selectNearestPixel(imagePos.x, imagePos.y);
 
-            getCellCorrespondingToSelectedPoint(dataSeries, true);
+            if (useTable) {
+                var cell = getCellCorrespondingToSelectedPoint(dataSeries);
+                selectCell(cell);
+            }
 
             wpd.graphicsWidget.forceHandlerRepaint();
             wpd.graphicsWidget.updateZoomOnEvent(ev);
@@ -1377,11 +2121,23 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             if (pixelIndex >= 0) {
                 activeDataSeries.unselectAll();
                 activeDataSeries.selectPixel(pixelIndex);
-                getCellCorrespondingToSelectedPoint(activeDataSeries, true);
-                $activeCell.val('');
+
+                if (useTable) {
+                    var activeCell = getActiveCell();
+
+                    var cell = getCellCorrespondingToSelectedPoint(activeDataSeries);
+                    selectCell(cell);
+
+                    activeCell.val('');
+
+                }
 
                 activeDataSeries.removePixelAtIndex(pixelIndex);
                 wpd.graphicsWidget.resetData();
+
+
+                self.showAreaUnderCurveIfNeeded();
+
                 wpd.graphicsWidget.forceHandlerRepaint();
                 wpd.graphicsWidget.updateZoomOnEvent(ev);
                 wpd.dataPointCounter.setCount();
@@ -1389,9 +2145,6 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         }
         this.onMouseClick = function (ev, pos, imagePos) {
             switch (this.getMode()) {
-                //case this.modes.selectGroupNames:
-                //    selectGroupNamesMouseClick(ev, pos, imagePos);
-                //    break;
                 case this.modes.createPoints:
                     createPointsMouseClick(ev, pos, imagePos);
                     break;
@@ -1403,17 +2156,27 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     break;
             }
         };
+        this.removeEventHandlers = function () {
+            for (var $elem in $dom) {
+                if ($dom.hasOwnProperty($elem)) {
+                    $dom[$elem].off();
+                }
+            }
+        };
 
         this.onRemove = function () {
-            wpd.dataSeriesManagement.removeNameChangedHandler(dataSeriesNameChangedHandler);
-            $button.removeClass('pressed-button');
+            wpd.acquireMeanVarianceData.hideAllDataPopups();
+            this.removeEventHandlers();
+            wpd.dataSeriesManagement.removeDataSeriesChangeHandler(dataSeriesChangedHandler);
+            $('.mean-variance-selection-mode').removeClass('pressed-button');
         };
 
         function createPointsKeyDown(ev) {
             var $target = $(ev.target);
             var fromEdit = $target.hasClass('mean')
                 || $target.hasClass('variance')
-             // || $target.hasClass('group-name');
+            // || $target.hasClass('group-name')
+            ;
 
             if (fromEdit) {
                 // Don't support modifying points etc if the keydown came from a mean/variance/groupName edit
@@ -1442,11 +2205,17 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             wpd.graphicsWidget.resetData();
             wpd.graphicsWidget.forceHandlerRepaint();
             wpd.graphicsWidget.updateZoomToImagePosn(lastPt.x, lastPt.y);
+
             ev.preventDefault();
         }
+
         function adjustPointsKeyDown(ev) {
-            var activeDataSeries = wpd.appData.getPlotData().getActiveDataSeries(),
-                selIndex = activeDataSeries.getSelectedPixels()[0];
+
+            var asi = self.getActiveSeriesInfo();
+            var activeDataSeries = asi.series;
+            // var activeDataSeries = wpd.appData.getPlotData().getActiveDataSeries();
+
+            var selIndex = activeDataSeries.getSelectedPixels()[0];
 
             if (selIndex == null) { return; }
 
@@ -1455,9 +2224,25 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
             var pointPx = selPoint.x,
                 pointPy = selPoint.y,
-                stepSize = ev.shiftKey === true ? 5 / wpd.graphicsWidget.getZoomRatio() : 0.5 / wpd.graphicsWidget.getZoomRatio();
+                stepSize = ev.shiftKey === true ? 5 / wpd.graphicsWidget.getZoomRatio() : 0.5 / wpd.graphicsWidget.getZoomRatio(),
+                aci,
+                activeCell,
+                cell;
 
-            getCellCorrespondingToSelectedPoint(activeDataSeries, true);
+            if (useTable) {
+                aci = getActiveCellInfo();
+                activeCell = aci.cell;
+
+                cell = getCellCorrespondingToSelectedPoint(activeDataSeries);
+                selectCell(cell);
+            }
+
+            function reselectCell() {
+                if (useTable) {
+                    cell = getCellCorrespondingToSelectedPoint(activeDataSeries);
+                    selectCell(cell);
+                }
+            }
 
             if (wpd.keyCodes.isUp(ev.keyCode)) {
                 pointPy = pointPy - stepSize;
@@ -1471,14 +2256,18 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 activeDataSeries.selectPreviousPixel();
                 selIndex = activeDataSeries.getSelectedPixels()[0];
                 selPoint = activeDataSeries.getPixel(selIndex);
-                getCellCorrespondingToSelectedPoint(activeDataSeries, true);
+
+                reselectCell();
+
                 pointPx = selPoint.x;
                 pointPy = selPoint.y;
             } else if (wpd.keyCodes.isAlphabet(ev.keyCode, 'w')) {
                 activeDataSeries.selectNextPixel();
                 selIndex = activeDataSeries.getSelectedPixels()[0];
                 selPoint = activeDataSeries.getPixel(selIndex);
-                getCellCorrespondingToSelectedPoint(activeDataSeries, true);
+
+                reselectCell();
+
                 pointPx = selPoint.x;
                 pointPy = selPoint.y;
             } else if (wpd.keyCodes.isAlphabet(ev.keyCode, 'e')) {
@@ -1499,7 +2288,8 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     pointPx = selPoint.x;
                     pointPy = selPoint.y;
                 }
-                getCellCorrespondingToSelectedPoint(activeDataSeries, true);
+                reselectCell();
+
                 wpd.graphicsWidget.resetData();
                 wpd.graphicsWidget.forceHandlerRepaint();
                 wpd.graphicsWidget.updateZoomToImagePosn(pointPx, pointPy);
@@ -1512,30 +2302,34 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             }
 
             activeDataSeries.setPixelAt(selIndex, pointPx, pointPy);
+
+            self.showAreaUnderCurveIfNeeded();
+
             wpd.graphicsWidget.forceHandlerRepaint();
             wpd.graphicsWidget.updateZoomToImagePosn(pointPx, pointPy);
             ev.preventDefault();
             ev.stopPropagation();
 
-
             // Update table
-            if ($activeCell) {
-                var info = getInfo($activeCell);
+            if (useTable && activeCell) {
+                var info = getInfo(activeCell);
 
                 var plotData = wpd.appData.getPlotData();
 
                 var dataPointView = getCellValue({ x: pointPx, y: pointPy }, info, plotData, activeDataSeries);
-                $activeCell.val(dataPointView);
+                activeCell.val(dataPointView);
 
-                if (info.isMean) {
+                if (info.is.mean) {
                     // also adjust dependent cells
-                    var $dependentCells = getDependentCells($activeCell, info);
+                    var $dependentCells = getDependentCells(activeCell, info);
                     $dependentCells.each(function (idx, cell) {
                         var $depCell = $(cell);
                         var depInfo = getInfo($depCell);
-                        var depPixel = activeDataSeries.getPixel(depInfo.dataIndex);
-                        dataPointView = getCellValue(depPixel, depInfo, plotData, activeDataSeries);
-                        $depCell.val(dataPointView);
+                        if (depInfo.dataIndex !== null) {
+                            var depPixel = activeDataSeries.getPixel(depInfo.dataIndex);
+                            dataPointView = getCellValue(depPixel, depInfo, plotData, activeDataSeries);
+                            $depCell.val(dataPointView);
+                        }
                     });
                 }
             }
@@ -1543,13 +2337,14 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         function deletePointsKeyDown(ev) {
 
         }
+
         this.onKeyDown = function (ev) {
             if (wpd.acquireMeanVarianceData.isToolSwitchKey(ev.keyCode)) {
                 wpd.acquireMeanVarianceData.switchToolOnKeyPress(String.fromCharCode(ev.keyCode).toLowerCase());
                 return;
             } else {
                 if (wpd.keyCodes.isAlphabet(ev.keyCode, 't')) {
-                    if (ev.eventPhase === 1) {
+                    if (ev.eventPhase === 3) {
                         return;
                     }
                     // toggle display of points
@@ -1558,7 +2353,11 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 } else {
                     switch (this.getMode()) {
                         case this.modes.createPoints:
-                            createPointsKeyDown(ev);
+                         // moving newly-created points is now disabled
+                            // createPointsKeyDown(ev);
+                            if (useTable) {
+                                adjustPointsKeyDown(ev);
+                            }
                             break;
                         case this.modes.adjustPoints:
                             adjustPointsKeyDown(ev);
@@ -1574,73 +2373,74 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
     return Tool;
 })();
 
-/*wpd.acquireMeanVarianceData.DeleteDataPointTool = (function () {
-    var Tool = function () {
-        var ctx = wpd.graphicsWidget.getAllContexts(),
-            plotData = wpd.appData.getPlotData(),
-            $button = $('#mean-variance-delete-point-button');
-
-        this.onAttach = function () {
-            $button.addClass('pressed-button');
-            wpd.graphicsWidget.setRepainter(new wpd.DataPointsRepainter());
-        };
-
-        this.onMouseClick = function(ev, pos, imagePos) {
-            //var activeDataSeries = plotData.getActiveDataSeries();
-            //activeDataSeries.removeNearestPixel(imagePos.x, imagePos.y);
-            //wpd.graphicsWidget.resetData();
-            //wpd.graphicsWidget.forceHandlerRepaint();
-            //wpd.graphicsWidget.updateZoomOnEvent(ev);
-            //wpd.dataPointCounter.setCount();
-        };
-
-        this.onKeyDown = function (ev) {
-            if(wpd.acquireMeanVarianceData.isToolSwitchKey(ev.keyCode)) {
-                wpd.acquireMeanVarianceData.switchToolOnKeyPress(String.fromCharCode(ev.keyCode).toLowerCase());
-            }
-        };
-
-        this.onRemove = function () {
-            $button.removeClass('pressed-button');
-        };
-    };
-    return Tool;
-})();*/
-
 wpd.DataPointsRepainter = (function () {
     var Painter = function () {
 
-        var drawPoints = function () {
+        var showArea = false;
+
+        function doDraw(series) {
             var plotData = wpd.appData.getPlotData();
             if (!plotData.showPoints) { return; }
-            var activeDataSeries = plotData.getActiveDataSeries(),
-                dindex,
+            var dindex,
                 imagePos,
                 fillStyle,
                 textStrokeStyle,
                 pointStrokeStyle,
                 isSelected,
-             // mkeys = activeDataSeries.getMetadataKeys(),
                 hasLabels = false,
                 pointLabel,
-                blue = "rgb(0, 0, 255)",
+                blue = "rgb(0,0,255)",
                 red = "rgb(255,0,0)",
                 black = "rgb(0,0,0)",
-                white = "rgb(255,255,255)";
+                white = "rgb(255,255,255)",
+                orange = "rgb(255,255,0)",
+                areaColours = [
+                    blue,
+                    red,
+                    black,
+                    white,
+                    orange
+                ],
+                areaColourCount = areaColours.length,
+                count = series.getCount();
 
-            if (plotData.axes.dataPointsHaveLabels) { // && mkeys != null && mkeys[0] === 'Label') {
-                hasLabels = true;
+            //if (plotData.axes.dataPointsHaveLabels) { // && mkeys != null && mkeys[0] === 'Label') {
+            //    hasLabels = true;
+            //}
+
+            if (showArea) {
+                var origin = plotData.getPixelPoint({ x: 0, y: 0 });
+                var left = series.getPixel(0), right;
+                for (dindex = 1; dindex < count; dindex++) {
+                    right = series.getPixel(dindex);
+
+                    wpd.graphicsHelper.drawTrapezoid([
+                        left,
+                        right,
+                        { x: right.x, y: origin.y },
+                        { x: left.x, y: origin.y }
+                    ], areaColours[dindex % areaColourCount]);
+
+                    left = right;
+                }
             }
 
-            for (dindex = 0; dindex < activeDataSeries.getCount() ; dindex++) {
-                imagePos = activeDataSeries.getPixel(dindex);
-                isSelected = activeDataSeries.getSelectedPixels().indexOf(dindex) >= 0;
-                var metaDataInfo = activeDataSeries.getPixelMetaDataByKey(imagePos, 'meanVarianceInfo');
-                if (metaDataInfo) {
-                    var isMean = metaDataInfo.isMean;
-                    var isVariance = metaDataInfo.isVariance;
+            for (dindex = 0; dindex < count ; dindex++) {
+                imagePos = series.getPixel(dindex);
+                isSelected = series.getSelectedPixels().indexOf(dindex) >= 0;
+                var info = series.getPixelMetaDataByKey(imagePos, 'meanVarianceInfo');
+                if (info) {
+                    var isMean = info.is.mean;
 
-                    fillStyle = isMean ? blue : red;
+                    fillStyle = info.is.mean
+                        ? blue
+                        : info.is.subjectDataPoints
+                            ? orange
+                            : info.is.subjectDataPointsCount
+                                ? black
+                                : info.is.variance
+                                    ? red
+                                    : white;
                 } else {
                     if (isSelected) {
                         fillStyle = "rgb(0,200,0)";
@@ -1649,13 +2449,19 @@ wpd.DataPointsRepainter = (function () {
                     }
                 }
                 textStrokeStyle = white;
-                pointStrokeStyle = [
-                    { style: white, width: 1 },
-                    { style: black, width: 1 }
-                ];
+                pointStrokeStyle = {
+                    default: [
+                        { style: white, width: 1 },
+                        { style: black, width: 1 }
+                    ],
+                    orig: [
+                        { style: white, width: 1 },
+                        { style: black, width: 1 }
+                    ]
+                };
 
                 if (isSelected) {
-                    pointStrokeStyle.push(
+                    pointStrokeStyle.default.push(
                         { style: white, width: 1 },
                         { style: black, width: 1 },
                         { style: fillStyle, width: 2 },
@@ -1665,10 +2471,26 @@ wpd.DataPointsRepainter = (function () {
 
                 var pointRadius;
                 if (hasLabels) {
-                    pointLabel = activeDataSeries.getPixelMetaDataByKey(imagePos, 'Label');
+                    pointLabel = series.getPixelMetaDataByKey(imagePos, 'label');
                     wpd.graphicsHelper.drawPoint(imagePos, fillStyle, pointLabel, textStrokeStyle, pointStrokeStyle, pointRadius);
                 } else {
                     wpd.graphicsHelper.drawPoint(imagePos, fillStyle, null, textStrokeStyle, pointStrokeStyle, pointRadius);
+                }
+            }
+        }
+
+        var drawPoints = function () {
+            var tool = wpd.graphicsWidget.getTool ? wpd.graphicsWidget.getTool() : null;
+            var asi = tool && tool.getActiveSeriesInfo ? tool.getActiveSeriesInfo() : null;
+
+            if (!tool) {
+                doDraw(wpd.appData.getPlotData().getActiveDataSeries());
+            } else {
+                if (asi.activeDataSeries) {
+                    doDraw(asi.activeDataSeries);
+                }
+                if (asi.individualDataSeries) {
+                    doDraw(asi.individualDataSeries);
                 }
             }
         };
@@ -1687,6 +2509,10 @@ wpd.DataPointsRepainter = (function () {
         this.onForcedRedraw = function () {
             wpd.graphicsWidget.resetData();
             drawPoints();
+        };
+
+        this.setShowArea = function(show) {
+            showArea = show;
         };
     };
     return Painter;

@@ -1,9 +1,9 @@
 /*
-	WebPlotDigitizer - http://arohatgi.info/WebPlotdigitizer
+    WebPlotDigitizer - http://arohatgi.info/WebPlotdigitizer
 
-	Copyright 2010-2016 Ankit Rohatgi <ankitrohatgi@hotmail.com>
+    Copyright 2010-2016 Ankit Rohatgi <ankitrohatgi@hotmail.com>
 
-	This file is part of WebPlotDigitizer.
+    This file is part of WebPlotDigitizer.
 
     WebPlotDIgitizer is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,18 +29,18 @@ wpd.PlotData = (function () {
 
         var activeSeriesIndex = 0,
             autoDetector = new wpd.AutoDetector();
-        
+
         this.topColors = null;
         this.axes = null;
         this.dataSeriesColl = [];
         this.gridData = null;
         this.calibration = null;
         this.metaSeries = {
-            //groupNames: {
+            groupNames: {
             //    series: new wpd.DataSeries(),
             //    text: [],
-            //    visible: false
-            //}
+                visible: false
+            }
         };
 
         this.angleMeasurementData = null;
@@ -164,6 +164,11 @@ wpd.PlotData = (function () {
             var dataValue = this.axes.pixelToData(pixel.x, pixel.y);
             return dataValue;
         };
+
+        this.getPixelPoint = function(data) {
+            var pixelValue = this.axes.dataToPixel(data.x, data.y);
+            return pixelValue;
+        }
     };
 
     return PlotData;

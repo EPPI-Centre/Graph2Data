@@ -298,11 +298,36 @@
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <Content Include="BMJ 2011 Olesen.pdf" />
     <Content Include="Scripts\Chart.bundle.js" />
     <Content Include="Scripts\debugger.js" />
     <Content Include="Content\wpd\images\perspective.odg" />
     <Content Include="App_Data\Settings.json" />
+    <Content Include="Content\docs\Input\An Algorithm for Identifying, Extracting and Converting Document Image Table Structures into LaTeX Format.pdf" />
+    <Content Include="Content\docs\Input\BMJ 2011 Olesen.pdf" />
+    <Content Include="Content\docs\Input\Eur Heart J 2012 LaHaye.pdf" />
+    <Content Include="Content\docs\Input\Graphs_from_Hugh\Bar chart 2.pdf" />
+    <Content Include="Content\docs\Input\Graphs_from_Hugh\Bar chart.pdf" />
+    <Content Include="Content\docs\Input\Graphs_from_Hugh\box plot.pdf" />
+    <Content Include="Content\docs\Input\Graphs_from_Hugh\From Hugh.docx" />
+    <Content Include="Content\docs\Input\Graphs_from_Hugh\MIxed mages.pdf" />
+    <Content Include="Content\docs\Input\Graphs_from_Hugh\pie chart.pdf" />
+    <Content Include="Content\docs\Input\Graphs_from_Hugh\ppv npv chart.pdf" />
+    <Content Include="Content\docs\Input\Graphs_from_Hugh\ROC curves.pdf" />
+    <Content Include="Content\docs\Input\Graphs_from_Hugh\ROC curves2.pdf" />
+    <Content Include="Content\docs\Input\Graphs_from_Hugh\scatter plot.pdf" />
+    <Content Include="Content\docs\Input\J Thromb Haemost 2011 Olesen.pdf" />
+    <Content Include="Content\docs\Input\Report_Data types_UI dev_2-converted to pdf.pdf" />
+    <Content Include="Content\docs\Input\Some text from LibreOffice Draw and Inkscape.pdf" />
+    <Content Include="Content\docs\Input\Some text from LibreOffice Draw.pdf" />
+    <Content Include="Content\docs\Input\stroke-and-systemic-embolism-prevention-nonvalvular-atrial-fibrillation-apixaban-bristolmyers-squibb-and-pfizer2.pdf" />
+    <Content Include="Content\docs\Input\Graphs_from_Fala\Graphs.pdf" />
+    <Content Include="Content\docs\Input\Graphs_from_Fala\Graphs_130317.pdf" />
+    <None Include="Properties\PublishProfiles\Debug to N_ToDelete_PdfExtractorDeployTest.pubxml" />
+    <None Include="Properties\PublishProfiles\PdfExtractor - FTP %282%29.pubxml" />
+    <None Include="Properties\PublishProfiles\PdfExtractor - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\PdfExtractor - Web Deploy %282%29.pubxml" />
+    <None Include="Properties\PublishProfiles\PdfExtractor - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\Release to N_ToDelete_PdfExtractorDeployTest.pubxml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jBox\jBox.css" />
     <Content Include="Scripts\jBox\jBox.js" />
@@ -318,8 +343,20 @@
     <Content Include="Scripts\jBox\plugins\Notice\jBox.Notice.min.js" />
     <Content Include="Scripts\jBox\themes\ModalBorder.css" />
     <Content Include="Scripts\jBox\themes\NoticeBorder.css" />
+    <Content Include="Scripts\jBox\themes\NoticeFancy.css" />
     <Content Include="Scripts\jBox\themes\TooltipBorder.css" />
     <Content Include="Scripts\jBox\themes\TooltipDark.css" />
+    <Content Include="Scripts\jquery-ui-1.12.1.only-spinner\images\ui-icons_444444_256x240.png" />
+    <Content Include="Scripts\jquery-ui-1.12.1.only-spinner\images\ui-icons_555555_256x240.png" />
+    <Content Include="Scripts\jquery-ui-1.12.1.only-spinner\images\ui-icons_777620_256x240.png" />
+    <Content Include="Scripts\jquery-ui-1.12.1.only-spinner\images\ui-icons_777777_256x240.png" />
+    <Content Include="Scripts\jquery-ui-1.12.1.only-spinner\images\ui-icons_cc0000_256x240.png" />
+    <Content Include="Scripts\jquery-ui-1.12.1.only-spinner\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="Scripts\jquery-ui-1.12.1.only-spinner\jquery-ui.css" />
+    <Content Include="Scripts\jquery-ui-1.12.1.only-spinner\jquery-ui.js" />
+    <Content Include="Scripts\jquery-ui-1.12.1.only-spinner\jquery-ui.min.css" />
+    <Content Include="Scripts\jquery-ui-1.12.1.only-spinner\jquery-ui.min.js" />
+    <Content Include="Scripts\jquery.mousewheel.min.js" />
     <Content Include="Scripts\jquery.resize.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
@@ -327,6 +364,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\plot.ly.1.19.2.min.js" />
+    <Content Include="Scripts\purl.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\selection-rectangles.js" />
@@ -501,7 +539,6 @@
       <LastGenOutput>wpd_combined_tweaked.js</LastGenOutput>
     </Content>
     <Content Include="Scripts\_references.js" />
-    <EmbeddedResource Include="solutionpath.txt" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

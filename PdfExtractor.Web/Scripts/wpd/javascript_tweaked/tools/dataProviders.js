@@ -1,9 +1,9 @@
 /*
-	WebPlotDigitizer - http://arohatgi.info/WebPlotdigitizer
+    WebPlotDigitizer - http://arohatgi.info/WebPlotdigitizer
 
-	Copyright 2010-2016 Ankit Rohatgi <ankitrohatgi@hotmail.com>
+    Copyright 2010-2016 Ankit Rohatgi <ankitrohatgi@hotmail.com>
 
-	This file is part of WebPlotDigitizer.
+    This file is part of WebPlotDigitizer.
 
     WebPlotDIgitizer is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -69,12 +69,12 @@ wpd.plotDataProvider = (function() {
             lab;
 
         for (rowi = 0; rowi < dataSeries.getCount(); rowi++) {
-            
+
             dataPt = dataSeries.getPixel(rowi);
             transformedDataPt = axes.pixelToData(dataPt.x, dataPt.y);
-            
+
             rawData[rowi] = [];
-            
+
             // metaData[0] should be the label:
             if(dataPt.metadata == null) {
                 lab = "Bar" + rowi;
@@ -120,13 +120,13 @@ wpd.plotDataProvider = (function() {
          // metaKeys = dataSeries.getMetadataKeys(),
          // metaKeyCount = hasMetadata === true ? metaKeys.length : 0,
             ptmetadata;
-        
+
         for(rowi = 0; rowi < dataSeries.getCount(); rowi++) {
 
             pt = dataSeries.getPixel(rowi);
             ptData = axes.pixelToData(pt.x, pt.y);
             rawData[rowi] = [];
-            
+
             // transformed coordinates
             for (coli = 0; coli < ptData.length; coli++) {
                 rawData[rowi][coli] = ptData[coli];
@@ -142,8 +142,8 @@ wpd.plotDataProvider = (function() {
             //    rawData[rowi][ptData.length + metadi] = ptmetadata;
             //}
 
-            // TODO: This translation from array-based to object-based metaData has slightly changed the provision of metadata from a 
-            // partially-sparse array (for those parts relating to metadata) populated by 
+            // TODO: This translation from array-based to object-based metaData has slightly changed the provision of metadata from a
+            // partially-sparse array (for those parts relating to metadata) populated by
             // zeros where metadata is absent to a key=value non-sparse metadata part of the array
 
             if (pt.metadata != null) {
@@ -173,7 +173,7 @@ wpd.plotDataProvider = (function() {
                     fieldDateFormat[coli] = axes.getInitialDateFormat(coli);
                 }
             }
-            
+
             isFieldSortable[coli] = true; // all fields are sortable
         }
 
@@ -229,7 +229,7 @@ wpd.measurementDataProvider = (function() {
             isMap = wpd.appData.isAligned() && (axes instanceof wpd.MapAxes),
             conni,
             mData;
-        
+
         if (dataSource === 'distance') {
 
             mData = plotData.distanceMeasurementData;
@@ -242,7 +242,7 @@ wpd.measurementDataProvider = (function() {
                     rawData[conni][1] = mData.getDistance(conni);
                 }
             }
-            
+
             fields = ['Label', 'Distance'];
             isFieldSortable = [false, true];
 

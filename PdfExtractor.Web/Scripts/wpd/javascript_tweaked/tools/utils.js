@@ -1,9 +1,9 @@
 /*
-	WebPlotDigitizer - http://arohatgi.info/WebPlotDigitizer
+    WebPlotDigitizer - http://arohatgi.info/WebPlotDigitizer
 
-	Copyright 2010-2016 Ankit Rohatgi <ankitrohatgi@hotmail.com>
+    Copyright 2010-2016 Ankit Rohatgi <ankitrohatgi@hotmail.com>
 
-	This file is part of WebPlotDigitizer.
+    This file is part of WebPlotDigitizer.
 
     WebPlotDigitizer is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -52,8 +52,22 @@ wpd.utils = (function () {
         });
     }
 
+    function _$(elem) {
+        var ret = null;
+        if (elem != null) {
+            ret = elem instanceof jQuery
+                ? elem[0]
+                : elem;
+        }
+
+        return ret;
+    }
     function getElemId(elem) {
+        elem = _$(elem);
+
         if (!elem) {
+            elem = "null";
+
             return elem;
         }
         var info = [elem.tagName];
@@ -63,7 +77,7 @@ wpd.utils = (function () {
         if (elem.className) {
             info.push(".", elem.className);
         }
-        if (info.length == 1) {
+        if (info.length === 1) {
             info.push(elem.innerHtml);
         }
         info = info.join('');
@@ -71,9 +85,66 @@ wpd.utils = (function () {
         return info;
     }
 
+    function bindMemberFunctions(obj) {
+        for (var prop in obj) {
+            if (obj.hasOwnProperty(prop)) {
+                var val = obj[prop];
+                if (typeof val === 'function') {
+                    obj[prop] = val.bind(obj);
+                }
+            }
+        }
+    }
+
+    function deepClone(obj) {
+        return JSON.parse(JSON.stringify(obj));
+    }
+
+    function populateDatasetControl(datasetList) {
+        datasetList = _$(datasetList);
+        var plotData = wpd.appData.getPlotData(),
+            currentDataset = plotData.getActiveDataSeries(), // just to create a dataset if there is none.
+            currentIndex = plotData.getActiveDataSeriesIndex(),
+            listHtml = [],
+            i;
+
+        for (i = 0; i < plotData.dataSeriesColl.length; i++) {
+            listHtml.push(
+                '<option',
+                i === currentIndex ? " selected" : "",
+                '>',
+                plotData.dataSeriesColl[i].name,
+                '</option>'
+            );
+        }
+        datasetList.innerHTML = listHtml.join('');
+        //datasetList.selectedIndex = currentIndex;
+    }
+
+    function getDevOptions() {
+        var options = {}, url = $.url();
+
+        if (url.param('dev-show-selection-info')) {
+            options.showSelectionInfo = true;
+        }
+        if (url.param('dev-grid')) {
+            options.grid = true;
+        }
+        if (url.param('dev-old-image-extraction')) {
+            options.oldImageExtraction = true;
+        }
+
+        return options;
+    }
+
     return {
         notice: notice,
-        getElemId: getElemId
+        getElemId: getElemId,
+        _$: _$,
+        bindMemberFunctions: bindMemberFunctions,
+        deepClone: deepClone,
+        populateDatasetControl: populateDatasetControl,
+        getDevOptions: getDevOptions
     };
 
 })();
