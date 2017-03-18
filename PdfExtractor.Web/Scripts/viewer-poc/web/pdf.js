@@ -7243,7 +7243,7 @@
                                     var commonObjs = this.commonObjs;
                                     var objs = this.objs;
                                     var fnId;
-                                    console.log("**************************** executeOperatorList for page " + this.ctx.canvas.id + " - executionStartIdx: " + executionStartIdx);
+                                    //console.log("**************************** executeOperatorList for page " + this.ctx.canvas.id + " - executionStartIdx: " + executionStartIdx);
                                     while (true) {
                                         if (stepper !== undefined && i === stepper.nextBreakPoint) {
                                             stepper.breakIt(i, continueCallback);
@@ -7253,7 +7253,7 @@
                                         fnId = fnArray[i];
 
                                         var opInfo = lee_lookupOp(fnId, argsArray[i], i);
-                                        console.log(opInfo.str);
+                                        //console.log(opInfo.str);
 
                                         if (fnId !== OPS.dependency) {
 

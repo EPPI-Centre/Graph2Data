@@ -160,6 +160,20 @@ wpd.acquireMeanVarianceData = (function () {
         return keyMapped;
     }
 
+    function hideAllDataPopups() {
+        $('.jBox-wrapper.jBox-Modal').each(function () {
+            $(this).data('jBox').destroy();
+        });
+        //$.each([
+        //    dataPopup,
+        //    nestedDataPopup
+        //], function (idx, pu) {
+        //    if (pu) {
+        //        pu.close();
+        //    }
+        //});
+    }
+
     return {
         load: load,
         meanVarianceSelection: meanVarianceSelection,
@@ -170,6 +184,7 @@ wpd.acquireMeanVarianceData = (function () {
         showSidebar: showSidebar,
         switchToolOnKeyPress: switchToolOnKeyPress,
         isToolSwitchKey: isToolSwitchKey,
+        hideAllDataPopups: hideAllDataPopups
         //updateDatasetControl: updateDatasetControl,
         // changeDataset: changeDataset,
         // editLabels: editLabels
@@ -316,20 +331,6 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         function getIncludeIndividuals() {
             return $dom.$includeIndividuals.is(":checked");
         }
-
-        function hideAllDataPopups() {
-            $('.jBox-wrapper.jBox-Modal').each (function () {
-                $(this).data('jBox').destroy();
-            });
-    //$.each([
-    //    dataPopup,
-    //    nestedDataPopup
-    //], function (idx, pu) {
-    //    if (pu) {
-    //        pu.close();
-    //    }
-    //});
-}
 
         function showDataPopup() {
             if (useTable) {
@@ -1348,7 +1349,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
         this.buildTable = function () {
             if (!useTable) {
-                hideAllDataPopups();
+                wpd.acquireMeanVarianceData.hideAllDataPopups();
                 $dom.$formContainer.html('');
                 return;
             }
@@ -2164,7 +2165,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         };
 
         this.onRemove = function () {
-            hideAllDataPopups();
+            wpd.acquireMeanVarianceData.hideAllDataPopups();
             this.removeEventHandlers();
             wpd.dataSeriesManagement.removeDataSeriesChangeHandler(dataSeriesChangedHandler);
             $('.mean-variance-selection-mode').removeClass('pressed-button');

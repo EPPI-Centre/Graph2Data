@@ -106,6 +106,7 @@
                     wpd.initApp(wpdConfig);
                 };
                 wpdConfig.hide = function (wpdPlotMemento) {
+                    wpd.acquireMeanVarianceData.hideAllDataPopups();
                     wpdConfig.focusedSelection.dataStore.putData({
                         data: wpdPlotMemento,
                         dataDesc: "wpdPlotMemento" //wpdPlotMemento.datasets.length + " data sets"
