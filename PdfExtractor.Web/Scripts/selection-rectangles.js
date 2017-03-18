@@ -255,7 +255,8 @@
 
         $.each(_registeredCanvases, function (_, canvas) {
             state.canvasBounds = _getElemBounds(canvas);
-            if (within(state.elemBounds, state.canvasBounds)) {
+         // if (within(state.elemBounds, state.canvasBounds)) {
+            if (withinVertical(state.elemBounds, state.canvasBounds)) {
                 state.canvas = canvas;
                 ret = state;
                 return false;
@@ -817,12 +818,24 @@
         return bounds;
     }
 
-    function within(innerBounds, outerBounds) {
+    function withinHorizontal(innerBounds, outerBounds) {
         var isWithin =
             innerBounds.left >= outerBounds.left
-            && innerBounds.right <= outerBounds.right
-            && innerBounds.top >= outerBounds.top
+            && innerBounds.right <= outerBounds.right;
+
+        return isWithin;
+    }
+    function withinVertical(innerBounds, outerBounds) {
+        var isWithin =
+            innerBounds.top >= outerBounds.top
             && innerBounds.bottom <= outerBounds.bottom;
+
+        return isWithin;
+    }
+    function within(innerBounds, outerBounds) {
+        var isWithin =
+            withinHorizontal(innerBounds, outerBounds)
+            && withinVertical(innerBounds, outerBounds);
 
         return isWithin;
     }
