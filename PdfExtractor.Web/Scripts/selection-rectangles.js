@@ -941,7 +941,7 @@
 
         var info = $([
             '<div class="info">',
-                '<div class="header">Annotations</div>',
+                '<div class="header"><span class=imgBefore></span><span class=caption>Annotations</span><span class=imgAfter></span></div>',
                 '<div class="content"></div>',
             '</div>'
         ].join(''));

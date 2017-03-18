@@ -59,13 +59,19 @@
     left: 0;
     top: 50px;
     padding: 0.5em;
-    background-color: #ffffff;
-    background-color: rgba(255, 255, 255, 0.8);
+    /*background-color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.8);*/
+    color: #ffffff;
     z-index: 1;
+    font-size: 14px;
 }
 
 .info > .header {
     text-align: center;
+    border: 1px solid #ccc;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
 .canvas-overlay {
@@ -102,21 +108,26 @@ body.annotations-disabled .canvas-overlay {
 .info > .content > table td {
     border-collapse: collapse;
 }
-.info > .header {
-    cursor: pointer;
+
+.info > .header > .caption {
+
 }
 
-.info > .header:before {
-    content: "<< ";
+.info > .header > .imgBefore {
+    content: url(images/toolbarButton-secondaryToolbarToggle-rtl.png);
+    margin-right: 0.5em;
+    vertical-align: middle;
 }
-body.annotations-disabled .info > .header:before {
+body.annotations-disabled .info > .header > .imgBefore {
     content: "";
 }
-.info > .header:after {
+.info > .header > .imgAfter {
     content: "";
 }
-body.annotations-disabled .info > .header:after {
-    content: " >>";
+body.annotations-disabled .info > .header > .imgAfter {
+    content: url(images/toolbarButton-secondaryToolbarToggle.png);
+    margin-left: 0.5em;
+    vertical-align: middle;
 }
 
 
