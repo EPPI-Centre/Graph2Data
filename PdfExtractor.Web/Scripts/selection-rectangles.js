@@ -154,6 +154,7 @@
         }
         return info;
     }
+    var infoHeader, infoContent;
 
     function showInfo(e) {
         if (!wpd.utils.getDevOptions().showSelectionInfo) {
@@ -946,12 +947,12 @@
             '</div>'
         ].join(''));
 
-        var infoHeader = info.find('>.header');
-        var infoContent = info.find('>.content');
+        infoHeader = info.find('>.header');
+        infoContent = info.find('>.content');
 
-        //if (wpd.utils.getDevOptions().showSelectionInfo) {
-        //    info.removeClass('hidden');
-        //}
+        if (wpd.utils.getDevOptions().showSelectionInfo) {
+            info.removeClass('hidden');
+        }
 
         infoHeader.on('click',
             function toggleAnnotationMode() {
