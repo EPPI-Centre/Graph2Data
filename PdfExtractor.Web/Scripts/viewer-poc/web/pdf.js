@@ -260,20 +260,40 @@
                     })();
 
                     function lee_lookupOp(fnId, args, idx) {
-                        function getFontChar() {}
+                        function makeReadable(ar) {
+                            var l = 0, m;
+                            for (var i = 0; true; i++) {
+                                var lastElem = i == (ar.length - 1);
+
+                                if (lastElem || typeof ar[i] != "string") {
+                                    if (l > 0) {
+                                        m = ar.slice(i - l, i).join('');
+                                        ar.splice(i - l, l, m);
+                                        i -= (l - 1);
+                                        l = 0;
+                                    }
+                                }
+                                else {
+                                    l++;
+                                }
+                                if (lastElem) {
+                                    break;
+                                }
+                            }
+                            return ar;
+                        }
                         var op = opsLookup[fnId];
                         var argString = "";
                         if (fnId === OPS.showText) {
                             var isFontRef = false;
-                            var pre = $.map(args[0], function (el, idx) {
+                            var pre = makeReadable ($.map(args[0], function (el, idx) {
                                 return (typeof el === 'object') ? el.fontChar : el;
-                            });
-                            argString = JSON.stringify(pre);// + " -#- " + JSON.stringify(args);
+                            }));
+                            argString = JSON.stringify(pre);
                         }
                         else {
                             argString = JSON.stringify(args);
                         }
-                        /*{"fontChar":"3","unicode":"3","accent":null,"width":552,"isSpace":false,"isInFont":true}*/
                         var opInfo = { op: op, args: args, str: idx + " - [" + fnId + "] " + op + "(" + argString + ")" };
                         return opInfo;
                     }
@@ -7223,6 +7243,7 @@
                                     var commonObjs = this.commonObjs;
                                     var objs = this.objs;
                                     var fnId;
+                                    console.log("**************************** executeOperatorList for page " + this.ctx.canvas.id + " - executionStartIdx: " + executionStartIdx);
                                     while (true) {
                                         if (stepper !== undefined && i === stepper.nextBreakPoint) {
                                             stepper.breakIt(i, continueCallback);
@@ -7232,7 +7253,7 @@
                                         fnId = fnArray[i];
 
                                         var opInfo = lee_lookupOp(fnId, argsArray[i], i);
-                                        //console.log(opInfo.str);
+                                        console.log(opInfo.str);
 
                                         if (fnId !== OPS.dependency) {
 
@@ -8625,7 +8646,12 @@
                                     // instanceof HTMLElement does not work in jsdom node.js module
                                     if (imgData instanceof HTMLElement || !imgData.data) {
                                         imgToPaint = imgData;
-                                        leeImg = imgToPaint;
+                                        if (imgData instanceof HTMLElement && imgData.tagName.toLowerCase() == "canvas") {
+                                            leeImg = this.lee_canvasToImg(imgToPaint, imgToPaint.width, imgToPaint.height);
+                                        }
+                                        else {
+                                            leeImg = imgToPaint;
+                                        }
                                     } else {
                                         tmpCanvas = this.cachedCanvases.getCanvas('inlineImage',
                                                 width, height);
@@ -8649,10 +8675,12 @@
                                         if (widthScale > 2 && paintWidth > 1) {
                                             newWidth = Math.ceil(paintWidth / 2);
                                             widthScale /= paintWidth / newWidth;
+                                            lee_transformMatrix[0] = 1 / widthScale;
                                         }
                                         if (heightScale > 2 && paintHeight > 1) {
                                             newHeight = Math.ceil(paintHeight / 2);
                                             heightScale /= paintHeight / newHeight;
+                                            lee_transformMatrix[3] = 1 / heightScale;
                                         }
                                         tmpCanvas = this.cachedCanvases.getCanvas(tmpCanvasId,
                                                 newWidth, newHeight);

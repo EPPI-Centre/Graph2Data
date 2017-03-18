@@ -7778,7 +7778,8 @@ var pdfjsWebLibs = {
                  * @returns {Promise} - Returns the promise, which is resolved when document
                  *                      is opened.
                  */
-                open : function pdfViewOpen(file, args) {
+                open: function pdfViewOpen(file, args) {
+                    window.selectionRectangles.reset();
                     var scale = 0;
                     if (arguments.length > 2 || typeof args === 'number') {
                         console.warn('Call of open() with obsolete signature.');
@@ -8753,7 +8754,7 @@ var pdfjsWebLibs = {
                     ctx.setTransform(1, 0, 0, 1, 0, 0);
                     var width = canvas.width;
                     var height = canvas.height;
-                    console.log(width + " x " + height);
+                    console.log("transplantedDoStuff - " + width + " x " + height);
 
                     var ctf = ctx._transformMatrix;
 
