@@ -207,6 +207,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             $freeControls: $('#free-controls'),
             $areaUnderCurve: $('#area-under-curve'),
             $showTrapezoids: $('#show-trapezoids'),
+            $trapezoidAlpha: $('#trapezoid-alpha'),
             $outcomeMeasureList: $('#outcome-measure'),
             $dataStructureList: $('#mean-variance-data-structure'),
             $includeIndividuals: $('#include-individuals'),
@@ -309,7 +310,6 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
          // outcomeMeasures = wpd._config.profileSettings.outcomeMeasures,
             subTableSpecs,
             useTable,
-            showTrapezoids,
             curOutcomeMeasure,
             nestedSeries = null;
 
@@ -327,6 +327,12 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         }
         function getShowTrapezoids() {
             return $dom.$showTrapezoids.is(":checked");
+        }
+        function getTrapezoidAlpha() {
+            return $dom.$trapezoidAlpha.val();
+        }
+        function showTrapezoidAlpha(alpha) {
+            $dom.$trapezoidAlpha.val(trapezoidAlpha);
         }
         function getIncludeIndividuals() {
             return $dom.$includeIndividuals.is(":checked");
@@ -894,7 +900,9 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
             $dom.$dataSetLists.on('change', datasetChanged);
             $dom.$useTable.on('change', useTableChanged);
-            $dom.$showTrapezoids.on('change', showTrapezoidsChanged);
+            $dom.$showTrapezoids.on('change', trapezoidsChanged);
+            $dom.$trapezoidAlpha.on('change', trapezoidsChanged);
+            trapezoidsChanged();
             $dom.$outcomeMeasureList.on('change', outcomeMeasureChanged);
             $dom.$dataStructureList.on('change', dataStructureChanged);
             $dom.$includeIndividuals.on('change', includeIndividualsChanged);
@@ -1663,11 +1671,10 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             updateUiToReflectShowTableStatus();
             self.buildTable();
         }
-        function showTrapezoidsChanged(ev) {
+        function trapezoidsChanged(ev) {
             var painter = wpd.graphicsWidget.getRepainter();
 
-            showTrapezoids = getShowTrapezoids();
-            painter.setShowArea(showTrapezoids);
+            painter.setShowArea(getShowTrapezoids(), getTrapezoidAlpha());
             wpd.graphicsWidget.forceHandlerRepaint();
         }
         function outcomeMeasureChanged(ev) {
@@ -2377,6 +2384,7 @@ wpd.DataPointsRepainter = (function () {
     var Painter = function () {
 
         var showArea = false;
+        var areaAlpha = 0.5;
 
         function doDraw(series) {
             var plotData = wpd.appData.getPlotData();
@@ -2389,17 +2397,19 @@ wpd.DataPointsRepainter = (function () {
                 isSelected,
                 hasLabels = false,
                 pointLabel,
-                blue = "rgb(0,0,255)",
-                red = "rgb(255,0,0)",
-                black = "rgb(0,0,0)",
+
+                red = "rgba(255,0,0,alpha)",
+                orange = "rgba(255,165,0,alpha)",
+                yellow = "rgba(255,255,0,alpha)",
+                green = "rgba(0,255,0,alpha)",
+                blue = "rgba(0,0,255,alpha)",
+                indigo = "rgba(75,0,130,alpha)",
+                violet = "rgba(199,21,133,alpha)",
+
+                black = "rgb(0,0,0,0)",
                 white = "rgb(255,255,255)",
-                orange = "rgb(255,255,0)",
                 areaColours = [
-                    blue,
-                    red,
-                    black,
-                    white,
-                    orange
+                    red, orange, yellow, green, blue, indigo, violet
                 ],
                 areaColourCount = areaColours.length,
                 count = series.getCount();
@@ -2419,7 +2429,7 @@ wpd.DataPointsRepainter = (function () {
                         right,
                         { x: right.x, y: origin.y },
                         { x: left.x, y: origin.y }
-                    ], areaColours[dindex % areaColourCount]);
+                    ], areaColours[(dindex - 1) % areaColourCount].replace('alpha', areaAlpha));
 
                     left = right;
                 }
@@ -2511,8 +2521,9 @@ wpd.DataPointsRepainter = (function () {
             drawPoints();
         };
 
-        this.setShowArea = function(show) {
+        this.setShowArea = function(show, alpha) {
             showArea = show;
+            areaAlpha = alpha;
         };
     };
     return Painter;
