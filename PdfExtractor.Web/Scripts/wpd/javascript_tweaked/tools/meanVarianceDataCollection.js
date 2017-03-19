@@ -779,6 +779,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             var isConfig = {
                 groupName: 'group-name',
                 seriesName: 'series-name',
+                xy: 'xy',
                 mean: 'mean',
                 variance: 'variance',
                 subjectCount: 'subject-count',
@@ -811,6 +812,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             }
 
             info.dataSeries = (
+                info.is.xy ||
                 info.is.mean ||
                 info.is.variance ||
                 info.is.subjectDataPoints ||
@@ -955,12 +957,13 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     }
                  // edit.addClass('focused');
 
-                    if (info.is.mean ||
+                    if (info.is.xy ||
+                        info.is.mean ||
                         info.is.variance ||
                      // info.is.groupName ||
                         info.is.subjectDataPoints ||
                         info.is.subjectCount) {
-                        if (info.is.mean || info.is.variance || info.is.subjectDataPoints || info.is.subjectCount) {
+                        if (info.is.xy || info.is.mean || info.is.variance || info.is.subjectDataPoints || info.is.subjectCount) {
                             plotData.setActiveDataSeriesIndex(info.dataSeries);
                         }
 
@@ -1091,7 +1094,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             nestedConfig.keydown = config.keydown;
 
             $dom.$nestedFormContainer.on(nestedConfig, '.value,.count');
-            $dom.$formContainer.on(config, '.series-name,.mean,.variance,.subject-count,.subject-data-points');
+            $dom.$formContainer.on(config, '.series-name,.xy,.mean,.variance,.subject-count,.subject-data-points');
 
             $dom.$formContainer.on({
                 change: function (e) {
@@ -1564,7 +1567,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             }
 
             // Clear out data for all cells
-            var cells = $table.find('td.mean,td.variance');
+            var cells = $table.find('td.xy,td.mean,td.variance');
             cells.removeData('dataInfo');
 
             // Assign dataInfo to each cell with a corresponding pixel
@@ -1629,7 +1632,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 maxWidth: 300
             };
             $dom.$formContainer
-                .find('.series-name,.subject-count,.mean,.variance,.subject-data-points')
+                .find('.series-name,.subject-count,.xy,.mean,.variance,.subject-data-points')
                 .jBox('Tooltip', editTooltipConfig);
 
             $dom.$nestedFormContainer
@@ -1716,15 +1719,15 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
             var dim = gridSettings.getDimensions();
             var pxDim = gridSettings.getPixelDimensions();
-            console.log([
-                dim.x.toFixed(2),
-                ",",
-                dim.y.toFixed(2),
-                " -> ",
-                pxDim.x.toFixed(2),
-                ",",
-                pxDim.y.toFixed(2)
-            ].join(''));
+            //console.log([
+            //    dim.x.toFixed(2),
+            //    ",",
+            //    dim.y.toFixed(2),
+            //    " -> ",
+            //    pxDim.x.toFixed(2),
+            //    ",",
+            //    pxDim.y.toFixed(2)
+            //].join(''));
         }
         function dataSeriesCountChanged(ev) {
             dataSeriesCount = parseInt($dom.$dataSeriesCountEdit.val(), 10);
@@ -1815,12 +1818,14 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             return $cell;
         }
 
-        //function getNormalizedDataValueX(value) {
-        //    if (value.constructor === Array) {
-        //        value = value[0];
-        //    }
-        //    return value;
-        //}
+        function getNormalizedDataValueXy(value) {
+            if (value.constructor === Array) {
+                if (value.length > 1) {
+                    value = value[0] + ", " + value[1];
+                }
+            }
+            return value;
+        }
         function getNormalizedDataValueY(value) {
             if (value.constructor === Array) {
                 if (value.length > 1) {
@@ -1845,6 +1850,9 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
             if (info.is.mean) {
                 val = getNormalizedDataValueY(plotData.getDataPoint(imagePos));
+            }
+            else if (info.is.xy) {
+                val = getNormalizedDataValueXy(plotData.getDataPoint(imagePos));
             }
             else if (info.is.variance) {
                 // Get the corresponding mean cell

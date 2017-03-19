@@ -119,8 +119,18 @@ body:not(.wpd-visible) .jBox-wrapper {
     cursor: pointer;
 }
 
+#mean-variance-formContainer input.xy {
+    background-color: rgb(212, 255, 212);
+    cursor: pointer;
+}
+
 #mean-variance-formContainer input.mean.focused {
     background-color: blue;
+    color: white;
+}
+
+#mean-variance-formContainer input.xy.focused {
+    background-color: green;
     color: white;
 }
 

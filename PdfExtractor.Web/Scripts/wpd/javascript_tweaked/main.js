@@ -327,6 +327,16 @@ wpd.initApp = function (config) {// This is run when the page loads.
                // , isReferencePoint: true  // irrelevant as this is the only field
                 }]
             }, {
+                id: 'x-y',
+                text: "X, Y",
+                abbrev: "X, Y",
+                dataPoints: [{
+                    name: "X,Y",
+                    abbrev: "X,Y",
+                    css: "xy"
+                    // , isReferencePoint: true  // irrelevant as this is the only field
+                }]
+            }, {
                 id: 'mean-and-standard-error',
                 text: "Mean and Standard Error (SEM)",
                 abbrev: "MeanSE",

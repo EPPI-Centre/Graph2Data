@@ -1,4 +1,5 @@
 ﻿//window.console = console || { clear: function () { }, log: function () { } };
+console.clear();
 
 (function() {
     var body = $(document.body), config;
@@ -15,7 +16,7 @@
 
     var mouse = null, mousePrev = null, mouseStart = null, mouseStart2 = null, mouseDragStart = null;
     var element = null;
-    var creating = false, dragging = false, dragSuggested = null, sizing = false;
+    var creating = false, dragging = false, dragSuggested = null, sizing = false, gripSizing = false;
     var hovered = null, focused = null;
     var dragDistance = 0;
     var leftButtonWasDown = false;
@@ -163,7 +164,7 @@
         infoContent.html([
             "<table>",
             "<tbody>",
-         // row("zindexRange", _getZindexRange()),
+            // row("zindexRange", _getZindexRange()),
             row("canvas", _getCanvasCount()),
             row("buttons", getButtons(e)),
             row("mouse", coordOption(mouse)),
@@ -175,6 +176,7 @@
             row("dragDistance", dragDistance),
             row("dragging", dragging),
             row("sizing", sizing),
+            row("gripSizing", gripSizing),
             row("element", element),
             row("hovered", showRectInfo(hovered)),
             row("focused", showRectInfo(focused)),
@@ -538,10 +540,41 @@
         config.selectionDeletedHandler(prepareSelectionInfo($elem));
     }
 
+    function insertResizingHandles($element) {
+        $element.append([
+            '<div class="ui-resizable-handle ui-resizable-nw grip-helper nwgrip"></div>',
+            '<div class="ui-resizable-handle ui-resizable-sw grip-helper swgrip"></div>',
+            '<div class="ui-resizable-handle ui-resizable-se grip-helper segrip"></div>',
+            '<div class="ui-resizable-handle ui-resizable-ne grip-helper negrip"></div>',
+            '<div class="ui-resizable-handle ui-resizable-n  grip-helper ngrip "></div>',
+            '<div class="ui-resizable-handle ui-resizable-s  grip-helper sgrip "></div>',
+            '<div class="ui-resizable-handle ui-resizable-e  grip-helper egrip "></div>',
+            '<div class="ui-resizable-handle ui-resizable-w  grip-helper wgrip "></div>'
+        ]);
+    }
+
     function doEndCreatingSelectionDiv(autoPlaced) {
         var $element = $(element);
         config.selectionCreatedHandler(prepareSelectionInfo($element, autoPlaced));
         showIdElem($element, true);
+        insertResizingHandles($element);
+
+        $element.resizable({
+            handles: {
+                'nw': '.nwgrip',
+                'ne': '.negrip',
+                'sw': '.swgrip',
+                'se': '.segrip',
+                'n': '.ngrip',
+                'e': '.egrip',
+                's': '.sgrip',
+                'w': '.wgrip'
+            }, stop: function (e, ui) {
+                var si = getSelectionInfoFromRect(ui.element);
+                si.autoPlaced = false;
+                e.preventDefault();
+            }
+        });
         return $element;
     }
 
@@ -549,12 +582,9 @@
         if (creating && element) {
             endDrag(e);
             var rs = setRectSize(element, mouseStart);
-            if (rs.x < config.minX || rs.y < config.minY) {
+            if (rs.width < config.minX || rs.height < config.minY) {
                 removeRect(element);
-                //console.log("rect was too small: " + coord(rs) + " - removed.");
             } else {
-                // console.log("finished. rect: " + coord(rs));
-
                 var $element = doEndCreatingSelectionDiv();
                 setHovered($element);
                 setFocused($element);
@@ -1121,6 +1151,13 @@
         },
             '.rectangle.has-data > .data'
         );
+        $canvasOverlay.on({
+            mousedown: function(e) {
+                console.log(".grip-helper mousedown...");
+                gripSizing = true;
+                e.preventDefault();
+            }
+        }, '.rectangle > .grip-helper');
 
 
         canvasOverlay.onmousedown = function (e) {
@@ -1160,6 +1197,10 @@
         };
 
         canvasOverlay.onmouseup = function (e) {
+            if (gripSizing) {
+                gripSizing = false;
+                return;
+            }
             var leftButtonNowUp = false;
             if (leftButtonWasDown && !leftButtonDown(e)) {
                 leftButtonWasDown = false;

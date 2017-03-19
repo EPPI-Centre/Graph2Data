@@ -8428,7 +8428,7 @@ var pdfjsWebLibs = {
                 var params = parseQueryString(queryString);
              // console.log("consuming DEFAULT_URL: " + DEFAULT_URL);
                 var file = 'file' in params ? params.file : DEFAULT_URL;
-                console.log("file: '" + file + "'");
+                //console.log("file: '" + file + "'");
                 validateFileURL(file);
 
                 var appConfig = PDFViewerApplication.appConfig;
@@ -8754,7 +8754,7 @@ var pdfjsWebLibs = {
                     ctx.setTransform(1, 0, 0, 1, 0, 0);
                     var width = canvas.width;
                     var height = canvas.height;
-                    console.log("transplantedDoStuff - " + width + " x " + height);
+                    //console.log("transplantedDoStuff - " + width + " x " + height);
 
                     var ctf = ctx._transformMatrix;
 

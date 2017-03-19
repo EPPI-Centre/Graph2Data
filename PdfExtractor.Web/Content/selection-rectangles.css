@@ -89,14 +89,68 @@
     /* debugging: display: none */
 }
 
+
 body.annotations-disabled .canvas-overlay {
     display: none;
 }
 
 .canvas-overlay * {
-    cursor: pointer;
     z-index: 5;
 }
+
+.canvas-overlay > .rectangle {
+    cursor: move;
+}
+
+.canvas-overlay > .rectangle > .id {
+    cursor: pointer;
+}
+
+.grip-helper {
+    background-color: orange;
+    border: 2px solid indigo;
+}
+
+.grip-helper {
+    width: 10px;
+    height: 10px;
+    background-color: #ffffff;
+    border: 1px solid #000000;
+}
+.nwgrip {
+    left: -5px;
+    top: -5px;
+}
+.negrip{
+    top: -5px;
+    right: -5px;
+}
+.swgrip{
+    bottom: -5px;
+    left: -5px;
+}
+.segrip{
+    bottom: -5px;
+    right:-5px;
+}
+.ngrip{
+    top: -5px;
+    left:50%;
+}
+.sgrip{
+    bottom: -5px;
+    left: 50%;
+}
+.wgrip{
+    left:-5px;
+    top:50%;
+}
+.egrip{
+    right:-5px;
+    top:50%;
+}
+
+
 
 
 .info > .header, .info > .content > table td {
