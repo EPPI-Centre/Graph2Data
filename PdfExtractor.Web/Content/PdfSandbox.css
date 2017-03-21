@@ -94,6 +94,33 @@ body:not(.wpd-visible) .jBox-wrapper {
     background-position: center;
 }
 
+/*
+#mean-variance-formContainer table {
+    table-layout: fixed !important;
+    max-width: 100% !important;
+}
+*/
+
+/*
+#mean-variance-formContainer table td,
+#mean-variance-formContainer table th,
+#mean-variance-formContainer table input,
+#mean-variance-formContainer table select,
+#mean-variance-formContainer table button {
+    max-width: 100% !important;
+    background-color: #ff0000;
+    background-color: rgba(255,0,0,0.5);
+}
+*/
+
+#mean-variance-formContainer table input,
+#mean-variance-formContainer table select,
+#mean-variance-formContainer table button,
+#mean-variance-nestedFormContainer input,
+#mean-variance-nestedFormContainer select,
+#mean-variance-nestedFormContainer button {
+    width: 100%;
+}
 
 #mean-variance-formContainer table td,
 #mean-variance-formContainer table th,
@@ -102,6 +129,10 @@ body:not(.wpd-visible) .jBox-wrapper {
     border-collapse: collapse;
     border: 1px solid #666666;
     padding: 0.25em;
+/*
+    border: 1px solid red;
+    width: auto !important;
+*/
 }
 
 #mean-variance-formContainer table th,

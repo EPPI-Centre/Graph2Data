@@ -116,7 +116,7 @@ namespace PdfExtractor.Web.Controllers
             return View(model);
         }
 
-        public ActionResult PdfSandbox()
+        public ActionResult PdfExtractor()
         {
             dynamic model = new ExpandoObject();
             model.PdfPath = "~/Home/pdf";

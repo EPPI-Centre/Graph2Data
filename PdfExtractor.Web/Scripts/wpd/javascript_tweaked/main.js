@@ -323,8 +323,8 @@ wpd.initApp = function (config) {// This is run when the page loads.
                 dataPoints: [{
                     name: "Mean",
                     abbrev: "Mean",
-                    css: "mean"
-               // , isReferencePoint: true  // irrelevant as this is the only field
+                    css: "mean",
+                    isReferencePoint: true  // irrelevant as this is the only field
                 }]
             }, {
                 id: 'x-y',
@@ -333,8 +333,9 @@ wpd.initApp = function (config) {// This is run when the page loads.
                 dataPoints: [{
                     name: "X,Y",
                     abbrev: "X,Y",
-                    css: "xy"
-                    // , isReferencePoint: true  // irrelevant as this is the only field
+                    css: "xy",
+                    isReferencePoint: true, // irrelevant as this is the only field
+                    has2dData: true
                 }]
             }, {
                 id: 'mean-and-standard-error',

@@ -799,6 +799,17 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 // , is: { prop names from isConfig - values are bool } // set later
             };
 
+            info.getDataPoint = function () {
+                var dataPoint;
+
+                // this.dataStructure will not be set for nested cell infos
+                if (this.dataStructure) {
+                    dataPoint = this.dataStructure.dataPoints[this.dataPoint];
+                }
+
+                return dataPoint;
+            };
+
             info.is = {};
             for (var prop in isConfig) {
                 if (isConfig.hasOwnProperty(prop)) {
@@ -1250,6 +1261,21 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
             return $avail;
         };
+        var colResizableConfig = {
+            resizeMode: 'flex',
+            onResize: function (e) {
+                var dataPopup = $('.jBox-wrapper.jBox-Modal.dataPopup').data('jBox');
+                if (dataPopup) {
+                    dataPopup._setTitleWidth();
+                }
+
+                var nestedDataPopup = $('.jBox-wrapper.jBox-Modal.nestedDataPopup').data('jBox');
+                if (nestedDataPopup) {
+                    nestedDataPopup._setTitleWidth();
+                }
+            }
+        };
+
         this.buildNestedTable = function () {
             // call this to show the nested table in a popup:
             //  nestedDataPopup.open();
@@ -1292,7 +1318,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
                     if (!stsf.isManualEntry) {
                         if (di < pointCount) {
-                            cellContents = getNormalizedDataValueY(plotData.getDataPoint(individualSeries.getPixel(di)));
+                            cellContents = getNormalizedDataValue(plotData.getDataPoint(individualSeries.getPixel(di)));
                         } else {
                             cellContents = "";
                         }
@@ -1327,9 +1353,13 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             }
 
             html = html.join('');
-
-            $dom.$nestedFormContainer.html(html);
+            var $nestedTable = $(html);
+            $dom.$nestedFormContainer.html($nestedTable);
             $dom.$nestedFormContainer.find('.count').spinner({ min: 1 });
+
+            console.log("appling colResizable to NESTED table. colResizableConfig: " + colResizableConfig);
+            $nestedTable.colResizable(colResizableConfig);
+            console.log("applied colResizable to NESTED table. colResizableConfig: " + colResizableConfig);
 
             // Clear out data for all cells
             var cells = $dom.$nestedFormContainer.find('td.value');
@@ -1491,13 +1521,19 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
                             if (di < series.getPixelCount()) {
                                 if (dp.isReferencePoint) {
-                                    fromValue = getNormalizedDataValueY(plotData.getDataPoint(series.getPixel(di)));
+                                    fromValue = getNormalizedDataValue(plotData.getDataPoint(series.getPixel(di)), dp);
                                     cellContents = fromValue;
                                 } else {
                                     var offset = p - ds.refPointFieldIndex;
-                                    fromValue = getNormalizedDataValueY(plotData.getDataPoint(series.getPixel(di - offset)));
-                                    toValue = getNormalizedDataValueY(plotData.getDataPoint(series.getPixel(di)));
-                                    cellContents = toValue - fromValue;
+                                    fromValue = getNormalizedDataValue(plotData.getDataPoint(series.getPixel(di - offset)), dp);
+                                    toValue = getNormalizedDataValue(plotData.getDataPoint(series.getPixel(di)), dp);
+
+                                    if (!dp.has2dData) {
+                                        cellContents = toValue - fromValue;
+                                    }
+                                    else {
+                                        cellContents = "error";
+                                    }
                                 }
                             } else {
                                 cellContents = ""; // TODO: get the 'n' value from store or default if not yet entered
@@ -1561,6 +1597,10 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             html = html.join('');
             var $table = $(html);
             $dom.$formContainer.html($table);
+
+            console.log("appling colResizable to table. colResizableConfig: " + colResizableConfig);
+            $table.colResizable(colResizableConfig);
+            console.log("applied colResizable to table. colResizableConfig: " + colResizableConfig);
 
             if (dataPopup) {
                 dataPopup._setTitleWidth();
@@ -1818,15 +1858,15 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             return $cell;
         }
 
-        function getNormalizedDataValueXy(value) {
+        function _getNormalizedDataValueXy(value) {
             if (value.constructor === Array) {
                 if (value.length > 1) {
-                    value = value[0] + ", " + value[1];
+                    value = rounded(value[0]) + ", " + rounded(value[1]);
                 }
             }
             return value;
         }
-        function getNormalizedDataValueY(value) {
+        function _getNormalizedDataValueY(value) {
             if (value.constructor === Array) {
                 if (value.length > 1) {
                     value = value[1];
@@ -1835,24 +1875,41 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     value = value[0];
                 }
             }
-            return value;
+            return rounded(value);
         }
 
-        function getVarianceDisplayValue(meanDataValue, varianceDataValue) {
-            meanDataValue = getNormalizedDataValueY(meanDataValue);
-            varianceDataValue = getNormalizedDataValueY(varianceDataValue);
+        function getNormalizedDataValue(value, dataPoint) {
+            if (dataPoint && dataPoint.has2dData) {
+                return _getNormalizedDataValueXy(value);
+            } else {
+                return _getNormalizedDataValueY(value);
+            }
+        }
 
-            return varianceDataValue - meanDataValue;
+        function getVarianceDisplayValue(meanDataValue, varianceDataValue, meanDataPoint, varianceDataPoint) {
+            if (meanDataPoint.has2dData || varianceDataPoint.has2dData) {
+                return "error";
+            } else {
+                meanDataValue = getNormalizedDataValue(meanDataValue, meanDataPoint);
+                varianceDataValue = getNormalizedDataValue(varianceDataValue, varianceDataPoint);
+
+                return varianceDataValue - meanDataValue;
+            }
+        }
+
+        function rounded(num) {
+            return Math.round(num * 100 + Number.EPSILON) / 100;
         }
 
         function getCellValue(imagePos, info, plotData, dataSeries) {
             var val = null;
 
-            if (info.is.mean) {
-                val = getNormalizedDataValueY(plotData.getDataPoint(imagePos));
+            if (info.dataPoint.isReferencePoint) {
+            // if (info.is.mean) {
+                val = getNormalizedDataValue(plotData.getDataPoint(imagePos), info.getDataPoint());
             }
             else if (info.is.xy) {
-                val = getNormalizedDataValueXy(plotData.getDataPoint(imagePos));
+                val = getNormalizedDataValue(plotData.getDataPoint(imagePos), info.getDataPoint());
             }
             else if (info.is.variance) {
                 // Get the corresponding mean cell
@@ -1868,7 +1925,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     var meanDataPoint = plotData.getDataPoint(meanImagePos);
                     var varianceDataPoint = plotData.getDataPoint(imagePos);
 
-                    val = getVarianceDisplayValue(meanDataPoint, varianceDataPoint);
+                    val = getVarianceDisplayValue(meanDataPoint, varianceDataPoint, meanInfo.getDataPoint(), info.getDataPoint());
                 } else {
                     alert("Please enter the mean before the error bar");
                 }
@@ -1883,12 +1940,12 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 if (activeNestedCell) {
                     var nestedInfo = getInfo(activeNestedCell);
                     if (nestedInfo.is.subjectDataPointsValue) {
-                        val = getNormalizedDataValueY(plotData.getDataPoint(imagePos));
+                        val = getNormalizedDataValue(plotData.getDataPoint(imagePos), info.getDataPoint());
                     }
                 }
             }
             else if (info.is.subjectDataPointsValue) {
-                val = getNormalizedDataValueY(plotData.getDataPoint(imagePos));
+                val = getNormalizedDataValue(plotData.getDataPoint(imagePos), info.getDataPoint());
             }
             //else if (info.is.groupName) {
             //    dataPoint = plotData.getDataPoint(imagePos);
