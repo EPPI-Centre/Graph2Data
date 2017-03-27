@@ -903,6 +903,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
         this.attachedToDom = false;
 
+        var wireUpSpinners;
         this.onAttach = function () {
             if (this.attachedToDom) {
                 return;
@@ -1066,6 +1067,9 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     }
                 }
             };
+            function updateSubjectCell() {
+    
+            }
             var nestedConfig = {
                 focus: function(e) {
                     var edit = $(this);
@@ -1113,7 +1117,15 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     console.log(msg.join(''));
                 }
             };
-            nestedConfig.spinchange = nestedConfig.change;
+            wireUpSpinners = function() {
+                $dom.$nestedFormContainer.find('.count').spinner({
+                    min: 1,
+                    stop: function(e, ui) {
+                        console.log('spinner.stop Triggered after a spin.');
+                        nestedConfig.change.call(e.target, e);
+                    }
+                });
+            };
             nestedConfig.keydown = config.keydown;
 
             $dom.$nestedFormContainer.on(nestedConfig, '.value,.count');
@@ -1353,7 +1365,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             html = html.join('');
             var $nestedTable = $(html);
             $dom.$nestedFormContainer.html($nestedTable);
-            $dom.$nestedFormContainer.find('.count').spinner({ min: 1 });
+            wireUpSpinners();
 
             // Clear out data for all cells
             var cells = $dom.$nestedFormContainer.find('td.value');
