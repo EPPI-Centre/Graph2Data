@@ -145,6 +145,22 @@ body:not(.wpd-visible) .jBox-wrapper {
     white-space: nowrap;
 }
 
+#mean-variance-formContainer .grip:hover {
+    background-position-x: -20px;
+}
+
+#mean-variance-formContainer .grip {
+    width: 20px;
+    height: 30px;
+    margin-top: -3px;
+    background-image: url(images/grip.png);
+    margin-left: -5px;
+    position: relative;
+    z-index: 88;
+    cursor: e-resize;
+}
+
+
 #mean-variance-formContainer input.mean {
     background-color: rgb(212, 212, 255);
     cursor: pointer;

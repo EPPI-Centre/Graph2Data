@@ -202,6 +202,7 @@
     <Content Include="Content\images\findbarButton-previous.png" />
     <Content Include="Content\images\grab.cur" />
     <Content Include="Content\images\grabbing.cur" />
+    <Content Include="Content\images\grip.png" />
     <Content Include="Content\images\loading-icon.gif" />
     <Content Include="Content\images\loading-small%402x.png" />
     <Content Include="Content\images\loading-small.png" />
@@ -332,8 +333,7 @@
     <Content Include="Scripts\jquery-ui-1.12.1.custom-only-spinner-and-resizable\package.json" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jBox\jBox.css" />
-    <Content Include="Scripts\jBox\jBox.js" />
-    <Content Include="Scripts\jBox\jBox.min.js" />
+    <Content Include="Scripts\jBox\jBox_tweaked.js" />
     <Content Include="Scripts\jBox\plugins\Confirm\jBox.Confirm.css" />
     <Content Include="Scripts\jBox\plugins\Confirm\jBox.Confirm.js" />
     <Content Include="Scripts\jBox\plugins\Confirm\jBox.Confirm.min.js" />
@@ -368,6 +368,7 @@
     <Content Include="Scripts\jquery-ui-1.12.1.custom-only-spinner-and-resizable\LICENSE.txt" />
     <Content Include="Scripts\jquery.mousewheel.min.js" />
     <Content Include="Scripts\jquery.resize.js" />
+    <Content Include="Scripts\jquery.simulate.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />

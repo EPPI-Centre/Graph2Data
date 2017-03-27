@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfExtractor.Tests", "PdfExtractor.Tests\PdfExtractor.Tests.csproj", "{1F7A4BE2-CE0A-4DF3-B88E-1D82E25DCEEC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{56D9E24A-39B0-4E24-BB6E-CEB98DA43E38}"
+	ProjectSection(SolutionItems) = preProject
+		WE-Palette.css = WE-Palette.css
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfExtractor.Web", "PdfExtractor.Web\PdfExtractor.Web.csproj", "{F6848A9E-33A0-4F31-A6D9-8E9D510D3B6A}"
 EndProject

@@ -27,10 +27,12 @@ namespace PdfExtractor.Web
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         //"~/Scripts/jquery-{version}.js"
-                        "~/Scripts/viewer-poc/web/jquery-3.1.0.min.js"
+                        "~/Scripts/viewer-poc/web/jquery-3.1.0.min.js",
+                        "~/Scripts/jquery.simulate.js"
                         ));
             bundles.Add(new ScriptBundle("~/bundles/colResizable").Include(
-                "~/Scripts/colResizable-1.6.min.js"
+                "~/Scripts/colResizable-1.6.js"
+            //"~/Scripts/colResizable-1.6.min.js"
             ));
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));

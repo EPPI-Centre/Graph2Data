@@ -125,6 +125,7 @@ function jBox(type, options) {
     onPosition: null,            // Fired when jBox is positioned
     onCreated: null,             // Fired when jBox is created and availible in DOM
     onOpen: null,                // Fired when jBox opens
+    onOpened: null,              // Lee tweak - fired after open has completed
     onClose: null,               // Fired when jBox closes
     onCloseComplete: null,       // Fired when jBox is completely closed (when fading is finished)
 
@@ -1394,7 +1395,9 @@ jBox.prototype.open = function (options)
   
   // Open jBox
   this.options.delayOpen && !this.isOpen && !this.isClosing && !options.ignoreDelay ? (this.timer = setTimeout(open, this.options.delayOpen)) : open();
-  
+
+  this._fireEvent('onOpened');
+
   return this;
 };
 

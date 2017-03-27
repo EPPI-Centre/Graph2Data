@@ -338,6 +338,37 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             return $dom.$includeIndividuals.is(":checked");
         }
 
+        var colResizableConfig = {
+            resizeMode: 'flex',
+            liveDrag:true,
+            //gripInnerHtml:"<div class='grip'></div>", 
+            draggingClass:"dragging", 
+            onResize: function (e) {
+                var dataPopup = $('.jBox-wrapper.jBox-Modal.dataPopup').data('jBox');
+                if (dataPopup) {
+                    dataPopup._setTitleWidth();
+                }
+
+                var nestedDataPopup = $('.jBox-wrapper.jBox-Modal.nestedDataPopup').data('jBox');
+                if (nestedDataPopup) {
+                    nestedDataPopup._setTitleWidth();
+                }
+            }
+        };
+
+        function triggerColumnRefresh() {
+            //var mousedown = jQuery.Event("mousedown");
+            //mousedown.originalEvent = mousedown;
+            //$('.JCLRgrip').trigger(mousedown);
+            ////$('.JCLRgrip').trigger("mousedown");
+            //$(document).trigger("mousemove.JColResizer");
+            //$(document).trigger("mouseup.JColResizer");
+            ////$(document).simulate("resize.JColResizer");
+            ////$(document).trigger("resize.JColResizer");
+            window.setTimeout(function() {
+                $(window).trigger("resize.JColResizer");
+            }, 0);
+        }
         function showDataPopup() {
             if (useTable) {
                 if (!dataPopup) {
@@ -357,6 +388,14 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                             $dom.$formContainerHost.addClass('detached');
                             dataPopupVisible = true;
                         },
+                        onOpened: function() {
+                            window.setTimeout(function () {
+                                var $table = $dom.$formContainer.find('>table');
+                                $table.colResizable(colResizableConfig);
+
+                                triggerColumnRefresh();
+                            }, 0);
+                        },
                         onClose: function() {
                             if (nestedDataPopupVisible) {
                                 hideNestedDataPopup();
@@ -375,10 +414,8 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                             $dom.$formContainerHost.append($dom.$formContainer).removeClass('detached');
                         },
                         onPosition: function() {
-                            // console.log("onPosition!");
                         },
                         onDragEnd: function() {
-                            // console.log("onDragEnd!");
                         },
                         maxHeight: 250,
                         maxWidth: 800
@@ -410,6 +447,13 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     onOpen: function () {
                         nestedDataPopupVisible = true;
                     },
+                    onOpened: function () {
+                        window.setTimeout(function() {
+                            var $nestedTable = $dom.$nestedFormContainer.find('>table');
+                            $nestedTable.colResizable(colResizableConfig);
+                            triggerColumnRefresh();
+                        }, 0);
+                    },
                     onClose: function () {
                         if (nestedDataPopup) {
                             var pos = this.wrapper.position();
@@ -427,10 +471,8 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                         $dom.$formContainerHost.append($dom.$nestedFormContainer);
                     },
                     onPosition: function () {
-                        // console.log("onPosition!");
                     },
                     onDragEnd: function () {
-                        // console.log("onDragEnd!");
                     },
                     maxHeight: 250,
                     maxWidth: 300,
@@ -457,16 +499,6 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         var currentSeriesClassName = "current-series";
         var focusedClassName = 'focused';
         function setActiveCell($cell) {
-            //console.log([
-            //    "activeCell: '",
-            //    wpd.utils.getElemId(_$activeCell),
-            //    "' -> '",
-            //    wpd.utils.getElemId($cell),
-            //    "' [activeNestedCell: '",
-            //    wpd.utils.getElemId(_$activeNestedCell),
-            //    "']."
-            //].join(''));
-
             var info = getInfo($cell);
             if (_$activeCell) {
                 _$activeCell.removeClass(focusedClassName);
@@ -491,16 +523,6 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             return _$activeCell;
         }
         function setActiveNestedCell($cell) {
-            //console.log([
-            //    "activeNestedCell: '",
-            //    wpd.utils.getElemId(_$activeNestedCell),
-            //    "' -> '",
-            //    wpd.utils.getElemId($cell),
-            //    "' [activeCell: '",
-            //    wpd.utils.getElemId(_$activeCell),
-            //    "']."
-            //].join(''));
-
             if (_$activeNestedCell) {
                 _$activeNestedCell.removeClass(focusedClassName);
             }
@@ -855,8 +877,6 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
             info.dump = function(msg) {
                 var text = JSON.stringify(info);
-
-             // console.log(msg + "--------" + text);
             };
 
             return info;
@@ -1261,20 +1281,6 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
             return $avail;
         };
-        var colResizableConfig = {
-            resizeMode: 'flex',
-            onResize: function (e) {
-                var dataPopup = $('.jBox-wrapper.jBox-Modal.dataPopup').data('jBox');
-                if (dataPopup) {
-                    dataPopup._setTitleWidth();
-                }
-
-                var nestedDataPopup = $('.jBox-wrapper.jBox-Modal.nestedDataPopup').data('jBox');
-                if (nestedDataPopup) {
-                    nestedDataPopup._setTitleWidth();
-                }
-            }
-        };
 
         this.buildNestedTable = function () {
             // call this to show the nested table in a popup:
@@ -1356,10 +1362,6 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             var $nestedTable = $(html);
             $dom.$nestedFormContainer.html($nestedTable);
             $dom.$nestedFormContainer.find('.count').spinner({ min: 1 });
-
-            console.log("appling colResizable to NESTED table. colResizableConfig: " + colResizableConfig);
-            $nestedTable.colResizable(colResizableConfig);
-            console.log("applied colResizable to NESTED table. colResizableConfig: " + colResizableConfig);
 
             // Clear out data for all cells
             var cells = $dom.$nestedFormContainer.find('td.value');
@@ -1598,10 +1600,6 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             var $table = $(html);
             $dom.$formContainer.html($table);
 
-            console.log("appling colResizable to table. colResizableConfig: " + colResizableConfig);
-            $table.colResizable(colResizableConfig);
-            console.log("applied colResizable to table. colResizableConfig: " + colResizableConfig);
-
             if (dataPopup) {
                 dataPopup._setTitleWidth();
             }
@@ -1756,18 +1754,6 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 x: parseFloat($dom.$gridEditX.val()),
                 y: parseFloat($dom.$gridEditY.val())
             });
-
-            var dim = gridSettings.getDimensions();
-            var pxDim = gridSettings.getPixelDimensions();
-            //console.log([
-            //    dim.x.toFixed(2),
-            //    ",",
-            //    dim.y.toFixed(2),
-            //    " -> ",
-            //    pxDim.x.toFixed(2),
-            //    ",",
-            //    pxDim.y.toFixed(2)
-            //].join(''));
         }
         function dataSeriesCountChanged(ev) {
             dataSeriesCount = parseInt($dom.$dataSeriesCountEdit.val(), 10);
@@ -1858,15 +1844,19 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             return $cell;
         }
 
-        function _getNormalizedDataValueXy(value) {
+        function _getNormalizedDataValueXy(value, noRounding) {
             if (value.constructor === Array) {
                 if (value.length > 1) {
-                    value = rounded(value[0]) + ", " + rounded(value[1]);
+                    if (noRounding) {
+                        value = value[0]+ ", " +value[1];
+                        } else {
+                        value = rounded(value[0]) + ", " + rounded(value[1]);
+                    }
                 }
             }
             return value;
         }
-        function _getNormalizedDataValueY(value) {
+        function _getNormalizedDataValueY(value, noRounding) {
             if (value.constructor === Array) {
                 if (value.length > 1) {
                     value = value[1];
@@ -1875,14 +1865,14 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     value = value[0];
                 }
             }
-            return rounded(value);
+            return noRounding ? value : rounded(value);
         }
 
-        function getNormalizedDataValue(value, dataPoint) {
+        function getNormalizedDataValue(value, dataPoint, noRounding) {
             if (dataPoint && dataPoint.has2dData) {
-                return _getNormalizedDataValueXy(value);
+                return _getNormalizedDataValueXy(value, noRounding);
             } else {
-                return _getNormalizedDataValueY(value);
+                return _getNormalizedDataValueY(value, noRounding);
             }
         }
 
@@ -1890,10 +1880,10 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             if (meanDataPoint.has2dData || varianceDataPoint.has2dData) {
                 return "error";
             } else {
-                meanDataValue = getNormalizedDataValue(meanDataValue, meanDataPoint);
-                varianceDataValue = getNormalizedDataValue(varianceDataValue, varianceDataPoint);
+                meanDataValue = getNormalizedDataValue(meanDataValue, meanDataPoint, true);
+                varianceDataValue = getNormalizedDataValue(varianceDataValue, varianceDataPoint, true);
 
-                return varianceDataValue - meanDataValue;
+                return rounded(varianceDataValue - meanDataValue);
             }
         }
 
@@ -1904,7 +1894,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         function getCellValue(imagePos, info, plotData, dataSeries) {
             var val = null;
 
-            if (info.dataPoint.isReferencePoint) {
+            if (info.getDataPoint().isReferencePoint) {
             // if (info.is.mean) {
                 val = getNormalizedDataValue(plotData.getDataPoint(imagePos), info.getDataPoint());
             }
