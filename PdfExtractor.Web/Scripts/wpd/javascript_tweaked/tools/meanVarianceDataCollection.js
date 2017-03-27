@@ -357,15 +357,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         };
 
         function triggerColumnRefresh() {
-            //var mousedown = jQuery.Event("mousedown");
-            //mousedown.originalEvent = mousedown;
-            //$('.JCLRgrip').trigger(mousedown);
-            ////$('.JCLRgrip').trigger("mousedown");
-            //$(document).trigger("mousemove.JColResizer");
-            //$(document).trigger("mouseup.JColResizer");
-            ////$(document).simulate("resize.JColResizer");
-            ////$(document).trigger("resize.JColResizer");
-            window.setTimeout(function() {
+                window.setTimeout(function() {
                 $(window).trigger("resize.JColResizer");
             }, 0);
         }
@@ -1894,7 +1886,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         function getCellValue(imagePos, info, plotData, dataSeries) {
             var val = null;
 
-            if (info.getDataPoint().isReferencePoint) {
+            if (info.getDataPoint() && info.getDataPoint().isReferencePoint) {
             // if (info.is.mean) {
                 val = getNormalizedDataValue(plotData.getDataPoint(imagePos), info.getDataPoint());
             }
