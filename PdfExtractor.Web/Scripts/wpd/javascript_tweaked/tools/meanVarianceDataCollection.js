@@ -903,7 +903,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
         this.attachedToDom = false;
 
-        var wireUpSpinners;
+        var wireUpSpinners, setIndividualCount;
         this.onAttach = function () {
             if (this.attachedToDom) {
                 return;
@@ -1067,6 +1067,19 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     }
                 }
             };
+
+            function getIndividualCounts() {
+                var outerSeries = plotData.getActiveDataSeries();
+                var imd = outerSeries.getIndividualMetaData();
+                var counts = imd.counts;
+                return counts;
+            }
+
+            setIndividualCount = function($edit, info, subjectCount) {
+                var counts = getIndividualCounts($edit);
+                counts[info.dataPoint] = subjectCount;
+                console.log(["..just set the count for dataPoint: ", info.dataPoint, " to: " + subjectCount].join(''));
+            };
             function updateSubjectCell() {
     
             }
@@ -1102,26 +1115,20 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     }
                 },
                 change: function (e) {
-                    var msg = ["nestedConfig.change..."];
+                    console.log("nestedConfig.change...");
                     var $edit = $(this);
                     var info = getInfo($edit);
 
                     if (info.is.subjectDataPointsCount) {
-                        var outerSeries = plotData.getActiveDataSeries();
-                        var imd = outerSeries.getIndividualMetaData();
-                        var counts = imd.counts;
                         var subjectCount = $edit.val();
-                        counts[info.dataPoint] = subjectCount;
-                        msg.push("..just set the count for dataPoint: ", info.dataPoint, " to: " + subjectCount);
+                        setIndividualCount($edit, info, subjectCount);
                     }
-                    console.log(msg.join(''));
                 }
             };
             wireUpSpinners = function() {
                 $dom.$nestedFormContainer.find('.count').spinner({
                     min: 1,
                     stop: function(e, ui) {
-                        console.log('spinner.stop Triggered after a spin.');
                         nestedConfig.change.call(e.target, e);
                     }
                 });
@@ -2146,6 +2153,12 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     {
                         dataIndex: dataIndex
                     });
+
+                    // set initial count
+                    if (info.is.subjectDataPointsValue) {
+                        setIndividualCount(aci.cell, info, "1");
+                    }
+
                     var curTabIndex = aci.cell.prop('tabindex');
                     var nextTabIndex = curTabIndex + 1;
 
