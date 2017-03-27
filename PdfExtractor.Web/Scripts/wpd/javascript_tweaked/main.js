@@ -349,7 +349,8 @@ wpd.initApp = function (config) {// This is run when the page loads.
                 }, {
                     name: "Standard Error (upper)",
                     abbrev: "SEM",
-                    css: "variance"
+                    css: "variance",
+                    showRelative: true
                 }]
             }, {
                 id: 'mean-and-standard-deviation',
@@ -363,7 +364,8 @@ wpd.initApp = function (config) {// This is run when the page loads.
                 }, {
                     name: "Standard Deviation (upper)",
                     abbrev: "SD",
-                    css: "variance"
+                    css: "variance",
+                    showRelative: true
                 }]
             }, {
                 id: 'mean-and-confidence-interval-95',
@@ -377,20 +379,20 @@ wpd.initApp = function (config) {// This is run when the page loads.
                 }, {
                     name: "95% Confidence range (upper)",
                     abbrev: "CI95",
-                    css: "variance"
+                    css: "variance",
+                    showRelative: true
                 }, {
-                    name: "Lower Quartile",
+                    name: "Lower Quartile (Q1)",
                     abbrev: "Q1",
                     css: "variance"
                 }, {
-                    name: "Upper Quartile",
+                    name: "Upper Quartile (Q3)",
                     abbrev: "Q3",
                     css: "variance"
                     }]
             }, {
                 id: 'mean-and-confidence-interval-99',
                 text: "Mean and 99% CI",
-             // varianceAbbrev: "CI99",
                 abbrev: "MeanCI99",
                 dataPoints: [{
                     name: "Mean",
@@ -400,13 +402,14 @@ wpd.initApp = function (config) {// This is run when the page loads.
                 }, {
                     name: "99% Confidence range (upper)",
                     abbrev: "CI99",
-                    css: "variance"
+                    css: "variance",
+                    showRelative: true
                 }, {
-                    name: "Lower Quartile",
+                    name: "Lower Quartile (Q1)",
                     abbrev: "Q1",
                     css: "variance"
                 }, {
-                    name: "Upper Quartile",
+                    name: "Upper Quartile (Q3)",
                     abbrev: "Q3",
                     css: "variance"
                 }]
@@ -422,13 +425,14 @@ wpd.initApp = function (config) {// This is run when the page loads.
                 }, {
                     name: "95% Confidence range (upper)",
                     abbrev: "CI95",
-                    css: "variance"
+                    css: "variance",
+                    showRelative: true
                 }, {
-                    name: "Lower Quartile",
+                    name: "Lower Quartile (Q1)",
                     abbrev: "Q1",
                     css: "variance"
                 }, {
-                    name: "Upper Quartile",
+                    name: "Upper Quartile (Q3)",
                     abbrev: "Q3",
                     css: "variance"
                 }]
@@ -436,7 +440,6 @@ wpd.initApp = function (config) {// This is run when the page loads.
                 id: 'median-and-confidence-interval-99',
                 text: "Median and 99% CI",
                 abbrev: "Median99CI",
-             // varianceAbbrev: "CI99",
                 dataPoints: [{
                     name: "Median",
                     abbrev: "Median",
@@ -445,13 +448,14 @@ wpd.initApp = function (config) {// This is run when the page loads.
                 }, {
                     name: "99% Confidence range (upper)",
                     abbrev: "CI99",
-                    css: "variance"
+                    css: "variance",
+                    showRelative: true
                 }, {
-                    name: "Lower Quartile",
+                    name: "Lower Quartile (Q1)",
                     abbrev: "Q1",
                     css: "variance"
                 }, {
-                    name: "Upper Quartile",
+                    name: "Upper Quartile (Q3)",
                     abbrev: "Q3",
                     css: "variance"
                 }]
@@ -465,11 +469,11 @@ wpd.initApp = function (config) {// This is run when the page loads.
                     css: "mean",
                     isReferencePoint: true
                 }, {
-                    name: "Lower Quartile",
+                    name: "Lower Quartile (Q1)",
                     abbrev: "Q1",
                     css: "variance"
                 }, {
-                    name: "Upper Quartile",
+                    name: "Upper Quartile (Q3)",
                     abbrev: "Q3",
                     css: "variance"
                 }]
@@ -483,21 +487,23 @@ wpd.initApp = function (config) {// This is run when the page loads.
                     css: "mean",
                     isReferencePoint: true
                 }, {
-                    name: "Lower Quartile",
+                    name: "Lower Quartile (Q1)",
                     abbrev: "Q1",
                     css: "variance"
                 }, {
-                    name: "Uper Quartile",
+                    name: "Upper Quartile (Q3)",
                     abbrev: "Q3",
                     css: "variance"
                 }, {
-                    name: "Lower",
-                    abbrev: "Lower",
-                    css: "variance"
+                    name: "Minimum",
+                    abbrev: "Min",
+                    css: "variance",
+                    showRelative: true
                 }, {
-                    name: "Upper",
-                    abbrev: "Upper",
-                    css: "variance"
+                    name: "Maximum",
+                    abbrev: "Max",
+                    css: "variance",
+                    showRelative: true
                 }]
             }];
 

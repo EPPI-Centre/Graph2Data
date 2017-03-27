@@ -1872,10 +1872,22 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             if (meanDataPoint.has2dData || varianceDataPoint.has2dData) {
                 return "error";
             } else {
-                meanDataValue = getNormalizedDataValue(meanDataValue, meanDataPoint, true);
-                varianceDataValue = getNormalizedDataValue(varianceDataValue, varianceDataPoint, true);
+                if (varianceDataPoint.showRelative) {
+                    meanDataValue = getNormalizedDataValue(meanDataValue, meanDataPoint, true);
+                    varianceDataValue = getNormalizedDataValue(varianceDataValue, varianceDataPoint, true);
+                    var delta = rounded(varianceDataValue - meanDataValue);
 
-                return rounded(varianceDataValue - meanDataValue);
+                    if (delta > 0) {
+                        delta = "+" + delta;
+                    }
+
+
+                    return delta;
+                } else {
+                    varianceDataValue = getNormalizedDataValue(varianceDataValue, varianceDataPoint, true);
+
+                    return rounded(varianceDataValue);
+                }
             }
         }
 
@@ -1886,7 +1898,9 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         function getCellValue(imagePos, info, plotData, dataSeries) {
             var val = null;
 
-            if (info.getDataPoint() && info.getDataPoint().isReferencePoint) {
+            var dp = info.getDataPoint();
+
+            if (dp && dp.isReferencePoint) {
             // if (info.is.mean) {
                 val = getNormalizedDataValue(plotData.getDataPoint(imagePos), info.getDataPoint());
             }
