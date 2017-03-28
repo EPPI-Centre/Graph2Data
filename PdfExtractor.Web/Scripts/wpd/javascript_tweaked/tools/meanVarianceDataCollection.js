@@ -1076,7 +1076,6 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             }
 
             function updateSubjectsCell() {
-                console.log("updateSubjectsCell");
                 var aci = getActiveCellInfo();
                 if (aci.activeNestedCell && aci.activeCell) {
                     var counts = getIndividualCounts();
@@ -1097,7 +1096,6 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 var counts = getIndividualCounts($edit);
                 counts[info.dataPoint] = subjectCount;
                 updateSubjectsCell();
-                console.log(["..just set the count for dataPoint: ", info.dataPoint, " to: " + subjectCount].join(''));
             };
             var nestedConfig = {
                 focus: function(e) {
@@ -1131,7 +1129,6 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     }
                 },
                 change: function (e) {
-                    console.log("nestedConfig.change...");
                     var $edit = $(this);
                     var info = getInfo($edit);
 

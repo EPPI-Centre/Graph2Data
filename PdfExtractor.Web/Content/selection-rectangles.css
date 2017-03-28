@@ -102,7 +102,8 @@ body.annotations-disabled .canvas-overlay {
     cursor: move;
 }
 
-.canvas-overlay > .rectangle > .id {
+.canvas-overlay > .rectangle > .id,
+.canvas-overlay > .rectangle > .data {
     cursor: pointer;
 }
 

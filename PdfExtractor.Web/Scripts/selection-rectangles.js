@@ -1144,9 +1144,11 @@ console.clear();
 
         $canvasOverlay.on({
             mousedown: function (e) {
-                var $elem = $(this.parentNode);
-                config.dataIconClickedHandler(prepareSelectionInfo($elem));
-                e.preventDefault();
+                if (leftButtonDown(e)) {
+                    var $elem = $(this.parentNode);
+                    config.dataIconClickedHandler(prepareSelectionInfo($elem));
+                    e.preventDefault();
+                }
             }
         },
             '.rectangle.has-data > .data'
