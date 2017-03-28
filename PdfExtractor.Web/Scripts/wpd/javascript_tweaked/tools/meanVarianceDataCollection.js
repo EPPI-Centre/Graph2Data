@@ -358,8 +358,8 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
         function triggerColumnRefresh() {
                 window.setTimeout(function() {
-                $(window).trigger("resize.JColResizer");
-            }, 0);
+                    $(window).trigger("resize.JColResizer");
+                }, 0);
         }
         function showDataPopup() {
             if (useTable) {
@@ -1075,14 +1075,30 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 return counts;
             }
 
-            setIndividualCount = function($edit, info, subjectCount) {
+            function updateSubjectsCell() {
+                console.log("updateSubjectsCell");
+                var aci = getActiveCellInfo();
+                if (aci.activeNestedCell.length && aci.activeCell.length) {
+                    var counts = getIndividualCounts();
+                    var info = getInfo(aci.activeCell);
+                 // var nestedInfo = getInfo(aci.activeNestedCell);
+                    var total = $.map(counts, function(prop, key) {
+                        return prop;
+                    })
+                    .reduce(function(acc, val) {
+                        return +acc + +val;
+                    }, 0);
+
+                    aci.activeCell.val(total);
+                }
+                else { alert ("Couldn't find 'Subjects' cell.")}
+            }
+            setIndividualCount = function ($edit, info, subjectCount) {
                 var counts = getIndividualCounts($edit);
                 counts[info.dataPoint] = subjectCount;
+                updateSubjectsCell();
                 console.log(["..just set the count for dataPoint: ", info.dataPoint, " to: " + subjectCount].join(''));
             };
-            function updateSubjectCell() {
-    
-            }
             var nestedConfig = {
                 focus: function(e) {
                     var edit = $(this);
@@ -2132,7 +2148,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
             // if (blah && confirm ("This group already data - would you like to override it?"))) {}
             if (useTable) {
-                if (info.is.groupName || !aci.activeCell.val()) {
+                if (info.is.groupName || !aci.cell.val()) {
                     metaData = { meanVarianceInfo: info };
 
                     imagePos = wpd.graphicsWidget.screenPx(imagePos.x, imagePos.y);
