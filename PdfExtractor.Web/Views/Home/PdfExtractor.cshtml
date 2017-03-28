@@ -20,10 +20,12 @@
             height: 16px !important;
             width: 16px !important;
         }
+
         #HW_badge {
             top: 0 !important;
             left: 0 !important;
         }
+
         #HW_frame_cont {
             top: 134px !important;
         }
@@ -32,22 +34,22 @@
 
     <script type="text/javascript" src="~/Scripts/jquery.resize.js"></script>
 
-    <link rel="stylesheet" href="~/Content/PdfSandbox.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="~/Content/PdfSandbox.css" type="text/css" media="screen" />
 
-    <link href="~/Content/selection-rectangles.css" rel="stylesheet"/>
+    <link href="~/Content/selection-rectangles.css" rel="stylesheet" />
     <script type="text/javascript" src="~/Scripts/selection-rectangles.js"></script>
 
-    <link href="~/Scripts/jBox/jBox.css" rel="stylesheet"/>
+    <link href="~/Scripts/jBox/jBox.css" rel="stylesheet" />
     <script type="text/javascript" src="~/Scripts/jBox/jBox_tweaked.js"></script>
 
-    <link href="~/Scripts/jBox/plugins/Notice/jBox.notice.css" rel="stylesheet"/>
-    <link href="~/Scripts/jBox/themes/NoticeFancy.css" rel="stylesheet"/>
+    <link href="~/Scripts/jBox/plugins/Notice/jBox.notice.css" rel="stylesheet" />
+    <link href="~/Scripts/jBox/themes/NoticeFancy.css" rel="stylesheet" />
     <script type="text/javascript" src="~/Scripts/jBox/plugins/Notice/jBox.Notice.js"></script>
 
     <script type="text/javascript" src="~/Scripts/purl.js"></script>
 
     <script type="text/javascript">
-        window.alert = function(msg) {
+        window.alert = function (msg) {
             var modal = new jBox('Modal',
             {
                 content: msg,
@@ -64,8 +66,8 @@
     </script>
 
 
-    <link rel="stylesheet" href="~/Content/wpd/styles.css" type="text/css" media="screen"/>
-    <link rel="stylesheet" href="~/Content/wpd/widgets.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="~/Content/wpd/styles.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="~/Content/wpd/widgets.css" type="text/css" media="screen" />
     @*<script src="~/Scripts/WebPlotDigitizer/combined-compiled.js"></script>*@
     @*<script src="~/Scripts/wpd/wpd_combined_tweaked.js"></script>*@
     @Scripts.Render("~/bundles/wpd_tweaked")
@@ -92,11 +94,11 @@
         //    });
         //});
 
-        $(function() {
+        $(function () {
             $.post({
                 url: "@Url.Action("Get", "Settings")",
                 data: "",
-                success: function(data, status, xhr) {
+                success: function (data, status, xhr) {
                     begin(JSON.parse(data));
                 },
                 dataType: "json"
@@ -124,11 +126,11 @@
                     wpdPlotMemento: null,
                     userSettings: userSettings,
                 };
-                wpdConfig.show = function() {
+                wpdConfig.show = function () {
                     body.addClass('wpd-visible');
                     wpd.initApp(wpdConfig);
                 };
-                wpdConfig.hide = function(wpdPlotMemento) {
+                wpdConfig.hide = function (wpdPlotMemento) {
                     wpd.acquireMeanVarianceData.hideAllDataPopups();
                     wpdConfig.focusedSelection.dataStore.putData({
                         data: wpdPlotMemento,
@@ -136,11 +138,11 @@
                     });
                     body.removeClass('wpd-visible');
                 };
-                wpdConfig.flushSettings = function(settings) {
+                wpdConfig.flushSettings = function (settings) {
                     $.post({
                         url: "@Url.Action("Set", "Settings")",
                         data: JSON.stringify(settings),
-                        success: function(data, status, xhr) {
+                        success: function (data, status, xhr) {
                             console.log("Settings saved!");
                         },
                         dataType: "json"
@@ -156,7 +158,7 @@
 
                 $('#wpd-filemenu-lee-close')
                     .on('click',
-                        function(e) {
+                        function (e) {
                             var wpdPlotMemento = wpd.appData.getMemento();
                             wpdConfig.hide(wpdPlotMemento);
                         });
@@ -455,9 +457,9 @@
                 background-color: rgba(0, 0, 0, 0.5);
             }
 
-            #mozPrintCallback-shim[hidden] {
-                display: none;
-            }
+                #mozPrintCallback-shim[hidden] {
+                    display: none;
+                }
 
             @@media print {
                 #mozPrintCallback-shim {
@@ -534,11 +536,11 @@
                         <div class="wpd-menu-dropdown">
                             <ul>
                                 @*<li id="wpd-filemenu-loadimage" onclick="wpd.popup.show('loadNewImage');">Load Image</li>
-                                <li id="wpd-filemenu-capture" onclick="wpd.webcamCapture.start();">Webcam Capture</li>
-                                <li id="wpd-filemenu-runscript" onclick="wpd.scriptInjector.start();">Run Script</li>*@
+                                    <li id="wpd-filemenu-capture" onclick="wpd.webcamCapture.start();">Webcam Capture</li>
+                                    <li id="wpd-filemenu-runscript" onclick="wpd.scriptInjector.start();">Run Script</li>*@
                                 <li id="wpd-filemenu-saveimage" onclick="wpd.graphicsWidget.saveImage();">Save Image</li>
                                 @*<li id="wpd-filemenu-exportda ta" onclick="wpd.saveResume.save();">Export JSON</li>
-                                <li id="wpd-filemenu-import" onclick="wpd.saveResume.load();">Import JSON</li>*@
+                                    <li id="wpd-filemenu-import" onclick="wpd.saveResume.load();">Import JSON</li>*@
                                 <li id="wpd-filemenu-lee-close" onclick="javascript: void (0);">Lee(temporary) Close</li>
                             </ul>
                         </div>
@@ -591,18 +593,18 @@
                         </div>
                     </div>
                     @*<div class="wpd-menu">
-                        <div class="wpd-menu-header">Help</div>
-                        <div class="wpd-menu-dropdown">
-                            <ul>
-                                <li id="wpd-helpmenu-about" onclick="wpd.popup.show('helpWindow');">About WebPlotDigitizer</li>
-                                <li id="wpd-helpmenu-tutorial"><a href="http://arohatgi.info/WebPlotDigitizer/tutorial.html" target="_blank">Tutorials</a></li>
-                                <li id="wpd-helpmenu-manual"><a href="http://arohatgi.info/WebPlotDigitizer/userManual.pdf" target="_blank">User Manual</a></li>
-                                <li id="wpd-helpmenu-github"><a href="https://github.com/ankitrohatgi/WebPlotDigitizer" target="_blank">GitHub Page</a></li>
-                                <li id="wpd-helpmenu-issues"><a href="https://github.com/ankitrohatgi/WebPlotDigitizer/issues" target="_blank">Report Issues</a></li>
-                                <li id="wpd-helpmenu-donate"><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=CVFJGV5SNEV9J&lc=US&item_name=WebPlotDigitizer&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted" target="_blank">Donate (PayPal)</a></li>
-                            </ul>
-                        </div>
-                    </div>*@
+                            <div class="wpd-menu-header">Help</div>
+                            <div class="wpd-menu-dropdown">
+                                <ul>
+                                    <li id="wpd-helpmenu-about" onclick="wpd.popup.show('helpWindow');">About WebPlotDigitizer</li>
+                                    <li id="wpd-helpmenu-tutorial"><a href="http://arohatgi.info/WebPlotDigitizer/tutorial.html" target="_blank">Tutorials</a></li>
+                                    <li id="wpd-helpmenu-manual"><a href="http://arohatgi.info/WebPlotDigitizer/userManual.pdf" target="_blank">User Manual</a></li>
+                                    <li id="wpd-helpmenu-github"><a href="https://github.com/ankitrohatgi/WebPlotDigitizer" target="_blank">GitHub Page</a></li>
+                                    <li id="wpd-helpmenu-issues"><a href="https://github.com/ankitrohatgi/WebPlotDigitizer/issues" target="_blank">Report Issues</a></li>
+                                    <li id="wpd-helpmenu-donate"><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=CVFJGV5SNEV9J&lc=US&item_name=WebPlotDigitizer&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted" target="_blank">Donate (PayPal)</a></li>
+                                </ul>
+                            </div>
+                        </div>*@
                 </div>
 
 
@@ -631,8 +633,8 @@
                 </div>
 
                 <div id='mini-control-widget' style="display: inline-block; position: absolute; top: 5px; right: 290px;">
-                    <input id="grid-edit-x" size="3" title='Grid X scale' type="text"/>
-                    <input id='snap-to-grid-x' title='Snap to grid X' type='checkbox'/>
+                    <input id="grid-edit-x" size="3" title='Grid X scale' type="text" />
+                    <input id='snap-to-grid-x' title='Snap to grid X' type='checkbox' />
 
                     <input id="grid-edit-y" size="3" title='Grid Y scale' type="text" />
                     <input id='snap-to-grid-y' title='Snap to grid Y' type='checkbox' />
@@ -743,7 +745,7 @@
                     <div class="vertical-spacer"></div>
                     <p>
                         <label for="use-table">
-                            <input type="checkbox" id="use-table"/>
+                            <input type="checkbox" id="use-table" />
                             Use table
                         </label>
                     </p>
@@ -761,11 +763,13 @@
                         <p>Data Points: <span class="data-point-counter">0</span></p>
                     </div>
                     <div id="table-controls">
-                        <div class="vertical-spacer"></div>
-                        <p>
-                            <b>Outcome measure</b>
-                            <select id="outcome-measure"></select>
-                        </p>
+                        <div class="hidden">
+                            <div class="vertical-spacer"></div>
+                            <p>
+                                <b>Outcome measure</b>
+                                <select id="outcome-measure"></select>
+                            </p>
+                        </div>
                         <div class="vertical-spacer"></div>
                         <p>
                             <b>Data structure</b>

@@ -267,39 +267,41 @@ wpd.initApp = function (config) {// This is run when the page loads.
                 text: "Simple TableCapture",
                 abbrev: "SimpleTable",
                 fields: []
-            }, {
-                id: 'model-experiment',
-                text: "Model Characterising",
-                abbrev: "ModelChar",
-                fields: [{
-                    id: "model_shamPlusVehicle",
-                    text: "Sham + Vehicle",
-                    isControl: true,
-                    css: "model-control"
-                }, {
-                    id: "model_npPlusVehicle",
-                    text: "NP + Vehicle",
-                    isControl: false,
-                    css: "model-data"
-                }]
-            }, {
-                id: 'intervention-experiment',
-                text: "Intervention Testing",
-                abbrev: "IntTest",
-                fields: [
-                    {
-                        id: "intervention_npPlusVehicle",
-                        text: "NP + Vehicle",
-                        isControl: true,
-                        css: "intervention-control"
-                    }, {
-                        id: "intervention_npPlusRx",
-                        text: "NP + Rx",
-                        isControl: false,
-                        css: "intervention-data"
-                    }
-                ]
-            }];
+            }
+            //, {
+            //    id: 'model-experiment',
+            //    text: "Model Characterising",
+            //    abbrev: "ModelChar",
+            //    fields: [{
+            //        id: "model_shamPlusVehicle",
+            //        text: "Sham + Vehicle",
+            //        isControl: true,
+            //        css: "model-control"
+            //    }, {
+            //        id: "model_npPlusVehicle",
+            //        text: "NP + Vehicle",
+            //        isControl: false,
+            //        css: "model-data"
+            //    }]
+            //}, {
+            //    id: 'intervention-experiment',
+            //    text: "Intervention Testing",
+            //    abbrev: "IntTest",
+            //    fields: [
+            //        {
+            //            id: "intervention_npPlusVehicle",
+            //            text: "NP + Vehicle",
+            //            isControl: true,
+            //            css: "intervention-control"
+            //        }, {
+            //            id: "intervention_npPlusRx",
+            //            text: "NP + Rx",
+            //            isControl: false,
+            //            css: "intervention-data"
+            //        }
+            //    ]
+            //}
+            ];
 
             this.forEachOutcomeMeasure(function(index, om) {
                 om.hasFields = (om.fields && om.fields.length > 0);

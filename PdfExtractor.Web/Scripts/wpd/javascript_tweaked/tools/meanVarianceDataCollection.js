@@ -1078,7 +1078,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             function updateSubjectsCell() {
                 console.log("updateSubjectsCell");
                 var aci = getActiveCellInfo();
-                if (aci.activeNestedCell.length && aci.activeCell.length) {
+                if (aci.activeNestedCell && aci.activeCell) {
                     var counts = getIndividualCounts();
                     var info = getInfo(aci.activeCell);
                  // var nestedInfo = getInfo(aci.activeNestedCell);
