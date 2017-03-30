@@ -163,6 +163,13 @@
                             wpdConfig.hide(wpdPlotMemento);
                         });
 
+                $(window).scroll($.debounce(250, true, function () {
+                    $(body).addClass('scrolling');
+                }));
+                $(window).scroll($.debounce(250, function () {
+                    $(body).removeClass('scrolling');
+                }));
+
                 webViewerLoad(wpdConfig);
             }
         });

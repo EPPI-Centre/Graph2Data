@@ -110,14 +110,16 @@ body.annotations-disabled .canvas-overlay {
 .grip-helper {
     background-color: orange;
     border: 2px solid indigo;
-}
-
-.grip-helper {
     width: 10px;
     height: 10px;
     background-color: #ffffff;
     border: 1px solid #000000;
 }
+
+body.scrolling .grip-helper {
+    display: none !important;
+}
+
 .nwgrip {
     left: -5px;
     top: -5px;

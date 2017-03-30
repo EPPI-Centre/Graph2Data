@@ -27,8 +27,9 @@ namespace PdfExtractor.Web
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         //"~/Scripts/jquery-{version}.js"
-                        "~/Scripts/viewer-poc/web/jquery-3.1.0.min.js"
+                        "~/Scripts/viewer-poc/web/jquery-3.1.0.min.js",
                         //, "~/Scripts/jquery.simulate.js"
+                        "~/Scripts/jquery.ba-throttle-debounce.js"
                         ));
             bundles.Add(new ScriptBundle("~/bundles/colResizable").Include(
                 "~/Scripts/colResizable-1.6.js"

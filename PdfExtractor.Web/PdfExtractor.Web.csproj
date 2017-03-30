@@ -300,6 +300,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\Chart.bundle.js" />
+    <Content Include="Scripts\colResizable-1.6.js" />
     <Content Include="Scripts\colResizable-1.6.min.js" />
     <Content Include="Scripts\debugger.js" />
     <Content Include="Content\wpd\images\perspective.odg" />
@@ -366,6 +367,8 @@
     <Content Include="Scripts\jquery-ui-1.12.1.custom-only-spinner-and-resizable\jquery-ui.theme.css" />
     <Content Include="Scripts\jquery-ui-1.12.1.custom-only-spinner-and-resizable\jquery-ui.theme.min.css" />
     <Content Include="Scripts\jquery-ui-1.12.1.custom-only-spinner-and-resizable\LICENSE.txt" />
+    <Content Include="Scripts\jquery.ba-throttle-debounce.js" />
+    <Content Include="Scripts\jquery.ba-throttle-debounce.min.js" />
     <Content Include="Scripts\jquery.mousewheel.min.js" />
     <Content Include="Scripts\jquery.resize.js" />
     <Content Include="Scripts\jquery.validate.js" />
