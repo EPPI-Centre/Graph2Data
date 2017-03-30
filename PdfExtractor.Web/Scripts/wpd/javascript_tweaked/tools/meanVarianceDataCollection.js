@@ -2618,9 +2618,11 @@ wpd.DataPointsRepainter = (function () {
                                 ? orange
                                 : info.is.subjectDataPointsCount
                                     ? black
-                                    : info.is.variance
-                                        ? red
-                                        : white;
+                                    : info.is.subjectDataPointsValue
+                                        ? yellow
+                                        : info.is.variance
+                                            ? red
+                                            : white;
                 } else {
                     if (isSelected) {
                         fillStyle = "rgba(0,200,0,alpha)";
