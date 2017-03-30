@@ -462,7 +462,7 @@ console.clear();
             // rect.tabIndex = id;
             var oldId = getRectId(rect);
             var si = selectionInfoTemp[oldId];
-            si.id += " > " + id;
+            si.id = id;
             _selectionInfo[id] = si;
             setRectId(rect, id);
             getIdElem(rect).html(id);
@@ -521,7 +521,7 @@ console.clear();
         var cii = si.canvasImageInfo, cii2;
         if (cii) {
             cii.canvas._imageInfo.splice(cii.imageInfoIndex, 1);
-            si.canvasImageInfo *= -1; 'deleted'
+            cii.imageInfoIndex *= -1; // 'deleted'
 
             // decrement the `cii.imageInfoIndex` for each subsequent cii on this canvas
             $.each(_selectionInfo, function (idx, val) {
