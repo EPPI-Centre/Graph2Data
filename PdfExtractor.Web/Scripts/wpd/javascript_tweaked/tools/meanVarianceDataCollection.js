@@ -340,19 +340,21 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
         var colResizableConfig = {
             resizeMode: 'flex',
-            liveDrag:true,
+            liveDrag: true,
+            postbackSafe: true,
+            partialRefresh: true,
             //gripInnerHtml:"<div class='grip'></div>", 
             draggingClass:"dragging", 
             onResize: function (e) {
-                var dataPopup = $('.jBox-wrapper.jBox-Modal.dataPopup').data('jBox');
-                if (dataPopup) {
-                    dataPopup._setTitleWidth();
-                }
+                //var dataPopup = $('.jBox-wrapper.jBox-Modal.dataPopup').data('jBox');
+                //if (dataPopup) {
+                //    dataPopup._setTitleWidth();
+                //}
 
-                var nestedDataPopup = $('.jBox-wrapper.jBox-Modal.nestedDataPopup').data('jBox');
-                if (nestedDataPopup) {
-                    nestedDataPopup._setTitleWidth();
-                }
+                //var nestedDataPopup = $('.jBox-wrapper.jBox-Modal.nestedDataPopup').data('jBox');
+                //if (nestedDataPopup) {
+                //    nestedDataPopup._setTitleWidth();
+                //}
             }
         };
 
@@ -1364,7 +1366,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             var p, cellContents, di;
 
             var html = [
-                "<table>",
+                "<table id='nestedTable'>",
                     "<thead>",
                         "<tr>",
                             "<th>#</th>"
@@ -1509,7 +1511,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             //        : dataPointCount + 1;
 
             var html = [
-                "<table>",
+                "<table id='mainTable'>",
                     "<thead>",
                         "<tr>",
                             "<th>Series</th>"
