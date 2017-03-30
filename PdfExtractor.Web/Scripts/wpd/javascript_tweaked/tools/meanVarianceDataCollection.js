@@ -1765,10 +1765,10 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         function updateUiToReflectShowTableStatus() {
             if (useTable) {
                 $dom.$tableControls.removeClass('hidden');
-                $dom.$freeControls.addClass('hidden');
+             // $dom.$freeControls.addClass('hidden');
             } else {
                 $dom.$tableControls.addClass('hidden');
-                $dom.$freeControls.removeClass('hidden');
+             // $dom.$freeControls.removeClass('hidden');
             }
         }
         function showDataPointCounterIfNeeded() {
