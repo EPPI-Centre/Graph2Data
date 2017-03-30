@@ -2556,16 +2556,17 @@ wpd.DataPointsRepainter = (function () {
                 hasLabels = false,
                 pointLabel,
 
-                red = "rgba(255,0,0,alpha)",
+                red    = "rgba(255,0,0,alpha)",
                 orange = "rgba(255,165,0,alpha)",
                 yellow = "rgba(255,255,0,alpha)",
-                green = "rgba(0,255,0,alpha)",
-                blue = "rgba(0,0,255,alpha)",
+                green  = "rgba(0,255,0,alpha)",
+                blue   = "rgba(0,0,255,alpha)",
                 indigo = "rgba(75,0,130,alpha)",
                 violet = "rgba(199,21,133,alpha)",
 
-                black = "rgb(0,0,0,alpha)",
-                white = "rgb(255,255,255,alpha)",
+                black  = "rgba(0,0,0,alpha)",
+                white  = "rgba(255,255,255,alpha)",
+
                 areaColours = [
                     red, orange, yellow, green, blue, indigo, violet
                 ],
@@ -2615,13 +2616,13 @@ wpd.DataPointsRepainter = (function () {
                                         : white;
                 } else {
                     if (isSelected) {
-                        fillStyle = "rgb(0,200,0,alpha)";
+                        fillStyle = "rgba(0,200,0,alpha)";
                     } else {
-                        fillStyle = "rgb(200,0,0,alpha)";
+                        fillStyle = "rgba(200,0,0,alpha)";
                     }
                 }
                 fillStyle = solidCol(fillStyle);
-                textStrokeStyle = white;
+                textStrokeStyle = solidCol(white);
                 pointStrokeStyle = {
                     default: [
                         { style: solidCol(white), width: 1 },
@@ -2637,7 +2638,7 @@ wpd.DataPointsRepainter = (function () {
                     pointStrokeStyle.default.push(
                         { style: solidCol(white), width: 1 },
                         { style: solidCol(black), width: 1 },
-                        { style: solidCol(fillStyle), width: 2 },
+                        { style: fillStyle, width: 2 },
                         { style: solidCol(white), width: 1 }
                     );
                 }
