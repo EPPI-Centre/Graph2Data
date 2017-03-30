@@ -368,7 +368,6 @@
     <Content Include="Scripts\jquery-ui-1.12.1.custom-only-spinner-and-resizable\LICENSE.txt" />
     <Content Include="Scripts\jquery.mousewheel.min.js" />
     <Content Include="Scripts\jquery.resize.js" />
-    <Content Include="Scripts\jquery.simulate.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
