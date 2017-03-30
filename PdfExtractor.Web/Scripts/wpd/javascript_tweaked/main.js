@@ -78,57 +78,59 @@ wpd.initApp = function (config) {// This is run when the page loads.
         configureProfiles: function() {
             var self = this;
 
-            this.profiles = [{
-                id: 'free-points-capture',
-                name: "Free points-capture",
-                plotTypeId: 'r_xy',
-                useTable: false,
-                outcomeMeasureId: 'simple-table-capture',
-                dataStructureId: 'mean-only',
-                includeIndividuals: false,
-                dataSeriesCount: 1,
-                dataPointCount: 200
-            }, {
-                id: 'quantize-test-2D',
-                name: "Quantize Testing (2D)",
-                plotTypeId: 'r_xy',
-                useTable: true,
-                outcomeMeasureId: 'simple-table-capture',
-                dataStructureId: 'mean-only',
-                includeIndividuals: false,
-                dataSeriesCount: 1,
-                dataPointCount: 200
-            }, {
-                id: 'quantize-test-1D',
-                name: "Quantize Testing (1D)",
-                plotTypeId: 'r_bar',
-                useTable: true,
-                outcomeMeasureId: 'simple-table-capture',
-                dataStructureId: 'mean-only',
-                includeIndividuals: false,
-                dataSeriesCount: 1,
-                dataPointCount: 200
-            }, {
-                id: 'scatter-plot-xy',
-                name: "Scatter plot (XY)",
-                plotTypeId: 'r_xy',
-                useTable: true,
-                outcomeMeasureId: 'simple-table-capture',
-                dataStructureId: 'mean-only',
-                includeIndividuals: true,
-                dataSeriesCount: 4,
-                dataPointCount: 2
-            }, {
-                id: 'scatter-plot-1d',
-                name: "Scatter plot (1D)",
-                plotTypeId: 'r_bar',
-                useTable: true,
-                outcomeMeasureId: 'simple-table-capture',
-                dataStructureId: 'mean-only',
-                includeIndividuals: true,
-                dataSeriesCount: 4,
-                dataPointCount: 2
-            }];
+            this.profiles = [
+            //  {
+            //    id: 'free-points-capture',
+            //    name: "Free points-capture",
+            //    plotTypeId: 'r_xy',
+            //    useTable: false,
+            //    outcomeMeasureId: 'simple-table-capture',
+            //    dataStructureId: 'mean-only',
+            //    includeIndividuals: false,
+            //    dataSeriesCount: 1,
+            //    dataPointCount: 200
+            //}, {
+            //    id: 'quantize-test-2D',
+            //    name: "Quantize Testing (2D)",
+            //    plotTypeId: 'r_xy',
+            //    useTable: true,
+            //    outcomeMeasureId: 'simple-table-capture',
+            //    dataStructureId: 'mean-only',
+            //    includeIndividuals: false,
+            //    dataSeriesCount: 1,
+            //    dataPointCount: 200
+            //}, {
+            //    id: 'quantize-test-1D',
+            //    name: "Quantize Testing (1D)",
+            //    plotTypeId: 'r_bar',
+            //    useTable: true,
+            //    outcomeMeasureId: 'simple-table-capture',
+            //    dataStructureId: 'mean-only',
+            //    includeIndividuals: false,
+            //    dataSeriesCount: 1,
+            //    dataPointCount: 200
+            //}, {
+            //    id: 'scatter-plot-xy',
+            //    name: "Scatter plot (XY)",
+            //    plotTypeId: 'r_xy',
+            //    useTable: true,
+            //    outcomeMeasureId: 'simple-table-capture',
+            //    dataStructureId: 'mean-only',
+            //    includeIndividuals: true,
+            //    dataSeriesCount: 4,
+            //    dataPointCount: 2
+            //}, {
+            //    id: 'scatter-plot-1d',
+            //    name: "Scatter plot (1D)",
+            //    plotTypeId: 'r_bar',
+            //    useTable: true,
+            //    outcomeMeasureId: 'simple-table-capture',
+            //    dataStructureId: 'mean-only',
+            //    includeIndividuals: true,
+            //    dataSeriesCount: 4,
+            //    dataPointCount: 2
+            //}
+            ];
 
             var boolSpace = [true, false];
             var plotTypes = [{
