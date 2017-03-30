@@ -331,6 +331,7 @@
     <None Include="Properties\PublishProfiles\PdfExtractor - Web Deploy %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\PdfExtractor - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\Release to N_ToDelete_PdfExtractorDeployTest.pubxml" />
+    <Content Include="Scripts\decimalAdjust.js" />
     <Content Include="Scripts\jquery-ui-1.12.1.custom-only-spinner-and-resizable\package.json" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jBox\jBox.css" />

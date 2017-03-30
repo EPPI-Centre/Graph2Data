@@ -346,15 +346,15 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             //gripInnerHtml:"<div class='grip'></div>", 
             draggingClass:"dragging", 
             onResize: function (e) {
-                //var dataPopup = $('.jBox-wrapper.jBox-Modal.dataPopup').data('jBox');
-                //if (dataPopup) {
-                //    dataPopup._setTitleWidth();
-                //}
+                var dataPopup = $('.jBox-wrapper.jBox-Modal.dataPopup').data('jBox');
+                if (dataPopup) {
+                    dataPopup._setTitleWidth();
+                }
 
-                //var nestedDataPopup = $('.jBox-wrapper.jBox-Modal.nestedDataPopup').data('jBox');
-                //if (nestedDataPopup) {
-                //    nestedDataPopup._setTitleWidth();
-                //}
+                var nestedDataPopup = $('.jBox-wrapper.jBox-Modal.nestedDataPopup').data('jBox');
+                if (nestedDataPopup) {
+                    nestedDataPopup._setTitleWidth();
+                }
             }
         };
 
@@ -411,7 +411,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                         onDragEnd: function() {
                         },
                         maxHeight: 250,
-                        maxWidth: 800
+                        maxWidth: 1200
                     });
                 }
                 dataPopup.open();
@@ -837,6 +837,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 seriesName: 'series-name',
                 xy: 'xy',
                 mean: 'mean',
+                median: 'median',
                 variance: 'variance',
                 subjectCount: 'subject-count',
                 subjectDataPoints: 'subject-data-points',
@@ -881,6 +882,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             info.dataSeries = (
                 info.is.xy ||
                 info.is.mean ||
+                info.is.median ||
                 info.is.variance ||
                 info.is.subjectDataPoints ||
                 info.is.subjectCount
@@ -1025,11 +1027,12 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
                     if (info.is.xy ||
                         info.is.mean ||
+                        info.is.median ||
                         info.is.variance ||
                      // info.is.groupName ||
                         info.is.subjectDataPoints ||
                         info.is.subjectCount) {
-                        if (info.is.xy || info.is.mean || info.is.variance || info.is.subjectDataPoints || info.is.subjectCount) {
+                        if (info.is.xy || info.is.mean || info.is.median || info.is.variance || info.is.subjectDataPoints || info.is.subjectCount) {
                             plotData.setActiveDataSeriesIndex(info.dataSeries);
                         }
 
@@ -1201,7 +1204,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
             console.log("########### wireing up events!");
             $dom.$nestedFormContainer.on(nestedConfig, '.value,.count');
-            $dom.$formContainer.on(config, '.series-name,.xy,.mean,.variance,.subject-count,.subject-data-points');
+            $dom.$formContainer.on(config, '.series-name,.xy,.mean,.median,.variance,.subject-count,.subject-data-points');
 
             $dom.$formContainer.on({
                 change: function (e) {
@@ -1607,19 +1610,33 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                             di = getDataIndex(m, p, ds);
 
                             if (di < series.getPixelCount()) {
-                                if (dp.isReferencePoint) {
+                                if (dp.isReferencePoint || dp.css === 'mean' || dp.css === 'median') {
                                     fromValue = getNormalizedDataValue(plotData.getDataPoint(series.getPixel(di)), dp);
                                     cellContents = fromValue;
-                                } else {
-                                    var offset = p - ds.refPointFieldIndex;
-                                    fromValue = getNormalizedDataValue(plotData.getDataPoint(series.getPixel(di - offset)), dp);
-                                    toValue = getNormalizedDataValue(plotData.getDataPoint(series.getPixel(di)), dp);
+                                }
+                                else if (dp.css === "xy") {
+                                    fromValue = getNormalizedDataValue(plotData.getDataPoint(series.getPixel(di)), dp);
+                                    cellContents = fromValue;
+                                }
+                                else if (dp.css === "variance") {
+                                    if (dp.showRelative) {
+                                        var offset = p - ds.refPointFieldIndex;
+                                        fromValue = getNormalizedDataValue(plotData.getDataPoint(series.getPixel(di - offset)), dp, true);
+                                        toValue = getNormalizedDataValue(plotData.getDataPoint(series.getPixel(di)), dp, true);
 
-                                    if (!dp.has2dData) {
-                                        cellContents = toValue - fromValue;
-                                    }
-                                    else {
-                                        cellContents = "error";
+                                        if (!dp.has2dData) {
+                                            var delta = rounded(toValue - fromValue);
+
+                                            if (delta > 0) {
+                                                delta = "+" + delta;
+                                            }
+                                            cellContents = delta;
+                                        }
+                                        else {
+                                            cellContents = "error";
+                                        }
+                                    } else {
+                                        cellContents = rounded(getNormalizedDataValue(plotData.getDataPoint(series.getPixel(di)), dp, true));
                                     }
                                 }
                             } else {
@@ -1695,7 +1712,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             }
 
             // Clear out data for all cells
-            var cells = $table.find('td.xy,td.mean,td.variance');
+            var cells = $table.find('td.xy,td.mean,td.median,td.variance');
             cells.removeData('dataInfo');
 
             // Assign dataInfo to each cell with a corresponding pixel
@@ -1761,7 +1778,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 maxWidth: 300
             };
             $dom.$formContainer
-                .find('.series-name,.subject-count,.xy,.mean,.variance,.subject-data-points')
+                .find('.series-name,.subject-count,.xy,.mean,.median,.variance,.subject-data-points')
                 .jBox('Tooltip', editTooltipConfig);
 
             $dom.$nestedFormContainer
@@ -1903,7 +1920,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             seriesIndex, measureIndex, dataPointIndex, dataStructure
         ) {
             var $cell = $(["#mean-variance-formContainer td input.",
-                dso.includeIndividuals
+                (dso.includeIndividuals && dataPointIndex === dataStructure.dataPoints.length)
                     ? "subject-data-points"
                     : dataStructure.dataPoints[dataPointIndex].css,
                 "[data-series='",
@@ -1941,7 +1958,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 if (value.length > 1) {
                     if (noRounding) {
                         value = value[0]+ ", " +value[1];
-                        } else {
+                    } else {
                         value = rounded(value[0]) + ", " + rounded(value[1]);
                     }
                 }
@@ -1992,20 +2009,21 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         }
 
         function rounded(num) {
-            return Math.round(num * 100 + Number.EPSILON) / 100;
+            //return Math.round(num * 100 + Number.EPSILON) / 100;
+            return Math.round10(num, -2);
         }
 
         function getCellValue(imagePos, info, plotData, dataSeries) {
             var val = null;
 
             var dp = info.getDataPoint();
+            var dataValue = plotData.getDataPoint(imagePos);
 
-            if (dp && dp.isReferencePoint) {
-            // if (info.is.mean) {
-                val = getNormalizedDataValue(plotData.getDataPoint(imagePos), info.getDataPoint());
+            if ((dp && dp.isReferencePoint) || info.is.mean || info.is.median) {
+                val = getNormalizedDataValue(dataValue, info.getDataPoint());
             }
             else if (info.is.xy) {
-                val = getNormalizedDataValue(plotData.getDataPoint(imagePos), info.getDataPoint());
+                val = getNormalizedDataValue(dataValue, info.getDataPoint());
             }
             else if (info.is.variance) {
                 // Get the corresponding mean cell
@@ -2019,7 +2037,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 if (meanInfo.dataIndex != null) {
                     var meanImagePos = dataSeries.getPixel(meanInfo.dataIndex);
                     var meanDataPoint = plotData.getDataPoint(meanImagePos);
-                    var varianceDataPoint = plotData.getDataPoint(imagePos);
+                    var varianceDataPoint = dataValue;
 
                     val = getVarianceDisplayValue(meanDataPoint, varianceDataPoint, meanInfo.getDataPoint(), info.getDataPoint());
                 } else {
@@ -2036,16 +2054,13 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 if (activeNestedCell) {
                     var nestedInfo = getInfo(activeNestedCell);
                     if (nestedInfo.is.subjectDataPointsValue) {
-                        val = getNormalizedDataValue(plotData.getDataPoint(imagePos), info.getDataPoint());
+                        val = getNormalizedDataValue(dataValue, info.getDataPoint());
                     }
                 }
             }
             else if (info.is.subjectDataPointsValue) {
-                val = getNormalizedDataValue(plotData.getDataPoint(imagePos), info.getDataPoint());
+                val = getNormalizedDataValue(dataValue, info.getDataPoint());
             }
-            //else if (info.is.groupName) {
-            //    dataPoint = plotData.getDataPoint(imagePos);
-            //}
             return val;
         }
 
@@ -2491,7 +2506,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 var dataPointView = getCellValue({ x: pointPx, y: pointPy }, info, plotData, activeDataSeries);
                 activeCell.val(dataPointView);
 
-                if (info.is.mean) {
+                if (info.is.mean || info.is.median) {
                     // also adjust dependent cells
                     var $dependentCells = getDependentCells(activeCell, info);
                     $dependentCells.each(function (idx, cell) {
@@ -2608,11 +2623,9 @@ wpd.DataPointsRepainter = (function () {
                 isSelected = series.getSelectedPixels().indexOf(dindex) >= 0;
                 var info = series.getPixelMetaDataByKey(imagePos, 'meanVarianceInfo');
                 if (info) {
-                    var isMean = info.is.mean;
-
                     fillStyle = info.is.xy
                         ? green
-                        : info.is.mean
+                        : (info.is.mean || info.is.median)
                             ? blue
                             : info.is.subjectDataPoints
                                 ? orange

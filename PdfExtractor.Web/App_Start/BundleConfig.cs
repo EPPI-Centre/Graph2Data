@@ -53,10 +53,15 @@ namespace PdfExtractor.Web
                       "~/Scripts/bootstrap.js",
                       "~/Scripts/respond.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/polyfills").Include(
+                "~/Scripts/decimalAdjust.js"
+            ));
+
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
 
+            
             //bundles.Add(new ScriptBundle("~/bundles/pdfjsold").Include(
             //    "~/Scripts/viewer-poc/web/pdf.js",
             //    "~/Scripts/viewer-poc/web/pdf.worker.js",

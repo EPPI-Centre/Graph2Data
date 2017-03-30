@@ -78,59 +78,7 @@ wpd.initApp = function (config) {// This is run when the page loads.
         configureProfiles: function() {
             var self = this;
 
-            this.profiles = [
-            //  {
-            //    id: 'free-points-capture',
-            //    name: "Free points-capture",
-            //    plotTypeId: 'r_xy',
-            //    useTable: false,
-            //    outcomeMeasureId: 'simple-table-capture',
-            //    dataStructureId: 'mean-only',
-            //    includeIndividuals: false,
-            //    dataSeriesCount: 1,
-            //    dataPointCount: 200
-            //}, {
-            //    id: 'quantize-test-2D',
-            //    name: "Quantize Testing (2D)",
-            //    plotTypeId: 'r_xy',
-            //    useTable: true,
-            //    outcomeMeasureId: 'simple-table-capture',
-            //    dataStructureId: 'mean-only',
-            //    includeIndividuals: false,
-            //    dataSeriesCount: 1,
-            //    dataPointCount: 200
-            //}, {
-            //    id: 'quantize-test-1D',
-            //    name: "Quantize Testing (1D)",
-            //    plotTypeId: 'r_bar',
-            //    useTable: true,
-            //    outcomeMeasureId: 'simple-table-capture',
-            //    dataStructureId: 'mean-only',
-            //    includeIndividuals: false,
-            //    dataSeriesCount: 1,
-            //    dataPointCount: 200
-            //}, {
-            //    id: 'scatter-plot-xy',
-            //    name: "Scatter plot (XY)",
-            //    plotTypeId: 'r_xy',
-            //    useTable: true,
-            //    outcomeMeasureId: 'simple-table-capture',
-            //    dataStructureId: 'mean-only',
-            //    includeIndividuals: true,
-            //    dataSeriesCount: 4,
-            //    dataPointCount: 2
-            //}, {
-            //    id: 'scatter-plot-1d',
-            //    name: "Scatter plot (1D)",
-            //    plotTypeId: 'r_bar',
-            //    useTable: true,
-            //    outcomeMeasureId: 'simple-table-capture',
-            //    dataStructureId: 'mean-only',
-            //    includeIndividuals: true,
-            //    dataSeriesCount: 4,
-            //    dataPointCount: 2
-            //}
-            ];
+            this.profiles = [];
 
             var boolSpace = [true, false];
             var plotTypes = [{
@@ -427,7 +375,7 @@ wpd.initApp = function (config) {// This is run when the page loads.
                 dataPoints: [{
                     name: "Median",
                     abbrev: "Median",
-                    css: "mean",
+                    css: "median",
                     isReferencePoint: true
                 }, {
                     name: "95% Confidence range (upper)",
@@ -450,7 +398,7 @@ wpd.initApp = function (config) {// This is run when the page loads.
                 dataPoints: [{
                     name: "Median",
                     abbrev: "Median",
-                    css: "mean",
+                    css: "median",
                     isReferencePoint: true
                 }, {
                     name: "99% Confidence range (upper)",
@@ -473,7 +421,7 @@ wpd.initApp = function (config) {// This is run when the page loads.
                 dataPoints: [{
                     name: "Median",
                     abbrev: "Median",
-                    css: "mean",
+                    css: "median",
                     isReferencePoint: true
                 }, {
                     name: "Lower Quartile (Q1)",
@@ -491,8 +439,41 @@ wpd.initApp = function (config) {// This is run when the page loads.
                 dataPoints: [{
                     name: "Median",
                     abbrev: "Median",
-                    css: "mean",
+                    css: "median",
                     isReferencePoint: true
+                }, {
+                    name: "Lower Quartile (Q1)",
+                    abbrev: "Q1",
+                    css: "variance"
+                }, {
+                    name: "Upper Quartile (Q3)",
+                    abbrev: "Q3",
+                    css: "variance"
+                }, {
+                    name: "Minimum",
+                    abbrev: "Min",
+                    css: "variance",
+                    showRelative: true
+                }, {
+                    name: "Maximum",
+                    abbrev: "Max",
+                    css: "variance",
+                    showRelative: true
+                }]
+            }, {
+                id: 'box-and-whisker-with-mean',
+                text: "Box and whisker plot (with mean)",
+                abbrev: "B&W-M",
+                dataPoints: [{
+                    name: "Median",
+                    abbrev: "Median",
+                    css: "median",
+                    isReferencePoint: true
+                }, {
+                    name: "Mean",
+                    abbrev: "Mean",
+                    css: "mean",
+                    isReferencePoint: false // !
                 }, {
                     name: "Lower Quartile (Q1)",
                     abbrev: "Q1",

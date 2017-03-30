@@ -120,6 +120,7 @@ body:not(.wpd-visible) .jBox-wrapper {
 #mean-variance-nestedFormContainer select,
 #mean-variance-nestedFormContainer button {
     width: 100%;
+    box-sizing: border-box;
 }
 
 #mean-variance-formContainer table td,
@@ -129,10 +130,12 @@ body:not(.wpd-visible) .jBox-wrapper {
     border-collapse: collapse;
     border: 1px solid #666666;
     padding: 0.25em;
-/*
-    border: 1px solid red;
-    width: auto !important;
-*/
+    box-sizing: border-box;
+}
+
+#mean-variance-formContainer table.JColResizer > tbody > tr > td, 
+#mean-variance-formContainer table.JColResizer > tbody > tr > th {
+    padding: 0.25em !important;
 }
 
 #mean-variance-formContainer table th,
@@ -161,7 +164,8 @@ body:not(.wpd-visible) .jBox-wrapper {
 }
 
 
-#mean-variance-formContainer input.mean {
+#mean-variance-formContainer input.mean,
+#mean-variance-formContainer input.median {
     background-color: rgb(212, 212, 255);
     cursor: pointer;
 }
@@ -171,7 +175,8 @@ body:not(.wpd-visible) .jBox-wrapper {
     cursor: pointer;
 }
 
-#mean-variance-formContainer input.mean.focused {
+#mean-variance-formContainer input.mean.focused,
+#mean-variance-formContainer input.median.focused {
     background-color: blue;
     color: white;
 }
