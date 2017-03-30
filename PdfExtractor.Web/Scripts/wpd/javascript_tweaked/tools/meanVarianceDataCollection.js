@@ -1111,34 +1111,42 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                 }
             };
 
+            this.getIndividualCountsForSeries = function(series) {
+                var imd = series.getIndividualMetaData();
+                var counts = imd.counts;
+                return counts;
+            };
+
             function getIndividualCounts() {
                 var outerSeries = plotData.getActiveDataSeries();
-                var imd = outerSeries.getIndividualMetaData();
-                var counts = imd.counts;
+                var counts = self.getIndividualCountsForSeries(outerSeries);
                 return counts;
             }
 
-            function updateSubjectsCell() {
-                var aci = getActiveCellInfo();
-                if (aci.activeNestedCell && aci.activeCell) {
-                    var counts = getIndividualCounts();
-                    var info = getInfo(aci.activeCell);
-                 // var nestedInfo = getInfo(aci.activeNestedCell);
-                    var total = $.map(counts, function(prop, key) {
+            this.getNumberOfIndividuals = function(counts) {
+                var total = $.map(counts, function(prop, key) {
                         return prop;
                     })
                     .reduce(function(acc, val) {
                         return +acc + +val;
                     }, 0);
 
+                return total;
+            };
+
+            function updateSubjectsCell(counts) {
+                var aci = getActiveCellInfo();
+                if (aci.activeNestedCell && aci.activeCell) {
+                    var total = self.getNumberOfIndividuals(counts);
+
                     aci.activeCell.val(total);
                 }
                 else { alert ("Couldn't find 'Subjects' cell.")}
             }
-            setIndividualCount = function ($edit, info, subjectCount) {
-                var counts = getIndividualCounts($edit);
+            setIndividualCount = function (info, subjectCount) {
+                var counts = getIndividualCounts();
                 counts[info.dataPoint] = subjectCount;
-                updateSubjectsCell();
+                updateSubjectsCell(counts);
             };
             var nestedConfig = {
                 focus: function(e) {
@@ -1177,7 +1185,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
                     if (info.is.subjectDataPointsCount) {
                         var subjectCount = $edit.val();
-                        setIndividualCount($edit, info, subjectCount);
+                        setIndividualCount(info, subjectCount);
                     }
                 }
             };
@@ -1454,11 +1462,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         };
 
 
-        // TODO: Update buildTable to add an additional row (individuals) and restrict to one column
-        // when gathering individuals plus mean and small v variance, store the data for each group of
-        // individuals as a series and have the mean and small v variance as a series which lives in metaData
-        //
-
+        var dso;
         this.buildTable = function () {
             if (!useTable) {
                 wpd.acquireMeanVarianceData.hideAllDataPopups();
@@ -1476,7 +1480,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
             //    .map(function () { return $(this).val(); });
 
             var om = curOutcomeMeasure;
-            var dso = this.getDataStructure();
+            dso = this.getDataStructure();
             var ds = dso.dataStructure;
             var ii = dso.includeIndividuals;
          // var dsi = dso.index;
@@ -1656,6 +1660,8 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     if (ii) {
                         tabIndex = cellsTabIndex++;
 
+                        var count = self.getNumberOfIndividuals(self.getIndividualCountsForSeries(series));
+
                         html.push(
                             "<td><input ",
                                 "type='text' ",
@@ -1667,6 +1673,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                                 "data-measure='", m, "' ",
                                 "data-point='", p, "' ",
                                 "tabindex='", tabIndex, "' ",
+                                "value='", count, "'",
                             "></td>"
                         );
                     }
@@ -1895,9 +1902,10 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         function getCellForSeriesMeasureAndPoint(
             seriesIndex, measureIndex, dataPointIndex, dataStructure
         ) {
-            var $cell = $([
-                "#mean-variance-formContainer td input.",
-                    dataStructure.dataPoints[dataPointIndex].css,
+            var $cell = $(["#mean-variance-formContainer td input.",
+                dso.includeIndividuals
+                    ? "subject-data-points"
+                    : dataStructure.dataPoints[dataPointIndex].css,
                 "[data-series='",
                     seriesIndex,
                 "'][data-measure='",
@@ -2229,7 +2237,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
                     // set initial count
                     if (info.is.subjectDataPointsValue) {
-                        setIndividualCount(aci.cell, info, "1");
+                        setIndividualCount(info, "1");
                     }
 
                     var curTabIndex = aci.cell.prop('tabindex');
@@ -2263,9 +2271,6 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
             wpd.graphicsWidget.updateZoomOnEvent(ev);
             wpd.dataPointCounter.setCount();
-
-            //self.buildTable();
-            //selectCell(getActiveCell());
         }
 
         function adjustPointsMouseClick(ev, pos, imagePos) {
