@@ -147,6 +147,9 @@ wpd.initApp = function (config) {// This is run when the page loads.
                         var om = self.outcomeMeasures[o];
                         for (var d = 0; d < self.dataStructures.length; d++) {
                             var ds = self.dataStructures[d];
+                            if (pt.id === 'r_bar' && ds.id === 'x-y') {
+                                continue;
+                            }
                             for (var b = 0; b < boolSpace.length; b++) {
                                 var ii = boolSpace[b];
                                 var name = [
