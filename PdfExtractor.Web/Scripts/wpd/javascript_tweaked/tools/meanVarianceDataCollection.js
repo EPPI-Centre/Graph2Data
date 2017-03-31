@@ -1823,6 +1823,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         function trapezoidsChanged(ev) {
             var painter = wpd.graphicsWidget.getRepainter();
 
+            self.showAreaUnderCurveIfNeeded();
             painter.setShowArea(getShowTrapezoids(), getTrapezoidAlpha());
             wpd.graphicsWidget.forceHandlerRepaint();
         }
@@ -2168,7 +2169,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
         }
 
         this.showAreaUnderCurveIfNeeded = function() {
-            if (!useTable) {
+            if (getShowTrapezoids()) {
                 showAreaUnderCurve ();
             }
         };
@@ -2236,6 +2237,8 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     imagePos = wpd.graphicsWidget.imagePx(imagePos.x, imagePos.y);
 
                     dataIndex = asi.series.addPixel(imagePos.x, imagePos.y, metaData);
+
+                    self.showAreaUnderCurveIfNeeded();
 
                     //wpd.graphicsHelper.drawPoint(imagePos, "rgb(200,0,0)", pointLabel);
                     wpd.graphicsWidget.forceHandlerRepaint(); // draw points from the painter only
