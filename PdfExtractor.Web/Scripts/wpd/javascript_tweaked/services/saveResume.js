@@ -268,6 +268,7 @@ wpd.saveResume = (function () {
         save: save,
         load: load,
         download: download,
-        read: read
+        read: read,
+        generateJSON: generateJSON
     };
 })();
