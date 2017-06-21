@@ -47,7 +47,7 @@
                 method: 'post'
             }).done(function (success) {
                 if (success === true) {
-                    alert('Thank you for your submission.');
+                    document.location.href = '@Url.Action("PdfSandbox")';
                 } else {
                     alert('There has been an error with your submission. Please report it or try again.');
                 }
@@ -708,7 +708,6 @@
             <p>
                 <input type="button" value="Edit Labels (E)" id="edit-data-labels" onclick="wpd.acquireData.editLabels();" style="display: none; width: 115px;">
                 <input type="button" value="View Data" id="saveBtn" onclick="wpd.dataTable.showTable();" style="width: 115px;">
-                @*<input type="button" value="Save Data" style="width:80px;" class="saveButton" />*@
 
             </p>
             <div class="vertical-spacer"></div>
@@ -737,7 +736,6 @@
             <div class="vertical-spacer"></div>
             <p>
                 <input id="mean-variance-show-data" value="View Data" onclick="wpd.dataTable.showTable();" type="button" style="width: 112px;">
-                @*<input type="button" value="Save Data" style="width:80px;" class="saveButton" />*@
             </p>
             <p>
                 <span id="modifier-mode-info"></span>
@@ -845,7 +843,6 @@
                 <input type="button" value="Run" style="width: 40px;" onclick="wpd.algoManager.run();"/>
                 <input type="button" value="Clear Points" style="width: 95px;" onclick="wpd.acquireData.clearAll();"/>
                 <input type="button" value="View Data" style="width: 80px;" onclick="wpd.dataTable.showTable();"/>
-                @*<input type="button" value="Save Data" style="width:95px;" class="saveButton" />*@
             </p>
             <hr/>
             <p>Data Points: <span class="data-point-counter">0</span>
