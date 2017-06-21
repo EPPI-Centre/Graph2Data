@@ -45,8 +45,14 @@
                 data: { jsonData: wpd.saveResume.generateJSON(), durationSeconds: 200 }, //todo: get the duration
                 async: false,
                 method: 'post'
-            }).done(function (data) {
-                alert('data returned: ' + data);
+            }).done(function (success) {
+                if (success === true) {
+                    alert('Thank you for your submission.');
+                } else {
+                    alert('There has been an error with your submission. Please report it or try again.');
+                }
+            }).fail(function() {
+                alert('There has been an error with your submission. Please report it or try again.');
             });
         });
     </script>

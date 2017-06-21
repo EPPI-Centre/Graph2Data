@@ -3,8 +3,15 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.Azure; // Namespace for CloudConfigurationManager
+using Microsoft.WindowsAzure.Storage; // Namespace for CloudStorageAccount
+using Microsoft.WindowsAzure.Storage.Blob;
+using Newtonsoft.Json;
+// Namespace for Blob storage types
+using Newtonsoft.Json.Linq;
 
 namespace PdfExtractor.Web.Controllers
 {
@@ -134,10 +141,75 @@ namespace PdfExtractor.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult SaveJSON(string jsonData, int durationSeconds)
+        public JsonResult SaveJSON(string jsonData, int durationSeconds)
         {
+            if (string.IsNullOrEmpty(jsonData)) throw new ArgumentException("jsonData");
+            if (durationSeconds <= 0) throw new ArgumentException("durationSeconds");
+
             //System.Diagnostics.Debugger.Launch();
-            return Content("todo: combine the duration with the json and save to blob storage");
+
+            var jsonObject = JsonConvert.DeserializeObject(jsonData);
+            
+            //todo: add duration into jsonObject here
+
+            
+            var jsonStringToSave = JsonConvert.SerializeObject(jsonObject);
+
+            var storageAccount = CloudStorageAccount.Parse(CloudConfigurationManager.GetSetting("StorageConnectionString"));
+            var blobClient = storageAccount.CreateCloudBlobClient();
+
+            // Retrieve a reference to a container.
+            var container = blobClient.GetContainerReference("submissions");
+            // Create the container if it doesn't already exist.
+            container.CreateIfNotExists();
+            container.SetPermissions(new BlobContainerPermissions { PublicAccess = BlobContainerPublicAccessType.Blob });
+
+            // Retrieve reference to a blob named "myblob".
+            var blockBlob = container.GetBlockBlobReference(string.Format("submission-{0}.json", DateTime.Now.ToString("dd-MM-yyyy-HH-mm-ss")));
+            blockBlob.UploadText(jsonStringToSave);
+
+            return Json(true);
+        }
+
+        /// <summary>
+        /// currently exposed at: /Home/ListBlobs
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ListBlobs()
+        {
+            var stringBuilder = new StringBuilder();
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
+                CloudConfigurationManager.GetSetting("StorageConnectionString"));
+
+            // Create the blob client.
+            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+
+            // Retrieve reference to a previously created container.
+            CloudBlobContainer container = blobClient.GetContainerReference("submissions");
+
+            // Loop over items within the container and output the length and URI.
+            foreach (IListBlobItem item in container.ListBlobs(null, false))
+            {
+                if (item.GetType() == typeof(CloudBlockBlob))
+                {
+                    CloudBlockBlob blob = (CloudBlockBlob)item;
+
+                    stringBuilder.AppendFormat("Block blob of length {0}: {1}<br/>", blob.Properties.Length, blob.Uri);
+                }
+                else if (item.GetType() == typeof(CloudPageBlob))
+                {
+                    CloudPageBlob pageBlob = (CloudPageBlob)item;
+
+                    stringBuilder.AppendFormat("Page blob of length {0}: {1}<br/>", pageBlob.Properties.Length, pageBlob.Uri);
+                }
+                else if (item.GetType() == typeof(CloudBlobDirectory))
+                {
+                    CloudBlobDirectory directory = (CloudBlobDirectory)item;
+
+                    stringBuilder.AppendFormat("Directory: {0}<br/>", directory.Uri);
+                }
+            }
+            return Content(stringBuilder.ToString());
         }
 
     }
