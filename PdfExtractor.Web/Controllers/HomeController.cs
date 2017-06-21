@@ -132,5 +132,13 @@ namespace PdfExtractor.Web.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        public ActionResult SaveJSON(string jsonData, int durationSeconds)
+        {
+            //System.Diagnostics.Debugger.Launch();
+            return Content("todo: combine the duration with the json and save to blob storage");
+        }
+
     }
 }
