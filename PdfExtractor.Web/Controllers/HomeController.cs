@@ -141,14 +141,14 @@ namespace PdfExtractor.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult SaveJSON(string jsonData, int durationSeconds)
+        public JsonResult SaveJSON(string jsonData, double durationMilliSeconds)
         {
             if (string.IsNullOrEmpty(jsonData)) throw new ArgumentException("jsonData");
-            if (durationSeconds <= 0) throw new ArgumentException("durationSeconds");
+            if (durationMilliSeconds <= 0) throw new ArgumentException("durationSeconds");
 
             var deserialisedObject = JsonConvert.DeserializeObject(jsonData);
             var jObject = JObject.FromObject(deserialisedObject);
-            jObject.Add("timeToCompleteInSeconds", durationSeconds);
+            jObject.Add("timeToCompleteInMilliSeconds", durationMilliSeconds);
 
             var storageAccount = CloudStorageAccount.Parse(CloudConfigurationManager.GetSetting("StorageConnectionString"));
             var blobClient = storageAccount.CreateCloudBlobClient();

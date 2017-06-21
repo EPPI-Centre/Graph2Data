@@ -40,9 +40,17 @@
         };
 
         $(document).on('click', '.saveButton', function () {
+
+            var duration = 1;
+            if (document.timerStart != null) {
+                var timeNow = performance.now();
+                duration = (timeNow - document.timerStart);
+            } else {
+                console.log('unable to get the time.');
+            }
             $.ajax({
                 url: '/Home/SaveJSON',
-                data: { jsonData: wpd.saveResume.generateJSON(), durationSeconds: 200 }, //todo: get the duration
+                data: { jsonData: wpd.saveResume.generateJSON(), durationMilliSeconds: duration }, 
                 async: false,
                 method: 'post'
             }).done(function (success) {
@@ -119,6 +127,7 @@
                     userSettings: userSettings,
                 };
                 wpdConfig.show = function () {
+                    document.timerStart = performance.now();
                     body.addClass('wpd-visible');
                     wpd.initApp(wpdConfig);
                 };
