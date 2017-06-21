@@ -146,14 +146,16 @@ namespace PdfExtractor.Web.Controllers
             if (string.IsNullOrEmpty(jsonData)) throw new ArgumentException("jsonData");
             if (durationSeconds <= 0) throw new ArgumentException("durationSeconds");
 
-            //System.Diagnostics.Debugger.Launch();
+            System.Diagnostics.Debugger.Launch();
 
-            var jsonObject = JsonConvert.DeserializeObject(jsonData);
-            
-            //todo: add duration into jsonObject here
+            var deserialisedObject = JsonConvert.DeserializeObject(jsonData);
 
+            var jObject = JObject.FromObject(deserialisedObject);
+            jObject.Add("timeToCompleteInSeconds", durationSeconds);
             
-            var jsonStringToSave = JsonConvert.SerializeObject(jsonObject);
+
+            //var jsonStringToSave = JsonConvert.SerializeObject(jsonObject);
+            var jsonStringToSave = jObject.ToString();
 
             var storageAccount = CloudStorageAccount.Parse(CloudConfigurationManager.GetSetting("StorageConnectionString"));
             var blobClient = storageAccount.CreateCloudBlobClient();
