@@ -9,69 +9,81 @@
 
     <script type="text/javascript" src="~/Scripts/jquery.resize.js"></script>
 
-    <link rel="stylesheet" href="~/Content/PdfSandbox.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="~/Content/PdfSandbox.css" type="text/css" media="screen"/>
 
-    <link href="~/Content/selection-rectangles.css" rel="stylesheet" />
+    <link href="~/Content/selection-rectangles.css" rel="stylesheet"/>
     <script type="text/javascript" src="~/Scripts/selection-rectangles.js"></script>
 
-    <link href="~/Scripts/jBox/jBox.css" rel="stylesheet" />
+    <link href="~/Scripts/jBox/jBox.css" rel="stylesheet"/>
     <script type="text/javascript" src="~/Scripts/jBox/jBox.js"></script>
 
-    <link href="~/Scripts/jBox/plugins/Notice/jBox.notice.css" rel="stylesheet" />
-    <link href="~/Scripts/jBox/themes/NoticeFancy.css" rel="stylesheet" />
+    <link href="~/Scripts/jBox/plugins/Notice/jBox.notice.css" rel="stylesheet"/>
+    <link href="~/Scripts/jBox/themes/NoticeFancy.css" rel="stylesheet"/>
     <script type="text/javascript" src="~/Scripts/jBox/plugins/Notice/jBox.Notice.js"></script>
 
     <script type="text/javascript" src="~/Scripts/purl.js"></script>
 
     <script type="text/javascript">
-        window.alert = function (msg) {
+        window.alert = function(msg) {
             var modal = new jBox('Modal',
-            {
-                content: msg,
-                title: "PdfSandbox",
-                closeOnEsc: true,
-                closeButton: 'box',
-                closeOnClick: 'overlay',
-                draggable: true,
-                overlay: true,
-                pointer: true
-            });
+                {
+                    content: msg,
+                    title: "PdfSandbox",
+                    closeOnEsc: true,
+                    closeButton: 'box',
+                    closeOnClick: 'overlay',
+                    draggable: true,
+                    overlay: true,
+                    pointer: true
+                });
             modal.open();
         };
 
-        $(document).on('click', '.saveButton', function () { //todo: move these functions into a js file
+        $(document).on('click',
+            '.saveButton',
+            function() { //todo: move these functions into a js file
 
-            var duration = 1;
-            if (document.timerStart != null) {
-                var timeNow = performance.now();
-                duration = (timeNow - document.timerStart);
-            } else {
-                console.log('unable to get the time.');
-            }
-            $.ajax({
-                url: '/Home/SaveJSON',
-                data: { jsonData: wpd.saveResume.generateJSON(), durationMilliSeconds: duration },
-                async: false,
-                method: 'post'
-            }).done(function (success) {
-                if (success === true) {
-                    document.location.href = '@Url.Action("PdfSandbox")';
+                var duration = 1;
+                if (document.timerStart != null) {
+                    var timeNow = performance.now();
+                    duration = (timeNow - document.timerStart);
                 } else {
-                    alert('There has been an error with your submission. Please report it or try again.');
+                    console.log('unable to get the time.');
                 }
-            }).fail(function() {
-                alert('There has been an error with your submission. Please report it or try again.');
+                $.ajax({
+                    url: '/Home/SaveJSON',
+                    data: { jsonData: wpd.saveResume.generateJSON(), durationMilliSeconds: duration },
+                    async: false,
+                    method: 'post'
+                }).done(function(success) {
+                    if (success === true) {
+                        document.location.href = '@Url.Action("PdfSandbox")';
+                    } else {
+                        alert('There has been an error with your submission. Please report it or try again.');
+                    }
+                }).fail(function() {
+                    alert('There has been an error with your submission. Please report it or try again.');
+                });
             });
-        });
 
-        $(document).on('click', '.cancelButton', function() {
-            document.location.href = '@Url.Action("PdfSandbox")';
-        });
+        $(document).on('click',
+            '.cancelButton',
+            function() {
+                document.location.href = '@Url.Action("PdfSandbox")';
+            });
+        $(document).on('click',
+            '#chooseGraphNextButton',
+            function() {
+                //choose profile
+                var structureId = $('#graph-type').val();
+                $(document).trigger('chooseProfile', ['free-points-capture', structureId]);
+                
+            });
     </script>
 
 
-    <link rel="stylesheet" href="~/Content/wpd/styles.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="~/Content/wpd/widgets.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="~/Content/wpd/styles.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="~/Content/wpd/widgets.css" type="text/css" media="screen"/>
     @*<script src="~/Scripts/WebPlotDigitizer/combined-compiled.js"></script>*@
     @*<script src="~/Scripts/wpd/wpd_combined_tweaked.js"></script>*@
     @Scripts.Render("~/bundles/wpd_tweaked")
@@ -98,11 +110,11 @@
         //    });
         //});
 
-        $(function () {
+        $(function() {
             $.post({
                 url: "@Url.Action("Get", "Settings")",
                 data: "",
-                success: function (data, status, xhr) {
+                success: function(data, status, xhr) {
                     begin(JSON.parse(data));
                 },
                 dataType: "json"
@@ -130,12 +142,12 @@
                     wpdPlotMemento: null,
                     userSettings: userSettings,
                 };
-                wpdConfig.show = function () {
+                wpdConfig.show = function() {
                     document.timerStart = performance.now();
                     body.addClass('wpd-visible');
                     wpd.initApp(wpdConfig);
                 };
-                wpdConfig.hide = function (wpdPlotMemento) {
+                wpdConfig.hide = function(wpdPlotMemento) {
                     wpd.acquireMeanVarianceData.hideAllDataPopups();
                     wpdConfig.focusedSelection.dataStore.putData({
                         data: wpdPlotMemento,
@@ -143,11 +155,11 @@
                     });
                     body.removeClass('wpd-visible');
                 };
-                wpdConfig.flushSettings = function (settings) {
+                wpdConfig.flushSettings = function(settings) {
                     $.post({
                         url: "@Url.Action("Set", "Settings")",
                         data: JSON.stringify(settings),
-                        success: function (data, status, xhr) {
+                        success: function(data, status, xhr) {
                             console.log("Settings saved!");
                         },
                         dataType: "json"
@@ -163,7 +175,7 @@
 
                 $('#wpd-filemenu-lee-close')
                     .on('click',
-                        function (e) {
+                        function(e) {
                             var wpdPlotMemento = wpd.appData.getMemento();
                             wpdConfig.hide(wpdPlotMemento);
                         });
@@ -1096,8 +1108,8 @@
             </p>
             <p>
               Calibrate
-                <input type="radio" name="axes-count" value="1"/> One axis (x or y) <br/>
-                <input type="radio" name="axes-count" value="2" /> Both axes (x and y)
+                <input type="radio" name="axes-count" value="1" id="wizard-single-axis" /> One axis (x or y) <br/>
+                <input type="radio" name="axes-count" value="2" checked="checked"/> Both axes (x and y)
             </p>
             <label for="include-individuals">
                 <input type="checkbox" id="include-individuals-wizard"/>
@@ -1105,8 +1117,8 @@
             </label>
         <p>&nbsp;</p>
         <p align="right">
-            <input onclick="wpd.popup.close('chooseGraph');" type="button" value="Close">&nbsp;
-            <input id="nextButton" type="button" value="Next">
+            <input onclick="wpd.popup.close('chooseGraph');document.location.href = '@Url.Action("PdfSandbox")';" type="button" value="Close">&nbsp;
+            <input id="chooseGraphNextButton" type="button" value="Next">
         </p>
     </div>
 
