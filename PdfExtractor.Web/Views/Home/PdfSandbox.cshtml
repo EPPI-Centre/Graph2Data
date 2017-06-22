@@ -76,7 +76,7 @@
             function() {
                 //choose profile
                 var structureId = $('#graph-type').val();
-                $(document).trigger('chooseProfile', ['free-points-capture', structureId]);
+                $(document).trigger('chooseProfile', ['scatter-plot-1d', structureId]); //free-points-capture
                 
             });
     </script>
@@ -1298,7 +1298,7 @@
         <p align="center">Click four known points on the axes in the <font color="red">order shown in red</font>. Two on the X axis (X1, X2) and two on the Y axis (Y1, Y2).</p>
         <p>&nbsp;</p>
         <p align="center">
-            <input type="button" value="Back" onclick="wpd.popup.close('xyAxesInfo'); wpd.popup.show('chooseProfile');" />&nbsp;
+            <input type="button" value="Back" onclick="wpd.popup.close('xyAxesInfo'); wpd.popup.show('chooseGraph');" />&nbsp;
             <input type="button" value="Proceed" onclick="wpd.xyCalibration.pickCorners();"/>
         </p>
     </div>
