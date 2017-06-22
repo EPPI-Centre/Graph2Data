@@ -1052,17 +1052,61 @@
         <p>&nbsp;</p>
         <p align="center"><input type="button" value="Align Axes" onclick="wpd.alignAxes.start();">&nbsp;<input type="button" value="Cancel" onClick="wpd.popup.close('axesList');"></p>
     </div>
-
+    
     <!-- Choose profile -->
     <div id="chooseProfile" class="popup" style="width: 400px;">
         <div class="popupheading">Choose Plot Type</div>
         <p>&nbsp;</p>
+
         <center>
             Profile <select id="profile-selection-list"></select>
         </center>
         <p>&nbsp;</p>
         <p align="center">
             <input id="confirmProfileChoice" type="button" value="Choose Profile">
+        </p>
+    </div>
+
+    <!-- Choose Graph - new wizard -->
+    <div id="chooseGraph" class="popup" style="width: 400px;">
+        <div class="popupheading">Specify graph characteristics</div>
+        <p>&nbsp;</p>
+            <select id="graph-type">
+                <option value="mean-only">Mean only</option>
+                <option value="mean-and-standard-error">Mean and Standard Error (SEM)</option>
+                <option value="mean-and-standard-deviation">Mean and Standard Deviation (SD)</option>
+                <option value="mean-and-confidence-interval-95">Mean and 95% CI</option>
+                <option value="mean-and-confidence-interval-99">Mean and 99% CI</option>
+                <option value="median-and-confidence-interval-95">Median and 95% CI</option>
+                <option value="median-and-confidence-interval-99">Median and 99% CI</option>
+                <option value="median-and-interquartile-range">Median and Interquartile Range</option>
+                <option value="box-and-whisker">Box and whisker plot</option>
+                <option value="roc-curve">ROC Curve</option>
+                <option value="xy-scatter-plot">XY Scatter plot</option>
+            </select>
+            <div class="vertical-spacer"></div>
+            <p>
+                # Data series
+                <input type="text" size="3" id="mean-variance-dataSeriesCount-wizard" value="1"/>
+            </p>
+            <div class="vertical-spacer"></div>
+            <p>
+                # Data points
+                <input type="text" size="3" id="mean-variance-dataPointCount-wizard" value="10"/>
+            </p>
+            <p>
+              Calibrate
+                <input type="radio" name="axes-count" value="1"/> One axis (x or y) <br/>
+                <input type="radio" name="axes-count" value="2" /> Both axes (x and y)
+            </p>
+            <label for="include-individuals">
+                <input type="checkbox" id="include-individuals-wizard"/>
+                Include individuals
+            </label>
+        <p>&nbsp;</p>
+        <p align="right">
+            <input onclick="wpd.popup.close('chooseGraph');" type="button" value="Close">&nbsp;
+            <input id="nextButton" type="button" value="Next">
         </p>
     </div>
 
