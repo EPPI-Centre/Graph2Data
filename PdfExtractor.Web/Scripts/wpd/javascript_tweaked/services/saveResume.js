@@ -218,6 +218,18 @@ wpd.saveResume = (function () {
                 pixel = ds.getPixel(j);
                 outData.wpd.dataSeries[i].data[j] = pixel;
                 outData.wpd.dataSeries[i].data[j].value = plotData.axes.pixelToData(pixel.x, pixel.y);
+                var individual = ds.getIndividualMetaData();
+                if (individual != null && individual.series != null) {
+                    var dataPoints = individual.series.getDataPoints();
+                    if (dataPoints.length) {
+                        var cleanedDataPoints = [];
+                        dataPoints.forEach(function(value) {
+                            var point = { x: value.x, y: value.y, value: plotData.axes.pixelToData(value.x, value.y) };
+                            cleanedDataPoints.push(point);
+                        });
+                        outData.wpd.dataSeries[i].data[j].subjectDataPoints = cleanedDataPoints;
+                    }
+                }
             }
         }
 
