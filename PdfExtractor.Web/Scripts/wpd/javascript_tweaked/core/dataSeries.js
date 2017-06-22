@@ -217,7 +217,9 @@ wpd.DataSeries = (function () {
         this.getSelectedPixels = function () {
             return selections;
         };
-
+        this.getDataPoints = function() {
+            return dataPoints;
+        };
     };
 })();
 
