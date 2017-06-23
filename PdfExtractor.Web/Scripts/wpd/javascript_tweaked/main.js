@@ -583,6 +583,7 @@ wpd.initApp = function (config) {// This is run when the page loads.
     wpd.layoutManager.initialLayout(config);
     if (!wpd.loadRemoteData()) {
         if (!!config.graphImage) {
+            document.graphImageNumber = config.graphImageNumber;
             wpd.graphicsWidget.loadImageFromURL(
                 config.graphImage.imageSrc,
                 false, //true <-- TODO - this bool needs to be dynamic

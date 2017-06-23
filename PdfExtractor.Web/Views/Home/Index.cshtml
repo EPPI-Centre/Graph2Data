@@ -1,7 +1,37 @@
 ﻿@{
     ViewBag.Title = "Home Page";
+   
+    
 }
+@section scripts {
+    <script>
+        var userList = [
+            'T25YH', 'J8P7T', 'BEQ56', 'NK5DL', 'RR46L', 'PL893', 'CN9JK', 'LW2K6', 'NCBB6', 'LSHH7', 'LN9EJ', 'KN5LS',
+            'DKENR', 'KCL3K', '7KK5J', 'D8SLW', 'W2ISN', 'BHKEL', '22MK', 'LP35L', '2HU6B', 'C9EMS', 'JE845', '66JFN',
+            'N4JWM', 'K4LWM', 'AKK4N', 'N3IFM', '45JFU', 'U5HFY', 'YETDJ', 'EKSII', 'RKGNV', 'MFJRU', '47EI3', '888C7',
+            '4JFNH', 'F6VH3', '636DG', 'FHNFJ', 'RU466', 'FHFNR', 'JUJE6', 'HFJ4M', 'DJVSU', 'WH3H3', '7F764', 'H4HRH',
+            'V77R4', 'JEJJD', 'HF74H', 'HHF74', 'HEJDJ', 'VN4HR', '4HRJF', 'HF777', '4HRNF', 'JFU4H', 'ER56S', 'LKENW'
+        ];
 
+        $(document).ready(function() {
+
+            $('#userCode').on('change input propertychange',
+                function() {
+                    var value = $(this).val().toUpperCase();
+                    if ($.inArray(value, userList) !== -1) {
+                        $('#submitButton').removeClass('disabled');
+                        var pdfUrl = '@Url.Action("PdfSandbox")'; // + '?u=' + value;
+                        $('#submitButton').attr('href', pdfUrl);
+                        document.cookie = "graph2datauser=" + value + ';';
+                    } else {
+                        $('#submitButton').addClass('disabled');
+                        $('#submitButton').attr('href', '#');
+                        document.cookie = "graph2datauser=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                    }
+                });
+        });
+    </script>
+}
 <div class="jumbotron">
     <h1>Graph 2 Data</h1>
     <p class="lead">Welcome to the Graph2Data evaluation.</p>
@@ -9,21 +39,33 @@
 </div>
 
 <div class="row">
+    <div class="col-md-12">
+        <p>Enter your code here</p>
+        <label for="userCode">Code:</label>
+        <input type="text" id="userCode" placeholder="5 digit code" style="width:100px"/>
+        <a class="btn btn-default disabled" id="submitButton" href="#">Submit</a>
+    </div>
+</div>
+<div class="row">
+    
     <div class="col-md-4">
         <h2>Aims</h2>
         <p>
             The extraction of data from graphs for use in systematic reviews can be a time-consuming and error-prone activity. We have developed this web app to help make the process more efficient and accurate.
         </p>
-        <p><a class="btn btn-default" href="http://eppi.ioe.ac.uk">Learn more &raquo;</a></p>
+        <p><a class="btn btn-default" href="http://eppi.ioe.ac.uk">Learn more &raquo;</a>
+        </p>
     </div>
     <div class="col-md-4">
         <h2>Get more Information</h2>
         <p>In order to find out more about how to use the application, please click here.</p>
-        <p><a class="btn btn-default" href="http://eppi.ioe.ac.uk">Learn more &raquo;</a></p>
+        <p><a class="btn btn-default" href="http://eppi.ioe.ac.uk">Learn more &raquo;</a>
+        </p>
     </div>
     <div class="col-md-4">
         <h2>About reviewing</h2>
         <p>If you want to know more about systematic reviews....</p>
-        <p><a class="btn btn-default" href="http://eppi.ioe.ac.uk">Learn more &raquo;</a></p>
+        <p><a class="btn btn-default" href="http://eppi.ioe.ac.uk">Learn more &raquo;</a>
+        </p>
     </div>
 </div>

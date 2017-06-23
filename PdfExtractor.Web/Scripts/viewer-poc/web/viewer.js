@@ -8860,6 +8860,7 @@ var pdfjsWebLibs = {
                                 wpdConfig.graphImage = {
                                     imageSrc: zoomedCloneImgSrc
                                 }
+                                wpdConfig.graphImageNumber = $(sel.elem).data('id');
                                 wpdConfig.focusedSelection = sel;
                                 wpdConfig.wpdPlotMemento = wpdPlotMemento;
                                 wpdConfig.show();

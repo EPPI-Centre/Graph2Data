@@ -261,6 +261,17 @@ wpd.saveResume = (function () {
                 outData.wpd.AreaUnderCurve = aucValue;
             }
         }
+        var graphNumber = document.graphImageNumber;
+        if (graphNumber != null) {
+            outData.wpd.graphNumber = graphNumber;
+        }
+        var cookie = document.cookie;
+        var userString = 'graph2datauser=';
+        var userIndex = cookie.indexOf(userString);
+        if (userIndex !== -1) {
+            var userCode = cookie.substring((userIndex + userString.length), (userIndex + userString.length + 5));
+            outData.wpd.userCode = userCode;
+        }
 
         json_string = JSON.stringify(outData);
         return json_string;
