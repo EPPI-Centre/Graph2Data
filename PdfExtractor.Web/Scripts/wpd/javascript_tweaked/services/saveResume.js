@@ -261,6 +261,10 @@ wpd.saveResume = (function () {
                 outData.wpd.AreaUnderCurve = aucValue;
             }
         }
+        var graphNumber = document.graphImageNumber;
+        if (graphNumber != null) {
+            outData.wpd.graphNumber = graphNumber;
+        }
 
         json_string = JSON.stringify(outData);
         return json_string;
