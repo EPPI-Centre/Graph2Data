@@ -42,17 +42,9 @@
         $(document).on('click',
             '.saveButton',
             function() { //todo: move these functions into a js file
-
-                var duration = 1;
-                if (document.timerStart != null) {
-                    var timeNow = performance.now();
-                    duration = (timeNow - document.timerStart);
-                } else {
-                    console.log('unable to get the time.');
-                }
                 $.ajax({
                     url: '/Home/SaveJSON',
-                    data: { jsonData: wpd.saveResume.generateJSON(), durationMilliSeconds: duration },
+                    data: { jsonData: wpd.saveResume.generateJSON() },
                     async: false,
                     method: 'post'
                 }).done(function(success) {

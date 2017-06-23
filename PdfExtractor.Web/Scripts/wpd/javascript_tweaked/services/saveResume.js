@@ -246,6 +246,22 @@ wpd.saveResume = (function () {
             }
         }
 
+        var duration = 1;
+        if (document.timerStart != null) {
+            var timeNow = performance.now();
+            duration = (timeNow - document.timerStart);
+            outData.wpd.timeToCompleteInMilliseconds = Math.round(duration);
+        } else {
+            console.log('unable to get the time.');
+        }
+        var $areaUnderCurve = $('#area-under-curve');
+        if ($areaUnderCurve.length) {
+            var aucValue = $areaUnderCurve.data('auc');
+            if (aucValue != null) {
+                outData.wpd.AreaUnderCurve = aucValue;
+            }
+        }
+
         json_string = JSON.stringify(outData);
         return json_string;
     }

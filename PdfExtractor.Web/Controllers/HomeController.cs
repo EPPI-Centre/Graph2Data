@@ -141,14 +141,13 @@ namespace PdfExtractor.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult SaveJSON(string jsonData, double durationMilliSeconds)
+        public JsonResult SaveJSON(string jsonData)
         {
             if (string.IsNullOrEmpty(jsonData)) throw new ArgumentException("jsonData");
-            if (durationMilliSeconds <= 0) throw new ArgumentException("durationSeconds");
 
-            var deserialisedObject = JsonConvert.DeserializeObject(jsonData);
-            var jObject = JObject.FromObject(deserialisedObject);
-            jObject.Add("timeToCompleteInMilliSeconds", durationMilliSeconds);
+            //var deserialisedObject = JsonConvert.DeserializeObject(jsonData);
+            //var jObject = JObject.FromObject(deserialisedObject);
+            //jObject.Add("timeToCompleteInMilliSeconds", durationMilliSeconds);
 
             var storageAccount = CloudStorageAccount.Parse(CloudConfigurationManager.GetSetting("StorageConnectionString"));
             var blobClient = storageAccount.CreateCloudBlobClient();
@@ -161,7 +160,7 @@ namespace PdfExtractor.Web.Controllers
 
             // Retrieve reference to a blob named "myblob".
             var blockBlob = container.GetBlockBlobReference(string.Format("submission-{0}.json", DateTime.Now.ToString("dd-MM-yyyy-HH-mm-ss")));
-            blockBlob.UploadText(jObject.ToString());
+            blockBlob.UploadText(jsonData);
 
             return Json(true);
         }
