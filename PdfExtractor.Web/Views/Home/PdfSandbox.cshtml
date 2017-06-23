@@ -70,8 +70,9 @@
                 var structureId = $('#graph-type').val();
                 var includeIndividuals = ($('#include-individuals-wizard:checked').length === 1);
                 var singleAxis = ($('#wizard-single-axis:checked').length === 1);
+                $('#mean-variance-dataSeriesCount').val($('#mean-variance-dataSeriesCount-wizard').val());
+                $('#mean-variance-dataPointCount').val($('#mean-variance-dataPointCount-wizard').val());
                 $(document).trigger('chooseProfile', [singleAxis, structureId, includeIndividuals]);
-                
             });
     </script>
 
