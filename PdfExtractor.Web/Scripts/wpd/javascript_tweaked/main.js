@@ -107,7 +107,7 @@ wpd.initApp = function (config) {// This is run when the page loads.
             var self = this;
 
             this.profiles = [{
-                id: 'free-points-capture',
+                id: 'free-points-capture', //this is used by the "ROC Curve" option
                 name: "Free points-capture",
                 plotTypeId: 'r_xy',
                 useTable: false,
@@ -115,7 +115,8 @@ wpd.initApp = function (config) {// This is run when the page loads.
                 dataStructureId: 'mean-only',
                 includeIndividuals: false,
                 dataSeriesCount: 1,
-                dataPointCount: 200
+                dataPointCount: 200,
+                hideUseTable: true //extra option for ROC Curve
             }, {
                 id: 'quantize-test-2D',
                 name: "Quantize Testing (2D)",

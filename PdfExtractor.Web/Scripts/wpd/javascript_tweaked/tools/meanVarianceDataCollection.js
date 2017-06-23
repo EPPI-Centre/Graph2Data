@@ -1143,6 +1143,11 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
                     .val($('#mean-variance-dataPointCount-wizard').val())
                     .change();
 
+                
+                if (typeof(profile.hideUseTable) !== 'undefined' && profile.hideUseTable === true) {
+                    $('#use-table-container').hide();
+                }
+
                 lock();
             }
 

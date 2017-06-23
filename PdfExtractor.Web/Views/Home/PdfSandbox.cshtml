@@ -701,8 +701,11 @@
         <div style="position: relative;" id="sidebarControlsContainer">
         
         <br/>
-        <input type="button" value="Save Data" style="width:95px;" class="saveButton" /><br/>
-        <input type="button" value="Cancel" style="width:95px;" class="cancelButton" /><br />
+        <input type="button" value="Save Data" style="width:95px;" class="saveButton" />
+        <div class="vertical-spacer"></div>
+        <input type="button" value="Cancel" style="width:95px;" class="cancelButton" />
+        <div class="vertical-spacer"></div>
+        <div class="vertical-spacer"></div>
         <!-- side bars go here -->
         <!-- axes calibration -->
         <div id="axes-calibration-sidebar" class="sidebar">
@@ -714,14 +717,16 @@
 
         <!-- manual mode -->
         <div id="acquireDataSidebar" class="sidebar">
-            <p class="sidebar-title">
+            <p style="display:none" class="sidebar-title">
                 Manual Mode <input type="button" value="Automatic Mode" style="width: 125px;" onclick="wpd.autoExtraction.start();">
             </p>
-            <hr/>
-            <p>
-                Dataset <select id="manual-sidebar-dataset-list" onchange="wpd.acquireData.changeDataset(this);" style="width: 160px;"></select>
-            </p>
-            <hr/>
+            <div style="display:none">
+                <hr/>
+                <p>
+                    Dataset <select id="manual-sidebar-dataset-list" onchange="wpd.acquireData.changeDataset(this);" style="width: 160px;"></select>
+                </p>
+                <hr/>
+            </div>
             <p>
                 <input type="button" value="Add Point (A)" onclick="wpd.acquireData.manualSelection();" style="width: 115px;" id="manual-select-button">
                 <input type="button" value="Adjust Point (S)" onClick="wpd.acquireData.adjustPoints();" style="width: 115px;" id="manual-adjust-button">
@@ -744,13 +749,15 @@
 
         <!-- Mean & Variance data extraction -->
         <div id="meanVarianceSidebar" class="sidebar">
-            <p class="sidebar-title">
+            <p style="display:none" class="sidebar-title">
                 Manual Mode <input type="button" value="Automatic Mode" style="width: 125px;" onclick="wpd.autoExtraction.start();">
             </p>
-            <hr/>
-            <p>Dataset <select class="dataset-list" style="width: 160px;"></select>
-            </p>
-            <hr/>
+            <div style="display:none">
+                <hr/>
+                <p>Dataset <select class="dataset-list" style="width: 160px;"></select>
+                </p>
+                <hr/>
+            </div>
             <p>
                 <input id="mean-variance-create-points-button" class="mean-variance-selection-mode createPoints" value="Add Point (A)" onclick="wpd.acquireMeanVarianceData.meanVarianceSelection();" type="button" style="width: 112px;">
                 <input id="mean-variance-adjust-button" class="mean-variance-selection-mode adjustPoints" value="Adjust Point (S)" onclick="wpd.acquireMeanVarianceData.adjustPoints();" type="button" style="width: 112px;">
@@ -768,7 +775,7 @@
                 <span id="modifier-mode-info"></span>
             </p>
             <div class="vertical-spacer"></div>
-            <p>
+            <p id="use-table-container">
                 <label for="use-table">
                     <input type="checkbox" id="use-table"/>
                     Use table
@@ -843,12 +850,14 @@
 
         <!-- automatic mode -->
         <div id="auto-extraction-sidebar" class="sidebar">
-            <p class="sidebar-title">Automatic Mode <input type="button" value="Manual Mode" style="width: 110px;" onclick="wpd.acquireMeanVarianceData.load();"/>
+            <p style="display:none" class="sidebar-title">Automatic Mode <input type="button" value="Manual Mode" style="width: 110px;" onclick="wpd.acquireMeanVarianceData.load();"/>
             </p>
-            <hr/>
-            <p>Dataset <select class="dataset-list" style="width: 160px;"></select>
-            </p>
-            <hr/>
+            <div style="display:none">
+                <hr/>
+                <p>Dataset <select class="dataset-list" style="width: 160px;"></select>
+                </p>
+                <hr/>
+            </div>
             <p>Mask <input type="button" value="Box" style="width: 50px;" onclick="wpd.dataMask.markBox();" id="box-mask"><input type="button" value="Pen" style="width: 45px;" onClick="wpd.dataMask.markPen();" id="pen-mask"><input type="button" value="Erase" style="width: 50px;" onClick="wpd.dataMask.eraseMarks();" id="erase-mask"><input type="button" value="View" style="width: 40px;" onclick="wpd.dataMask.viewMask();" id="view-mask"/>
             </p>
             <hr/>
