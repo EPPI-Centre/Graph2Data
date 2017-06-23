@@ -1077,23 +1077,23 @@
     </div>
 
     <!-- Choose Graph - new wizard -->
-    <div id="chooseGraph" class="popup" style="width: 400px;">
+    <div id="chooseGraph" class="popup" size="width: 400px;">
         <div class="popupheading">Specify graph characteristics</div>
         <p>&nbsp;</p>
-            <select id="graph-type">
-                <option value="mean-only">Mean only</option>
-                <option value="mean-and-standard-error">Mean and Standard Error (SEM)</option>
-                <option value="mean-and-standard-deviation">Mean and Standard Deviation (SD)</option>
-                <option value="mean-and-confidence-interval-95">Mean and 95% CI</option>
-                <option value="mean-and-confidence-interval-99">Mean and 99% CI</option>
-                <option value="median-and-confidence-interval-95">Median and 95% CI</option>
-                <option value="median-and-confidence-interval-99">Median and 99% CI</option>
-                <option value="median-and-interquartile-range">Median and Interquartile Range</option>
-                <option value="box-and-whisker">Box and whisker plot</option>
-                <option value="roc-curve">ROC Curve</option>
-                <option value="xy-scatter-plot">XY Scatter plot</option>
-            </select>
-            <div class="vertical-spacer"></div>
+        <select id="graph-type" size="11">
+            <option value="mean-only" selected="selected">Mean only</option>
+            <option value="mean-and-standard-error">Mean and Standard Error (SEM)</option>
+            <option value="mean-and-standard-deviation">Mean and Standard Deviation (SD)</option>
+            <option value="mean-and-confidence-interval-95">Mean and 95% CI</option>
+            <option value="mean-and-confidence-interval-99">Mean and 99% CI</option>
+            <option value="median-and-confidence-interval-95">Median and 95% CI</option>
+            <option value="median-and-confidence-interval-99">Median and 99% CI</option>
+            <option value="median-and-interquartile-range">Median and Interquartile Range</option>
+            <option value="box-and-whisker">Box and whisker plot</option>
+            <option value="roc-curve">ROC Curve</option>
+            <option value="xy-scatter-plot">XY Scatter plot</option>
+        </select>
+        <fieldset style="display: inline;vertical-align: top;">
             <p>
                 # Data series
                 <input type="text" size="3" id="mean-variance-dataSeriesCount-wizard" value="1"/>
@@ -1103,16 +1103,19 @@
                 # Data points
                 <input type="text" size="3" id="mean-variance-dataPointCount-wizard" value="10"/>
             </p>
+            <div class="vertical-spacer"></div>
             <p>
-              Calibrate
+                Calibrate<div class="vertical-spacer"></div>
                 <input type="radio" name="axes-count" value="1" id="wizard-single-axis" /> One axis (x or y) <br/>
                 <input type="radio" name="axes-count" value="2" checked="checked"/> Both axes (x and y)
             </p>
+            <div class="vertical-spacer"></div>
             <label for="include-individuals">
-                <input type="checkbox" id="include-individuals-wizard"/>
+                <input type="checkbox" id="include-individuals-wizard" />
                 Include individuals
             </label>
-        <p>&nbsp;</p>
+        </fieldset>
+        <div class="vertical-spacer"></div>
         <p align="right">
             <input onclick="wpd.popup.close('chooseGraph');document.location.href = '@Url.Action("PdfSandbox")';" type="button" value="Close">&nbsp;
             <input id="chooseGraphNextButton" type="button" value="Next">
