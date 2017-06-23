@@ -385,17 +385,13 @@ wpd.initApp = function (config) {// This is run when the page loads.
                     isReferencePoint: true
                 }, {
                     name: "95% Confidence range (upper)",
-                    abbrev: "CI95",
+                    abbrev: "CIu95",
                     css: "variance"
                 }, {
-                    name: "Lower Quartile",
-                    abbrev: "Q1",
-                    css: "variance"
-                }, {
-                    name: "Upper Quartile",
-                    abbrev: "Q3",
-                    css: "variance"
-                    }]
+                        name: "95% Confidence range (lower)",
+                        abbrev: "CIl95",
+                        css: "variance"
+                }]
             }, {
                 id: 'mean-and-confidence-interval-99',
                 text: "Mean and 99% CI",
@@ -408,15 +404,11 @@ wpd.initApp = function (config) {// This is run when the page loads.
                     isReferencePoint: true
                 }, {
                     name: "99% Confidence range (upper)",
-                    abbrev: "CI99",
+                    abbrev: "CIu99",
                     css: "variance"
                 }, {
-                    name: "Lower Quartile",
-                    abbrev: "Q1",
-                    css: "variance"
-                }, {
-                    name: "Upper Quartile",
-                    abbrev: "Q3",
+                    name: "99% Confidence range (lower)",
+                    abbrev: "CIl99",
                     css: "variance"
                 }]
             }, {
@@ -430,15 +422,11 @@ wpd.initApp = function (config) {// This is run when the page loads.
                     isReferencePoint: true
                 }, {
                     name: "95% Confidence range (upper)",
-                    abbrev: "CI95",
+                    abbrev: "CIu95",
                     css: "variance"
                 }, {
-                    name: "Lower Quartile",
-                    abbrev: "Q1",
-                    css: "variance"
-                }, {
-                    name: "Upper Quartile",
-                    abbrev: "Q3",
+                    name: "95% Confidence range (lower)",
+                    abbrev: "CIl95",
                     css: "variance"
                 }]
             }, {
@@ -453,15 +441,11 @@ wpd.initApp = function (config) {// This is run when the page loads.
                     isReferencePoint: true
                 }, {
                     name: "99% Confidence range (upper)",
-                    abbrev: "CI99",
+                    abbrev: "CIu99",
                     css: "variance"
                 }, {
-                    name: "Lower Quartile",
-                    abbrev: "Q1",
-                    css: "variance"
-                }, {
-                    name: "Upper Quartile",
-                    abbrev: "Q3",
+                    name: "99% Confidence range (lower)",
+                    abbrev: "CIl99",
                     css: "variance"
                 }]
             }, {
