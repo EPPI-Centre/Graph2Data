@@ -1313,7 +1313,10 @@
         <p align="center"><img src="~/Content/wpd/images/barchart.png" /></p>
         <p align="center">Click on two known points (P1, P2) on the continuous axes along the bars</p>
         <p>&nbsp;</p>
-        <p align="center"><input type="button" value="Proceed" onclick="wpd.barCalibration.pickCorners();" /></p>
+        <p align="center">
+            <input type="button" value="Back" onclick="wpd.popup.close('barAxesInfo'); wpd.popup.show('chooseGraph');" />&nbsp;
+            <input type="button" value="Proceed" onclick="wpd.barCalibration.pickCorners();" />
+        </p>
     </div>
 
     <!-- Map Axes Calibration Instructions -->
