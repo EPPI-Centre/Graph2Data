@@ -353,6 +353,7 @@
     <Content Include="Content\docs\Input\Graphs_from_Fala\Graphs_130317.pdf" />
     <Content Include="Content\docs\Input\Evaluation\Set 1_All Graphs.pdf" />
     <Content Include="Content\docs\Input\Evaluation\Set 2_All graphs.pdf" />
+    <Content Include="Content\docs\Input\Evaluation\Set_1_All Graphs test.pdf" />
     <None Include="Properties\PublishProfiles\Debug to N_ToDelete_PdfExtractorDeployTest.pubxml" />
     <None Include="Properties\PublishProfiles\PdfExtractor - FTP %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\PdfExtractor - FTP.pubxml" />
