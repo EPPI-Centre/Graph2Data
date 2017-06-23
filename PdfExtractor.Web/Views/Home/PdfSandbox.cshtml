@@ -50,7 +50,9 @@
                     method: 'post'
                 }).done(function(success) {
                     if (success === true) {
-                        document.location.href = '@Url.Action("PdfSandbox")';
+                        //document.location.href = '@Url.Action("PdfSandbox")';
+                        var wpdPlotMemento = wpd.appData.getMemento();
+                        document.wpdConfig.hide(wpdPlotMemento);
                     } else {
                         alert('There has been an error with your submission. Please report it or try again.');
                     }
@@ -62,7 +64,9 @@
         $(document).on('click',
             '.cancelButton',
             function() {
-                document.location.href = '@Url.Action("PdfSandbox")';
+                //document.location.href = '@Url.Action("PdfSandbox")';
+                var wpdPlotMemento = wpd.appData.getMemento();
+                document.wpdConfig.hide(wpdPlotMemento);
             });
         $(document).on('click',
             '#chooseGraphNextButton',
@@ -146,10 +150,10 @@
                 };
                 wpdConfig.hide = function(wpdPlotMemento) {
                     wpd.acquireMeanVarianceData.hideAllDataPopups();
-                    wpdConfig.focusedSelection.dataStore.putData({
-                        data: wpdPlotMemento,
-                        dataDesc: "wpdPlotMemento" //wpdPlotMemento.datasets.length + " data sets"
-                    });
+                    //wpdConfig.focusedSelection.dataStore.putData({
+                    //    data: wpdPlotMemento,
+                    //    dataDesc: "wpdPlotMemento" //wpdPlotMemento.datasets.length + " data sets"
+                    //});
                     body.removeClass('wpd-visible');
                 };
                 wpdConfig.flushSettings = function(settings) {
@@ -178,6 +182,7 @@
                         });
 
                 webViewerLoad(wpdConfig);
+                document.wpdConfig = wpdConfig;
             }
         });
     </script>
@@ -557,8 +562,8 @@
                                 <li id="wpd-filemenu-runscript" onclick="wpd.scriptInjector.start();">Run Script</li>*@
                                 <li id="wpd-filemenu-saveimage" onclick="wpd.graphicsWidget.saveImage();">Save Image</li>
                                 @*<li id="wpd-filemenu-exportda ta" onclick="wpd.saveResume.save();">Export JSON</li>
-                                <li id="wpd-filemenu-import" onclick="wpd.saveResume.load();">Import JSON</li>*@
-                                <li id="wpd-filemenu-lee-close" onclick="javascript: void (0);">Lee(temporary) Close</li>
+                                <li id="wpd-filemenu-import" onclick="wpd.saveResume.load();">Import JSON</li>
+                                <li id="wpd-filemenu-lee-close" onclick="javascript: void (0);">Lee(temporary) Close</li>*@
                             </ul>
                         </div>
                     </div>
@@ -1129,7 +1134,7 @@
         </fieldset>
         <div class="vertical-spacer"></div>
         <p align="right">
-            <input onclick="wpd.popup.close('chooseGraph');document.location.href = '@Url.Action("PdfSandbox")';" type="button" value="Close">&nbsp;
+            <input onclick="wpd.popup.close('chooseGraph');var wpdPlotMemento = wpd.appData.getMemento();document.wpdConfig.hide(wpdPlotMemento);" type="button" value="Close">&nbsp;
             <input id="chooseGraphNextButton" type="button" value="Next">
         </p>
     </div>
