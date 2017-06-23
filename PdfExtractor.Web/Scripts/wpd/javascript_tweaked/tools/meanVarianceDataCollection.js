@@ -1129,14 +1129,18 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
                 applyUseTable(profile);
 
-                showCheckboxSetting($dom.$includeIndividuals, profile.includeIndividuals, true);
+                var includeIndividuals = ($('#include-individuals-wizard:checked').length === 1);
+                //showCheckboxSetting($dom.$includeIndividuals, profile.includeIndividuals, true);
+                showCheckboxSetting($dom.$includeIndividuals, includeIndividuals, true);
 
                 $dom.$dataSeriesCountEdit
-                    .val(profile.dataSeriesCount)
+                    //.val(profile.dataSeriesCount)
+                    .val($('#mean-variance-dataSeriesCount-wizard').val())
                     .change();
 
                 $dom.$dataPointCountEdit
-                    .val(profile.dataPointCount)
+                    //.val(profile.dataPointCount)
+                    .val($('#mean-variance-dataPointCount-wizard').val())
                     .change();
 
                 lock();

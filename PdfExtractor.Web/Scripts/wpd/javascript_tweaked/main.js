@@ -73,6 +73,7 @@ wpd.initApp = function (config) {// This is run when the page loads.
                     'simple-table-capture' === profile.outcomeMeasureId) {
 
                     profile.choose();
+                    document.profile = profile;
                     return true;
                 }
             });
@@ -251,7 +252,11 @@ wpd.initApp = function (config) {// This is run when the page loads.
             }
         },
 
-        getProfile: function() {
+        getProfile: function () {
+            if (document.profile != null) {
+                return document.profile;
+            }
+
             var profile = null;
             var option = this.$profileSelectionList.find(':selected')[0];
 
