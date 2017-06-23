@@ -60,20 +60,22 @@ wpd.initApp = function (config) {// This is run when the page loads.
             $(document).on('chooseProfile', this.chooseThisProfile);
         },
 
-        chooseThisProfile: function (event, profileId, structureId) {        //not sure what to do with structure id yet.
+        chooseThisProfile: function (event, oneAxis, structureId, includeIndividuals) {        //not sure what to do with structure id yet.
            
             this.forEachProfile(function (index, profile) {
-                if (structureId === profile.dataStructureId) {
+
+                var profileIsSingleAxis = (profile.plotTypeId === "r_bar");
+
+
+                if (structureId === profile.dataStructureId &&
+                    includeIndividuals === profile.includeIndividuals &&
+                    oneAxis === profileIsSingleAxis &&
+                    'simple-table-capture' === profile.outcomeMeasureId) {
+
                     profile.choose();
                     return true;
                 }
             });
-            //then call the appropriate pick corners function
-            if ($('#wizard-single-axis:checked').length) {
-                wpd.barCalibration.pickCorners('chooseGraph');
-            } else {
-                wpd.xyCalibration.pickCorners('chooseGraph');
-            }
         },
 
         profileChosen: function(ev) {
