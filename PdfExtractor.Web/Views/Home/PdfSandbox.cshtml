@@ -9,69 +9,75 @@
 
     <script type="text/javascript" src="~/Scripts/jquery.resize.js"></script>
 
-    <link rel="stylesheet" href="~/Content/PdfSandbox.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="~/Content/PdfSandbox.css" type="text/css" media="screen"/>
 
-    <link href="~/Content/selection-rectangles.css" rel="stylesheet" />
+    <link href="~/Content/selection-rectangles.css" rel="stylesheet"/>
     <script type="text/javascript" src="~/Scripts/selection-rectangles.js"></script>
 
-    <link href="~/Scripts/jBox/jBox.css" rel="stylesheet" />
+    <link href="~/Scripts/jBox/jBox.css" rel="stylesheet"/>
     <script type="text/javascript" src="~/Scripts/jBox/jBox.js"></script>
 
-    <link href="~/Scripts/jBox/plugins/Notice/jBox.notice.css" rel="stylesheet" />
-    <link href="~/Scripts/jBox/themes/NoticeFancy.css" rel="stylesheet" />
+    <link href="~/Scripts/jBox/plugins/Notice/jBox.notice.css" rel="stylesheet"/>
+    <link href="~/Scripts/jBox/themes/NoticeFancy.css" rel="stylesheet"/>
     <script type="text/javascript" src="~/Scripts/jBox/plugins/Notice/jBox.Notice.js"></script>
 
     <script type="text/javascript" src="~/Scripts/purl.js"></script>
 
     <script type="text/javascript">
-        window.alert = function (msg) {
+        window.alert = function(msg) {
             var modal = new jBox('Modal',
-            {
-                content: msg,
-                title: "PdfSandbox",
-                closeOnEsc: true,
-                closeButton: 'box',
-                closeOnClick: 'overlay',
-                draggable: true,
-                overlay: true,
-                pointer: true
-            });
+                {
+                    content: msg,
+                    title: "PdfSandbox",
+                    closeOnEsc: true,
+                    closeButton: 'box',
+                    closeOnClick: 'overlay',
+                    draggable: true,
+                    overlay: true,
+                    pointer: true
+                });
             modal.open();
         };
 
-        $(document).on('click', '.saveButton', function () { //todo: move these functions into a js file
-
-            var duration = 1;
-            if (document.timerStart != null) {
-                var timeNow = performance.now();
-                duration = (timeNow - document.timerStart);
-            } else {
-                console.log('unable to get the time.');
-            }
-            $.ajax({
-                url: '/Home/SaveJSON',
-                data: { jsonData: wpd.saveResume.generateJSON(), durationMilliSeconds: duration },
-                async: false,
-                method: 'post'
-            }).done(function (success) {
-                if (success === true) {
-                    document.location.href = '@Url.Action("PdfSandbox")';
-                } else {
+        //todo: move these functions into a js file
+        $(document).on('click',
+            '.saveButton',
+            function() {
+                $.ajax({
+                    url: '/Home/SaveJSON',
+                    data: { jsonData: wpd.saveResume.generateJSON() },
+                    async: false,
+                    method: 'post'
+                }).done(function(success) {
+                    if (success === true) {
+                        document.location.href = '@Url.Action("PdfSandbox")';
+                    } else {
+                        alert('There has been an error with your submission. Please report it or try again.');
+                    }
+                }).fail(function() {
                     alert('There has been an error with your submission. Please report it or try again.');
-                }
-            }).fail(function() {
-                alert('There has been an error with your submission. Please report it or try again.');
+                });
             });
-        });
 
-        $(document).on('click', '.cancelButton', function() {
-            document.location.href = '@Url.Action("PdfSandbox")';
-        });
+        $(document).on('click',
+            '.cancelButton',
+            function() {
+                document.location.href = '@Url.Action("PdfSandbox")';
+            });
+        $(document).on('click',
+            '#chooseGraphNextButton',
+            function() {
+                var structureId = $('#graph-type').val();
+                var includeIndividuals = ($('#include-individuals-wizard:checked').length === 1);
+                var singleAxis = ($('#wizard-single-axis:checked').length === 1);
+                $(document).trigger('chooseProfile', [singleAxis, structureId, includeIndividuals]);
+                
+            });
     </script>
 
 
-    <link rel="stylesheet" href="~/Content/wpd/styles.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="~/Content/wpd/widgets.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="~/Content/wpd/styles.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="~/Content/wpd/widgets.css" type="text/css" media="screen"/>
     @*<script src="~/Scripts/WebPlotDigitizer/combined-compiled.js"></script>*@
     @*<script src="~/Scripts/wpd/wpd_combined_tweaked.js"></script>*@
     @Scripts.Render("~/bundles/wpd_tweaked")
@@ -98,11 +104,11 @@
         //    });
         //});
 
-        $(function () {
+        $(function() {
             $.post({
                 url: "@Url.Action("Get", "Settings")",
                 data: "",
-                success: function (data, status, xhr) {
+                success: function(data, status, xhr) {
                     begin(JSON.parse(data));
                 },
                 dataType: "json"
@@ -130,12 +136,12 @@
                     wpdPlotMemento: null,
                     userSettings: userSettings,
                 };
-                wpdConfig.show = function () {
+                wpdConfig.show = function() {
                     document.timerStart = performance.now();
                     body.addClass('wpd-visible');
                     wpd.initApp(wpdConfig);
                 };
-                wpdConfig.hide = function (wpdPlotMemento) {
+                wpdConfig.hide = function(wpdPlotMemento) {
                     wpd.acquireMeanVarianceData.hideAllDataPopups();
                     wpdConfig.focusedSelection.dataStore.putData({
                         data: wpdPlotMemento,
@@ -143,11 +149,11 @@
                     });
                     body.removeClass('wpd-visible');
                 };
-                wpdConfig.flushSettings = function (settings) {
+                wpdConfig.flushSettings = function(settings) {
                     $.post({
                         url: "@Url.Action("Set", "Settings")",
                         data: JSON.stringify(settings),
-                        success: function (data, status, xhr) {
+                        success: function(data, status, xhr) {
                             console.log("Settings saved!");
                         },
                         dataType: "json"
@@ -163,7 +169,7 @@
 
                 $('#wpd-filemenu-lee-close')
                     .on('click',
-                        function (e) {
+                        function(e) {
                             var wpdPlotMemento = wpd.appData.getMemento();
                             wpdConfig.hide(wpdPlotMemento);
                         });
@@ -1055,17 +1061,64 @@
         <p>&nbsp;</p>
         <p align="center"><input type="button" value="Align Axes" onclick="wpd.alignAxes.start();">&nbsp;<input type="button" value="Cancel" onClick="wpd.popup.close('axesList');"></p>
     </div>
-
+    
     <!-- Choose profile -->
     <div id="chooseProfile" class="popup" style="width: 400px;">
         <div class="popupheading">Choose Plot Type</div>
         <p>&nbsp;</p>
+
         <center>
             Profile <select id="profile-selection-list"></select>
         </center>
         <p>&nbsp;</p>
         <p align="center">
             <input id="confirmProfileChoice" type="button" value="Choose Profile">
+        </p>
+    </div>
+
+    <!-- Choose Graph - new wizard -->
+    <div id="chooseGraph" class="popup" size="width: 400px;">
+        <div class="popupheading">Specify graph characteristics</div>
+        <p>&nbsp;</p>
+        <select id="graph-type" size="11">
+            <option value="mean-only" selected="selected">Mean only</option>
+            <option value="mean-and-standard-error">Mean and Standard Error (SEM)</option>
+            <option value="mean-and-standard-deviation">Mean and Standard Deviation (SD)</option>
+            <option value="mean-and-confidence-interval-95">Mean and 95% CI</option>
+            <option value="mean-and-confidence-interval-99">Mean and 99% CI</option>
+            <option value="median-and-confidence-interval-95">Median and 95% CI</option>
+            <option value="median-and-confidence-interval-99">Median and 99% CI</option>
+            <option value="median-and-interquartile-range">Median and Interquartile Range</option>
+            <option value="box-and-whisker">Box and whisker plot</option>
+            <option value="roc-curve">ROC Curve</option>
+            <option value="xy-scatter-plot">XY Scatter plot</option>
+        </select>
+        <fieldset style="display: inline;vertical-align: top;">
+            <p>
+                # Data series
+                <input type="text" size="3" id="mean-variance-dataSeriesCount-wizard" value="1"/>
+            </p>
+            <div class="vertical-spacer"></div>
+            <p>
+                # Data points
+                <input type="text" size="3" id="mean-variance-dataPointCount-wizard" value="10"/>
+            </p>
+            <div class="vertical-spacer"></div>
+            <p>
+                Calibrate<div class="vertical-spacer"></div>
+                <input type="radio" name="axes-count" value="1" id="wizard-single-axis" /> One axis (x or y) <br/>
+                <input type="radio" name="axes-count" value="2" checked="checked"/> Both axes (x and y)
+            </p>
+            <div class="vertical-spacer"></div>
+            <label for="include-individuals">
+                <input type="checkbox" id="include-individuals-wizard" />
+                Include individuals
+            </label>
+        </fieldset>
+        <div class="vertical-spacer"></div>
+        <p align="right">
+            <input onclick="wpd.popup.close('chooseGraph');document.location.href = '@Url.Action("PdfSandbox")';" type="button" value="Close">&nbsp;
+            <input id="chooseGraphNextButton" type="button" value="Next">
         </p>
     </div>
 
@@ -1245,7 +1298,7 @@
         <p align="center">Click four known points on the axes in the <font color="red">order shown in red</font>. Two on the X axis (X1, X2) and two on the Y axis (Y1, Y2).</p>
         <p>&nbsp;</p>
         <p align="center">
-            <input type="button" value="Back" onclick="wpd.popup.close('xyAxesInfo'); wpd.popup.show('chooseProfile');" />&nbsp;
+            <input type="button" value="Back" onclick="wpd.popup.close('xyAxesInfo'); wpd.popup.show('chooseGraph');" />&nbsp;
             <input type="button" value="Proceed" onclick="wpd.xyCalibration.pickCorners();"/>
         </p>
     </div>

@@ -2004,7 +2004,7 @@ wpd.acquireMeanVarianceData.MeanVarianceSelectionTool = (function () {
 
             $dom.$areaUnderCurve.html(
                 "Area under curve: " + area
-            );
+            ).data('auc', area);
         }
 
         function focusFirstValueCell() {

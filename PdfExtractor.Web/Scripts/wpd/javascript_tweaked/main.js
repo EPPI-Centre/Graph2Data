@@ -57,6 +57,25 @@ wpd.initApp = function (config) {// This is run when the page loads.
             this.populateProfiles();
 
             $confirmProfileChoice.on('click', this.profileChosen);
+            $(document).on('chooseProfile', this.chooseThisProfile);
+        },
+
+        chooseThisProfile: function (event, oneAxis, structureId, includeIndividuals) {        //not sure what to do with structure id yet.
+           
+            this.forEachProfile(function (index, profile) {
+
+                var profileIsSingleAxis = (profile.plotTypeId === "r_bar");
+
+
+                if (structureId === profile.dataStructureId &&
+                    includeIndividuals === profile.includeIndividuals &&
+                    oneAxis === profileIsSingleAxis &&
+                    'simple-table-capture' === profile.outcomeMeasureId) {
+
+                    profile.choose();
+                    return true;
+                }
+            });
         },
 
         profileChosen: function(ev) {
@@ -210,7 +229,8 @@ wpd.initApp = function (config) {// This is run when the page loads.
                 profile.gridSettings = wpd._config.profileSettings.defaultGridSettings;
                 profile.note = buildNote(profile);
                 profile.choose = function () {
-                    wpd.popup.close('chooseProfile');
+                    wpd.popup.close('chooseGraph');
+                    //wpd.popup.close('chooseProfile');
                     wpd.alignAxes.start({
                         plotTypeId: profile.plotTypeId,
                         afterCalibrated: function (calibrator) {}
@@ -554,7 +574,8 @@ wpd.initApp = function (config) {// This is run when the page loads.
                 false, //true <-- TODO - this bool needs to be dynamic
                 function () {
                     //wpd.popup.show('axesList');
-                    wpd.popup.show('chooseProfile');
+                    wpd.popup.show('chooseGraph');
+                    //wpd.popup.show('chooseProfile');
                 }
             );
             //wpd.graphicsWidget.leeInit();

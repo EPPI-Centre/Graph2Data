@@ -34,8 +34,9 @@ wpd.xyCalibration = (function () {
         wpd.graphicsWidget.setTool(tool);
     }
 
-    function pickCorners() {
-        wpd.popup.close('xyAxesInfo');
+    function pickCorners(popupIdToClose) {
+        var popupId = typeof popupIdToClose !== 'undefined' ? popupIdToClose : 'xyAxesInfo';
+        wpd.popup.close(popupId);
         var tool = new wpd.AxesCornersTool(4, 2, ['X1', 'X2', 'Y1', 'Y2']);
         wpd.graphicsWidget.setTool(tool);
     }
@@ -92,8 +93,9 @@ wpd.barCalibration = (function () {
         wpd.graphicsWidget.setTool(tool);
     }
 
-    function pickCorners() {
-        wpd.popup.close('barAxesInfo');
+    function pickCorners(popupIdToClose) {
+        var popupId = typeof popupIdToClose !== 'undefined' ? popupIdToClose : 'barAxesInfo';
+        wpd.popup.close(popupId);
         var tool = new wpd.AxesCornersTool(2, 2, ['P1', 'P2']);
         wpd.graphicsWidget.setTool(tool);
     }
@@ -145,8 +147,9 @@ wpd.polarCalibration = (function () {
         wpd.graphicsWidget.setTool(tool);
     }
 
-    function pickCorners() {
-        wpd.popup.close('polarAxesInfo');
+    function pickCorners(popupIdToClose) {
+        var popupId = typeof popupIdToClose !== 'undefined' ? popupIdToClose : 'polarAxesInfo';
+        wpd.popup.close(popupId);
         var tool = new wpd.AxesCornersTool(3, 2, ['Origin', 'P1', 'P2']);
         wpd.graphicsWidget.setTool(tool);
     }
@@ -202,8 +205,9 @@ wpd.ternaryCalibration = (function () {
         wpd.graphicsWidget.setTool(tool);
     }
 
-    function pickCorners() {
-        wpd.popup.close('ternaryAxesInfo');
+    function pickCorners(popupIdToClose) {
+        var popupId = typeof popupIdToClose !== 'undefined' ? popupIdToClose : 'ternaryAxesInfo';
+        wpd.popup.close(popupId);
         var tool = new wpd.AxesCornersTool(3, 3, ['A', 'B', 'C']);
         wpd.graphicsWidget.setTool(tool);
     }
@@ -250,8 +254,9 @@ wpd.mapCalibration = (function () {
         wpd.graphicsWidget.setTool(tool);
     }
 
-    function pickCorners() {
-        wpd.popup.close('mapAxesInfo');
+    function pickCorners(popupIdToClose) {
+        var popupId = typeof popupIdToClose !== 'undefined' ? popupIdToClose : 'mapAxesInfo';
+        wpd.popup.close(popupId);
         var tool = new wpd.AxesCornersTool(2, 2, ['P1', 'P2']);
         wpd.graphicsWidget.setTool(tool);
     }
