@@ -70,7 +70,11 @@
                 var structureId = $('#graph-type').val();
                 var includeIndividuals = ($('#include-individuals-wizard:checked').length === 1);
                 var singleAxis = ($('#wizard-single-axis:checked').length === 1);
-                $(document).trigger('chooseProfile', [singleAxis, structureId, includeIndividuals]);
+                var profileId = $('#graph-type').find(":selected").data('profile');
+                if (typeof(profileId) === 'undefined') {
+                    profileId = null;
+                }
+                $(document).trigger('chooseProfile', [singleAxis, structureId, includeIndividuals, profileId]);
             });
     </script>
 
@@ -1089,8 +1093,8 @@
             <option value="median-and-confidence-interval-99">Median and 99% CI</option>
             <option value="median-and-interquartile-range">Median and Interquartile Range</option>
             <option value="box-and-whisker">Box and whisker plot</option>
-            <option value="roc-curve">ROC Curve</option>
-            <option value="xy-scatter-plot">XY Scatter plot</option>
+            <option value="roc-curve" data-profile="free-points-capture">ROC Curve</option>
+            <option value="xy-scatter-plot" data-profile="scatter-plot-xy">XY Scatter plot</option>
         </select>
         <fieldset style="display: inline;vertical-align: top;">
             <p>
