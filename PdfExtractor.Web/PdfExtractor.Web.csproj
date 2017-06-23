@@ -351,11 +351,12 @@
     <Content Include="Content\docs\Input\stroke-and-systemic-embolism-prevention-nonvalvular-atrial-fibrillation-apixaban-bristolmyers-squibb-and-pfizer2.pdf" />
     <Content Include="Content\docs\Input\Graphs_from_Fala\Graphs.pdf" />
     <Content Include="Content\docs\Input\Graphs_from_Fala\Graphs_130317.pdf" />
+    <Content Include="Content\docs\Input\Evaluation\Set 1_All Graphs.pdf" />
+    <Content Include="Content\docs\Input\Evaluation\Set 2_All graphs.pdf" />
     <None Include="Properties\PublishProfiles\Debug to N_ToDelete_PdfExtractorDeployTest.pubxml" />
     <None Include="Properties\PublishProfiles\PdfExtractor - FTP %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\PdfExtractor - FTP.pubxml" />
-    <None Include="Properties\PublishProfiles\PdfExtractor - Web Deploy %282%29.pubxml" />
-    <None Include="Properties\PublishProfiles\PdfExtractor - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\PdfExtractorWeb - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\Release to N_ToDelete_PdfExtractorDeployTest.pubxml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jBox\jBox.css" />

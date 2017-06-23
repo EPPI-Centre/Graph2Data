@@ -187,7 +187,8 @@
 }
 <div class='move-into-tooltip' style='display:none'>Moved into the tooltip</div>
 <div class="pdfSandboxContainer loadingInProgress">
-    <div id="outerContainer">
+    <div id="outerContainer">       
+    
         <div id="sidebarContainer">
             <div id="toolbarSidebar">
                 <div class="splitToolbarButton toggled">
@@ -274,7 +275,7 @@
             </div>  <!-- secondaryToolbar -->
             <div class="toolbar">
                 <div id="toolbarContainer">
-                    <div id="toolbarViewer">
+                    <div id="toolbarViewer" style="display:none">
                         <div id="toolbarViewerLeft">
                             <button id="sidebarToggle" class="toolbarButton" title="Toggle Sidebar" tabindex="11" data-l10n-id="toggle_sidebar">
                                 <span data-l10n-id="toggle_sidebar_label">Toggle Sidebar</span>
@@ -450,7 +451,9 @@
                 </div>
             </div>
         </div>  <!-- overlayContainer -->
+      
     </div> <!-- outerContainer -->
+    
     <div id="printContainer"></div>
     <div id="mozPrintCallback-shim" hidden>
         <style>
