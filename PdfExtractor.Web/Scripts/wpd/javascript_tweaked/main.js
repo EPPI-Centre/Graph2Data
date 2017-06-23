@@ -60,21 +60,29 @@ wpd.initApp = function (config) {// This is run when the page loads.
             $(document).on('chooseProfile', this.chooseThisProfile);
         },
 
-        chooseThisProfile: function (event, oneAxis, structureId, includeIndividuals) {        //not sure what to do with structure id yet.
+        chooseThisProfile: function (event, oneAxis, structureId, includeIndividuals, profileId) {        //not sure what to do with structure id yet.
            
             this.forEachProfile(function (index, profile) {
 
-                var profileIsSingleAxis = (profile.plotTypeId === "r_bar");
+                if (profileId != null) {
+                    if (profile.id === "profile_" + profileId) {
+                        profile.choose();
+                        document.profile = profile;
+                        return true;
+                    }
+                } else {
+                    var profileIsSingleAxis = (profile.plotTypeId === "r_bar");
 
 
-                if (structureId === profile.dataStructureId &&
-                    includeIndividuals === profile.includeIndividuals &&
-                    oneAxis === profileIsSingleAxis &&
-                    'simple-table-capture' === profile.outcomeMeasureId) {
+                    if (structureId === profile.dataStructureId &&
+                        includeIndividuals === profile.includeIndividuals &&
+                        oneAxis === profileIsSingleAxis &&
+                        'simple-table-capture' === profile.outcomeMeasureId) {
 
-                    profile.choose();
-                    document.profile = profile;
-                    return true;
+                        profile.choose();
+                        document.profile = profile;
+                        return true;
+                    }
                 }
             });
         },
