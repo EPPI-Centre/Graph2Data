@@ -76,7 +76,7 @@ namespace PdfExtractor.Web.Controllers
             @"Graphs_from_Fala\Graphs.pdf",
 
             //19
-            @"Evaluation\Set_1_All graphs test.pdf"
+            @"Evaluation\Set 1_All Graphs revised.pdf"
 
         };
 
