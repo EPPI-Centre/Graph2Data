@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
@@ -76,7 +76,9 @@ namespace PdfExtractor.Web.Controllers
             @"Graphs_from_Fala\Graphs.pdf",
 
             //19
+
             @"Evaluation\Set 1_All Graphs revised2.pdf"
+
 
         };
 

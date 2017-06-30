@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" />
@@ -351,10 +351,12 @@
     <Content Include="Content\docs\Input\stroke-and-systemic-embolism-prevention-nonvalvular-atrial-fibrillation-apixaban-bristolmyers-squibb-and-pfizer2.pdf" />
     <Content Include="Content\docs\Input\Graphs_from_Fala\Graphs.pdf" />
     <Content Include="Content\docs\Input\Graphs_from_Fala\Graphs_130317.pdf" />
+
     <Content Include="Content\docs\Input\Evaluation\Set 1_All Graphs revised2.pdf" />
     <Content Include="Content\docs\Input\Evaluation\ConsentForm.pdf" />
     <Content Include="Content\docs\Input\Evaluation\GuideForReviewers.pdf" />
     <Content Include="Content\docs\Input\Evaluation\InformationSheet.pdf" />
+
     <None Include="Properties\PublishProfiles\Debug to N_ToDelete_PdfExtractorDeployTest.pubxml" />
     <None Include="Properties\PublishProfiles\PdfExtractor - FTP %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\PdfExtractor - FTP.pubxml" />
